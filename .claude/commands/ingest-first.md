@@ -1,0 +1,1 @@
+Read and execute prompts/first-ingest.md

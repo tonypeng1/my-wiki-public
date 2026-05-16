@@ -1,0 +1,1 @@
+Read and execute prompts/p4-lint.md

@@ -1,0 +1,1 @@
+Read and execute prompts/p6-weekly-synthesis.md
