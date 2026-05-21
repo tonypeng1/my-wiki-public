@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 Your task is to compile the wiki from scratch using all documents 
 currently in raw/.
 

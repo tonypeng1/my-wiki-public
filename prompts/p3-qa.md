@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 My question is: "{YOUR QUESTION HERE}"
 
 Follow these steps to answer it:
@@ -15,33 +13,8 @@ Follow these steps to answer it:
 4. If any of those articles reference other articles via backlinks 
    that also seem relevant, read those too.
 
-5. Write a thorough answer to the question and save it to:
-   wiki/queries/{slugified-question}.md
-
-   The answer file should follow this structure:
-
-   ---
-   question: {the full question}
-   date: {today's date}
-   sources: [list of wiki articles consulted]
-   ---
-
-   # {Question as title}
-
-   ## Answer
-   Your full, thorough answer here.
-
-   ## Key Points
-   Bullet summary of the most important takeaways.
-
-   ## Source Articles Consulted
-   - [[article-1]]
-   - [[article-2]]
-
-   ## Follow-up Questions Worth Exploring
-   - Question 1
-   - Question 2
-   - Question 3
+5. Write a thorough answer and save it to wiki/queries/{slugified-question}.md
+   using the query file format from the project conventions.
 
 6. Add an entry for this query file to wiki/index.md.
 

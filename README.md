@@ -2,7 +2,7 @@
 
 A personal knowledge wiki driven by AI prompts. Raw source documents (e.g. lab results) are ingested and transformed into structured concept articles, summaries, Q&A records, and slide decks — all cross-linked using Obsidian-style `[[backlinks]]`.
 
-# Inspiration
+## Inspiration
 
 The structure and ideas behind this project are inspired by [Andrej Karpathy's post on LLM Knowledge Bases](https://x.com/karpathy/status/2039805659525644595) (April 2026), in which he describes using LLMs to incrementally compile a personal wiki from raw source documents — with summaries, concept articles, backlinks, Q&A, Marp slides, and health-check linting — all maintained by the LLM and viewed in Obsidian.
 
@@ -22,7 +22,8 @@ wiki/
     current.md    → active session conversation (deleted on close)
     archive/      → closed sessions saved as YYYY-MM-DD-HHmm.md
 prompts/          → reusable AI prompt files
-INSTRUCTIONS.md   → article format conventions and backlink rules
+CLAUDE.md         → project conventions auto-loaded by Claude Code each session
+INSTRUCTIONS.md   → human-readable copy of the conventions
 ```
 
 ## Workflows
@@ -59,7 +60,7 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 ## Conventions
 
 - All cross-references use Obsidian-style backlinks: `[[article-name]]` (filename without `.md`).
-- Article formats (concept, summary, query) are defined in `INSTRUCTIONS.md`.
+- Article formats (concept, summary, query) are defined in `CLAUDE.md` (auto-loaded by Claude Code) and mirrored in `INSTRUCTIONS.md` for human reference.
 - Never edit files in `raw/` — they are the source of truth.
 - `wiki/index.md` is the entry point for browsing all content.
 

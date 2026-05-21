@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 Your task is to incrementally update the wiki with any new 
 source documents added to raw/.
 

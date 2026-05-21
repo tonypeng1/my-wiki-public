@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 Perform a full health check on the wiki. Work through these 
 checks in order:
 
@@ -39,15 +37,8 @@ checks in order:
    the wiki's coverage. For each, explain why it would 
    be valuable and which existing articles would link to it.
 
-7. Write a full health check report to:
-   wiki/maintenance/health-check-{today's date}.md
-
-   Structure the report as:
-   - Summary of wiki current state (article counts, coverage)
-   - Missing concepts found and created (stubs)
-   - Thin articles expanded
-   - Contradictions flagged (for my review)
-   - New backlinks added
-   - Recommended new articles
+7. Write a health check report to wiki/maintenance/health-check-{today's date}.md
+   with sections: wiki state summary · missing concepts created · thin articles expanded
+   · contradictions flagged · backlinks added · recommended new articles.
 
 8. Update wiki/index.md with an entry for the health check report.
