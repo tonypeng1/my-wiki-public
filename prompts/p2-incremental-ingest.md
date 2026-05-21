@@ -18,8 +18,11 @@ source documents added to raw/.
       summary format in INSTRUCTIONS.md.
    c. For each key concept extracted:
       - If wiki/concepts/{concept}.md does not exist, create it.
+        Populate the `aliases` field with 3-5 common abbreviations,
+        alternate spellings, and lay terms for the concept.
       - If it exists, read it fully and integrate new 
-        information without erasing existing content.
+        information without erasing existing content. If the
+        file is missing an `aliases` field, add one now.
    d. Append the filename to wiki/processed.log.
    e. Add or update the relevant entries in wiki/index.md.
 

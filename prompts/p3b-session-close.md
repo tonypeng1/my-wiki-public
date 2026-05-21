@@ -10,54 +10,65 @@ The user has asked to end the current session. Follow these steps:
 
 2. Read wiki/index.md in full.
 
-3. For each turn in the session, decide whether it is worth saving as
-   a standalone query file. Save a turn if it:
-   - Contains a substantive, self-contained question and answer
-   - Would be useful to refer back to in future sessions or queries
-   Skip turns that are trivial, redundant, or too context-dependent
-   to stand alone.
+3. Compile all turns into a single consolidated query file.
 
-4. For each turn selected in step 3, save it to:
-   wiki/queries/{slugified-question}.md
+   Derive a session topic/title that best captures the overall theme
+   of the session (e.g. "Liver health Q&A — May 2026").
 
-   Use this structure:
+   Save destination rules:
+   - If the consolidated content is a clean handoff document with no
+     Key Points / Source Articles / Follow-up sections: save to
+     wiki/queries/_handoff/ and omit the `status:` field.
+   - Otherwise: save to wiki/queries/ root with `status: current`.
+
+   Superseded check (run before saving):
+   Read the `question:` frontmatter value of every file currently in
+   wiki/queries/ root. Check whether any existing file covers the same
+   overall topic as this session. Collect all candidates, present them
+   to me as a group with a reason for each, and wait for my
+   confirmation. After I confirm, move each approved file to
+   wiki/queries/_superseded/ and strip its `status:` field.
+
+   File structure:
 
    ---
-   question: {the full question}
+   question: {the session topic/title}
    date: {session-start date from current.md frontmatter}
-   sources: [{comma-separated list of sources from that turn}]
+   sources: [{all unique sources consulted across all turns}]
+   status: current
    ---
 
-   # {Question as Title}
+   # {Session Topic as Title}
 
    ## Answer
-   {The full answer from that turn}
+   Synthesized narrative combining the answers from all turns into one
+   coherent, readable response. Blend the content — do not just
+   concatenate turns verbatim.
 
    ## Key Points
-   - Bullet summary of the most important takeaways
+   - Bullet summary of the most important takeaways across all turns
 
    ## Source Articles Consulted
    - [[article-1]]
    - [[article-2]]
 
    ## Follow-up Questions Worth Exploring
-   - Question 1
-   - Question 2
-   - Question 3
+   - Collected follow-up questions from all turns
 
-5. For each query file saved in step 4, add an entry to wiki/index.md
+4. Add one entry to wiki/index.md for the consolidated query file,
    using the standard index format.
 
-6. Archive the session by copying the full contents of
+5. Archive the session by copying the full contents of
    wiki/sessions/current.md to:
    wiki/sessions/archive/{session-start datetime slug}.md
    where the datetime slug is derived from the session-start field
    in the frontmatter (e.g. 2026-05-15T1430 → 2026-05-15-1430.md).
+   Before saving, remove the `status:` line from the frontmatter —
+   presence in the archive folder is sufficient to indicate closure.
 
-7. Delete wiki/sessions/current.md.
+6. Delete wiki/sessions/current.md.
 
-8. Report back to the user:
+7. Report back to the user:
    - How many turns were in the session
-   - Which turns were saved as query files (with filenames)
-   - Which turns were skipped and why
+   - The filename of the consolidated query file saved
    - The archive filename

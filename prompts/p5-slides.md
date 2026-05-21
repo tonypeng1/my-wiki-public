@@ -11,7 +11,8 @@ Your task is to generate a Marp slide deck on the topic of:
    structure before writing the full deck.
 
 4. Write the complete Marp slide deck and save it to:
-   wiki/slides/{topic-name}.md
+   wiki/slides/{topic-name}-{YYYY-MM-DD}.md
+   where {YYYY-MM-DD} is today's date.
 
    Read wiki/slides/_marp-template.md and copy its frontmatter exactly as the
    opening of the file.

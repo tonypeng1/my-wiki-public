@@ -5,6 +5,8 @@
 - wiki/summaries/   → one .md per source document
 - wiki/concepts/    → one .md per concept/topic
 - wiki/queries/     → saved Q&A outputs
+  - _handoff/       → clean versions intended to be given to someone (no wiki metadata sections)
+  - _superseded/    → answers replaced by a newer, more complete query
 - wiki/slides/      → Marp slide decks
 - wiki/maintenance/ → health check reports
 - wiki/sessions/    → transient session scratch pad (NOT wiki content; do not index)
@@ -31,6 +33,7 @@ Each wiki/concepts/{name}.md:
 ---
 title: {Concept Name}
 tags: [tag1, tag2]
+aliases: [Abbreviation, alternate name, lay term]
 updated: {date}
 ---
 
@@ -82,6 +85,7 @@ Each wiki/queries/{slugified-question}.md:
 question: {the full question as asked}
 date: {YYYY-MM-DD}
 sources: [list of wiki articles consulted]
+status: current
 ---
 
 # {Question as Title}

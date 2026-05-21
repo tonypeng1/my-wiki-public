@@ -16,6 +16,8 @@ wiki/
   summaries/      → one .md per source document
   concepts/       → one .md per concept/topic
   queries/        → saved Q&A outputs
+    _handoff/     → clean versions intended to be given to someone
+    _superseded/  → answers replaced by a newer query
   slides/         → Marp slide decks
   maintenance/    → health check and synthesis reports
   sessions/       → transient session scratch pad (not wiki content)
@@ -72,9 +74,10 @@ To put this folder under version control:
    ```
    git init
    ```
-2. A `.gitignore` is already included in this project. It excludes:
-   - `.DS_Store`, `.AppleDouble`, `.LSOverride` (macOS metadata)
-   - `.obsidian/` (Obsidian local config — themes, plugins, workspace state)
+2. Create a `.gitignore` to exclude files you don't want tracked (optional but recommended):
+   ```
+   echo "wiki/sessions/current.md" > .gitignore
+   ```
 3. Stage all files and make the initial commit:
    ```
    git add .

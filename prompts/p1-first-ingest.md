@@ -12,9 +12,12 @@ For each file in raw/, do the following in order:
 3. For each key concept you extracted:
    a. Check if wiki/concepts/{concept-name}.md already exists.
    b. If it does not exist, create it following the concept 
-      article format in INSTRUCTIONS.md.
+      article format in INSTRUCTIONS.md. Populate the `aliases`
+      field with 3-5 common abbreviations, alternate spellings,
+      and lay terms for the concept.
    c. If it already exists, read it and update it with any 
-      new information from the current document. Do not 
+      new information from the current document. If the file 
+      is missing an `aliases` field, add one now. Do not 
       erase existing content — only add and integrate.
 
 4. Append the filename to wiki/processed.log on a new line.

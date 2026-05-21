@@ -7,7 +7,8 @@ to the knowledge base this week.
 2. Read the corresponding summary files in wiki/summaries/.
 
 3. Read any query files in wiki/queries/ created in the 
-   last 7 days.
+   last 7 days, including those in wiki/queries/_handoff/
+   and wiki/queries/_superseded/.
 
 4. Write a weekly synthesis report saved to:
    wiki/maintenance/weekly-synthesis-{today's date}.md
