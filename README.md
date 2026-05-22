@@ -22,7 +22,7 @@ wiki/
   maintenance/    → health check and synthesis reports
   sessions/       → transient session scratch pad (not wiki content)
     current.md    → active session conversation (deleted on close)
-    archive/      → closed sessions saved as YYYY-MM-DD-HHmm.md
+    archive/      → closed sessions saved as YYYY-MM-DD.md
 prompts/          → reusable AI prompt files
 CLAUDE.md         → project conventions auto-loaded by Claude Code each session
 INSTRUCTIONS.md   → human-readable copy of the conventions
@@ -39,9 +39,12 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 | `p3-qa.md` | `/qa` | Answer a one-off question and save the result directly to `wiki/queries/` |
 | `p3a-session-qa.md` | `/session-qa` | Ask a question inside a live session — auto-starts the session if none is active; full prior conversation is in context for each follow-up |
 | `p3b-session-close.md` | `/session-close` | End the session — saves worthy Q&A turns to `wiki/queries/`, archives the session log, and cleans up |
+| `p3c-session-reopen.md` | `/session-reopen` | Restore a closed session from archive back to `current.md` to continue it |
 | `p4-lint.md` | `/lint` | Health check — find missing concept pages, thin articles, broken backlinks |
+| `p4b-contradiction-check.md` | `/contradiction-check` | Scan wiki articles for contradictions |
 | `p5-slides.md` | `/slides` | Generate a Marp slide deck on a topic from wiki content |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
+| `sync-to-public.md` | `/sync-to-public` | Copy public files (prompts, commands, templates) to the companion public repo and suggest a commit message |
 
 ## Getting Started
 
