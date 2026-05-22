@@ -15,7 +15,7 @@ Follow these steps to answer it:
      and nothing else:
 
      ---
-     session-start: {today's date and current time as YYYY-MM-DDTHH:MM}
+     session-start: {today's date as YYYY-MM-DD}
      status: active
      ---
 

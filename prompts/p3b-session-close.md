@@ -60,9 +60,10 @@ The user has asked to end the current session. Follow these steps:
 
 5. Archive the session by copying the full contents of
    wiki/sessions/current.md to:
-   wiki/sessions/archive/{session-start datetime slug}.md
-   where the datetime slug is derived from the session-start field
-   in the frontmatter (e.g. 2026-05-15T1430 → 2026-05-15-1430.md).
+   wiki/sessions/archive/{slug}.md
+   where {slug} is the session-start date (e.g. 2026-05-21).
+   If that filename already exists, append a counter suffix:
+   2026-05-21-2.md, 2026-05-21-3.md, etc.
    Before saving, remove the `status:` line from the frontmatter —
    presence in the archive folder is sufficient to indicate closure.
 
