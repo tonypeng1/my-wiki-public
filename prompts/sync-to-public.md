@@ -5,7 +5,6 @@ The public repo mirrors only these files/directories:
 - .claude/commands/ (all .md files)
 - wiki/slides/_marp-template.md
 - CLAUDE.md
-- INSTRUCTIONS.md
 - README.md
 
 Follow these steps:

@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 The user has asked to end the current session. Follow these steps:
 
 1. Check whether wiki/sessions/current.md exists.

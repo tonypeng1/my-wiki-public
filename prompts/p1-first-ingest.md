@@ -6,13 +6,13 @@ For each file in raw/, do the following in order:
 1. Read the full contents of the file.
 
 2. Create wiki/summaries/{filename}.md following the summary 
-   format in INSTRUCTIONS.md. Extract all key concepts and 
+   format in CLAUDE.md. Extract all key concepts and 
    write backlinks to any related concepts you identify.
 
 3. For each key concept you extracted:
    a. Check if wiki/concepts/{concept-name}.md already exists.
    b. If it does not exist, create it following the concept 
-      article format in INSTRUCTIONS.md. Populate the `aliases`
+      article format in CLAUDE.md. Populate the `aliases`
       field with 3-5 common abbreviations, alternate spellings,
       and lay terms for the concept.
    c. If it already exists, read it and update it with any 
@@ -23,7 +23,11 @@ For each file in raw/, do the following in order:
 4. Append the filename to wiki/processed.log on a new line.
 
 5. Add an entry for each new or updated wiki file to 
-   wiki/index.md following the index format in INSTRUCTIONS.md.
+   wiki/index.md. Place the entry under the domain section 
+   matching the article's primary domain tag (first clinical-
+   domain tag in its frontmatter). Cross-cutting-only articles 
+   go under the most relevant domain section. Follow the index 
+   entry format in CLAUDE.md.
 
 After processing all files, do a final pass:
 - Read all concept articles you created or updated today

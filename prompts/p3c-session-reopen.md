@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 The user wants to reopen a previously closed session. Follow these steps:
 
 1. Check whether wiki/sessions/current.md already exists.

@@ -31,6 +31,27 @@ checks in order:
    field with 3-5 common abbreviations, alternate spellings, 
    and lay terms appropriate to the concept.
 
+4b. TAG CANONICALIZATION
+   Read the canonical tag list and synonym mapping from CLAUDE.md.
+   For each file in wiki/concepts/ and wiki/summaries/, check whether
+   any tags in its frontmatter are non-canonical synonyms.
+   Special rule for summaries: imaging modality tags (ultrasound, mri, ct)
+   are kept as-is but imaging-finding should be added alongside them if absent.
+   Replace all non-canonical tags with their canonical equivalents.
+   Report all files changed and what was replaced.
+
+4c. MOC FRESHNESS
+   For each file in wiki/mocs/, verify that every concept in wiki/concepts/
+   and every summary in wiki/summaries/ tagged with that MOC's domain is
+   listed in the MOC. Add any missing entries with a one-line description.
+   Also check: if a canonical tag now has 3+ articles but no MOC exists,
+   and the tag is NOT listed under "Cross-cutting tags — no dedicated MOC"
+   in CLAUDE.md, create the MOC following the MOC File Format in CLAUDE.md,
+   then add an entry for it in wiki/index.md and as a row in wiki/home.md.
+   Finally, verify wiki/home.md lists every MOC file currently in wiki/mocs/.
+   Add any missing MOCs to the home.md table.
+   Report all additions and new MOCs created.
+
 5. MISPLACED QUERY FILES
    Read every file in wiki/queries/ root (not sub-folders).
    Flag any file that matches one or more of these signals:

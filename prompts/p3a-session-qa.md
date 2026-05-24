@@ -1,5 +1,3 @@
-Read INSTRUCTIONS.md first and follow all conventions defined there.
-
 My question is: "{YOUR QUESTION HERE}"
 
 Follow these steps to answer it:
