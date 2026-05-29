@@ -43,7 +43,14 @@ source documents added to raw/.
       Source Summaries). If no MOC exists for that tag (and it is not a
       cross-cutting tag) and 3+ articles now share it, create the MOC
       following the MOC File Format in CLAUDE.md, then add the new MOC
-      as a row in the wiki/home.md MOC table.
+      as a row in the Maps of Content table in wiki/home.md and remove
+      that tag's row from the Tags Without a MOC table in wiki/home.md.
+      If no MOC exists and fewer than 3 articles share the tag, add or
+      update the tag's row in the Tags Without a MOC table in wiki/home.md
+      (columns: Tag | Articles sharing this tag | Count; articles as
+      [[wikilinks]], comma-separated; rows sorted by Count descending).
+      If the tag row already exists, append the new [[wikilink]] and
+      increment the Count.
 
 6. After processing all new files, check if any of the 
    newly added concepts create backlink opportunities in 

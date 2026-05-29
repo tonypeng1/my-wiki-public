@@ -49,8 +49,20 @@ checks in order:
    in CLAUDE.md, create the MOC following the MOC File Format in CLAUDE.md,
    then add an entry for it in wiki/index.md and as a row in wiki/home.md.
    Finally, verify wiki/home.md lists every MOC file currently in wiki/mocs/.
-   Add any missing MOCs to the home.md table.
-   Report all additions and new MOCs created.
+   Add any missing MOCs to the home.md MOC table.
+
+   UNCOVERED RECORDS SYNC
+   After the MOC checks above, rebuild the Uncovered Records table in
+   wiki/home.md from scratch:
+   1. For every canonical tag (excluding cross-cutting tags listed under
+      "Cross-cutting tags — no dedicated MOC" in CLAUDE.md) that has
+      fewer than 3 articles across wiki/concepts/ and wiki/summaries/
+      and has no MOC file, collect all articles carrying that tag.
+   2. Replace the entire Uncovered Records table in wiki/home.md with
+      the current data: one row per domain, article count in the Domain
+      cell, articles as [[wikilinks]] comma-separated in the Articles
+      cell. If no uncovered records exist, remove the section entirely.
+   Report all additions, removals, and new MOCs created.
 
 5. MISPLACED QUERY FILES
    Read every file in wiki/queries/ root (not sub-folders).

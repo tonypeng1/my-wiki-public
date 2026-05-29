@@ -35,3 +35,22 @@ After processing all files, do a final pass:
   backlinks where they are missing
 - Write a one-paragraph compilation summary at the top 
   of wiki/index.md describing what the wiki now covers
+- Rebuild wiki/home.md from scratch with two sections:
+
+  ## Maps of Content
+  A table with columns: MOC | Domain | Articles
+  One row per MOC file in wiki/mocs/, linking to it with
+  [[wikilink]] syntax. Articles = total count of concepts
+  and summaries tagged with that MOC's domain tag.
+
+  ## Tags Without a MOC
+  Subtitle: "These tags have fewer than 3 articles and no
+  MOC file yet. Articles may still be covered by other
+  domain MOCs — this table tracks tags, not orphaned articles."
+  A table with columns: Tag | Articles sharing this tag | Count
+  One row per canonical tag (excluding cross-cutting tags
+  listed under "Cross-cutting tags — no dedicated MOC" in
+  CLAUDE.md) that has fewer than 3 articles and no MOC file.
+  Articles listed as [[wikilinks]], comma-separated.
+  Rows sorted by Count descending.
+  If no such tags exist, omit this section entirely.

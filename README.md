@@ -13,10 +13,12 @@ The structure and ideas behind this project are inspired by [Andrej Karpathy's p
 ```
 raw/              → source documents (never modify these)
 wiki/
+  home.md         → vault entry point; links to all MOCs
   index.md        → master index of all wiki content
   processed.log   → list of already-processed raw/ files
   summaries/      → one .md per source document
   concepts/       → one .md per concept/topic
+  mocs/           → one moc-{domain}.md per clinical domain
   queries/        → saved Q&A outputs
     _handoff/     → clean versions intended to be given to someone
     _superseded/  → answers replaced by a newer query
@@ -24,7 +26,10 @@ wiki/
   maintenance/    → health check and synthesis reports
   sessions/       → transient session scratch pad (not wiki content)
     current.md    → active session conversation (deleted on close)
-    archive/      → closed sessions saved as YYYY-MM-DD.md
+    archive/      → closed sessions saved as YYYY-MM-DD-HHmm.md
+memory/           → persistent facts and corrections used by Claude
+.claude/
+  commands/       → slash command definitions that power the workflows
 prompts/          → reusable AI prompt files
 CLAUDE.md         → project conventions auto-loaded by Claude Code each session
 ```
@@ -59,7 +64,7 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 5. For a conversational session with follow-up questions:
    - Run `/session-qa your question` — the session starts automatically on the first question.
    - Keep asking follow-ups with `/session-qa your next question`; each turn is appended to `wiki/sessions/current.md` and the full history is available as context.
-   - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives the session log to `wiki/sessions/archive/`, and removes `current.md`.
+   - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives the session log to `wiki/sessions/archive/` (as `YYYY-MM-DD-HHmm.md`), and removes `current.md`.
 6. Run `/lint` periodically to keep the wiki healthy.
 7. Use `/slides` to generate a Marp presentation on any topic covered in the wiki.
 
