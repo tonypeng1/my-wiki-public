@@ -25,8 +25,9 @@ wiki/
   slides/         → Marp slide decks
   maintenance/    → health check and synthesis reports
   sessions/       → transient session scratch pad (not wiki content)
-    current.md    → active session conversation (deleted on close)
-    archive/      → closed sessions saved as YYYY-MM-DD-HHmm.md
+    current.md    → active session full Q&A log (deleted on close)
+    log.md        → compact session summary, one entry per turn (deleted on close)
+    archive/      → closed sessions saved as YYYY-MM-DD.md + YYYY-MM-DD-log.md
 memory/           → persistent facts and corrections used by Claude
 .claude/
   commands/       → slash command definitions that power the workflows
@@ -63,8 +64,8 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 4. Use `/qa` to ask a one-off question. The result is saved immediately to `wiki/queries/`.
 5. For a conversational session with follow-up questions:
    - Run `/session-qa your question` — the session starts automatically on the first question.
-   - Keep asking follow-ups with `/session-qa your next question`; each turn is appended to `wiki/sessions/current.md` and the full history is available as context.
-   - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives the session log to `wiki/sessions/archive/` (as `YYYY-MM-DD-HHmm.md`), and removes `current.md`.
+   - Keep asking follow-ups with `/session-qa your next question`; each turn appends a compact summary to `wiki/sessions/log.md` (read for context on the next turn) and the full answer to `wiki/sessions/current.md` (used only when the session closes).
+   - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives both session files to `wiki/sessions/archive/` (as `YYYY-MM-DD.md` + `YYYY-MM-DD-log.md`), and removes both `current.md` and `log.md`.
 6. Run `/lint` periodically to keep the wiki healthy.
 7. Use `/slides` to generate a Marp presentation on any topic covered in the wiki.
 
@@ -114,6 +115,7 @@ To put this folder under version control:
 2. Create a `.gitignore` to exclude files you don't want tracked (optional but recommended):
    ```
    echo "wiki/sessions/current.md" > .gitignore
+   echo "wiki/sessions/log.md" >> .gitignore
    ```
 3. Stage all files and make the initial commit:
    ```

@@ -6,7 +6,9 @@ The user has asked to end the current session. Follow these steps:
    - If it EXISTS: read it in full. This contains all Q&A turns
      from the session.
 
-2. Read wiki/index.md in full.
+2. Read only the Queries section of wiki/index.md (from the "## Queries"
+   heading to end of file). This is sufficient to check for superseded
+   candidates — the full index is not needed.
 
 3. Compile all turns into a single consolidated query file.
 
@@ -56,16 +58,18 @@ The user has asked to end the current session. Follow these steps:
 4. Add one entry to wiki/index.md for the consolidated query file,
    using the standard index format.
 
-5. Archive the session by copying the full contents of
-   wiki/sessions/current.md to:
-   wiki/sessions/archive/{slug}.md
+5. Archive both session files:
+
+   wiki/sessions/current.md → wiki/sessions/archive/{slug}.md
+   wiki/sessions/log.md     → wiki/sessions/archive/{slug}-log.md
+
    where {slug} is the session-start date (e.g. 2026-05-21).
-   If that filename already exists, append a counter suffix:
-   2026-05-21-2.md, 2026-05-21-3.md, etc.
-   Before saving, remove the `status:` line from the frontmatter —
+   If {slug}.md already exists, use a counter suffix for both:
+   2026-05-21-2.md and 2026-05-21-2-log.md, etc.
+   Before saving each, remove the `status:` line from the frontmatter —
    presence in the archive folder is sufficient to indicate closure.
 
-6. Delete wiki/sessions/current.md.
+6. Delete wiki/sessions/current.md and wiki/sessions/log.md.
 
 7. Report back to the user:
    - How many turns were in the session
