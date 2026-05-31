@@ -28,6 +28,7 @@ wiki/
     current.md    → active session full Q&A log (deleted on close)
     log.md        → compact session summary, one entry per turn (deleted on close)
     archive/      → closed sessions saved as YYYY-MM-DD.md + YYYY-MM-DD-log.md
+scripts/          → shell scripts invoked by slash commands (e.g. sync-to-public.sh)
 memory/           → persistent facts and corrections used by Claude
 .claude/
   commands/       → slash command definitions that power the workflows
@@ -51,7 +52,7 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 | `p4b-contradiction-check.md` | `/contradiction-check` | Scan wiki articles for contradictions |
 | `p5-slides.md` | `/slides` | Generate a Marp slide deck on a topic from wiki content |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
-| `sync-to-public.md` | `/sync-to-public` | Copy public files (prompts, commands, templates) to the companion public repo and suggest a commit message |
+| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, templates) to the companion public repo and suggest a commit message. Not needed if you are a user who cloned this repo. |
 
 ## Getting Started
 
