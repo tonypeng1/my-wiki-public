@@ -35,7 +35,7 @@ Each wiki/concepts/{name}.md:
 ---
 title: {Concept Name}
 tags: [tag1, tag2]
-aliases: [Abbreviation, alternate name, lay term]
+aliases: [3–5 abbreviations, alternate spellings, lay terms]
 updated: {date}
 ---
 
@@ -186,3 +186,20 @@ Each entry in wiki/index.md:
 - **Tags:** tag1, tag2
 - **Summary:** One sentence description.
 - **Related:** [[article-a]], [[article-b]]
+
+## Home Page Format
+wiki/home.md has two sections:
+
+### Maps of Content
+Table columns: MOC | Domain | Articles
+One row per wiki/mocs/ file; MOC as [[wikilink]]; Articles = count of
+concepts + summaries tagged with that domain.
+
+### Tags Without a MOC
+Subtitle: "These tags have fewer than 3 articles and no MOC file yet.
+Articles may still be covered by other domain MOCs — this table tracks tags,
+not orphaned articles."
+Table columns: Tag | Articles sharing this tag | Count
+One row per non-cross-cutting canonical tag with <3 articles and no MOC.
+Articles as [[wikilinks]], comma-separated. Sorted by Count descending.
+Omit section if empty.

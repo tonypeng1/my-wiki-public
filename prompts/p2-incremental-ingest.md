@@ -17,17 +17,14 @@ source documents added to raw/.
    b. Create wiki/summaries/{filename}.md following the 
       summary format in CLAUDE.md.
    c. For each key concept extracted:
-      - If wiki/concepts/{concept}.md does not exist, create it.
-        Populate the `aliases` field with 3-5 common abbreviations,
-        alternate spellings, and lay terms for the concept.
-      - If it exists, read it fully and integrate new 
-        information without erasing existing content. If the
-        file is missing an `aliases` field, add one now.
-   d. Before finalizing tags on any new concept or summary file, consult
-      the canonical tag list in CLAUDE.md. Use only canonical tags.
-      If no existing canonical tag fits the concept, propose the new tag,
-      explain why no existing tag covers it, and add it to the canonical
-      list in CLAUDE.md before using it in the file.
+      - If wiki/concepts/{concept}.md does not exist, create it
+        following the concept article format in CLAUDE.md.
+      - If it exists, read it and integrate new information
+        without erasing existing content. If missing an `aliases`
+        field, add one.
+   d. Use only canonical tags (see CLAUDE.md). If no existing tag fits,
+      follow the "Adding a new canonical tag" procedure in CLAUDE.md
+      before using it in any file.
 
    e. Append the filename to wiki/processed.log.
    f. Add or update the relevant entries in wiki/index.md.
@@ -36,24 +33,12 @@ source documents added to raw/.
       in its frontmatter). Cross-cutting-only articles go under
       the most relevant domain section. Follow the index entry
       format in CLAUDE.md.
-   g. For each canonical tag on the new concept or summary, check whether
-      a MOC exists at wiki/mocs/moc-{tag}.md. Skip tags listed under
-      "Cross-cutting tags — no dedicated MOC" in CLAUDE.md. If a MOC
-      exists, add the new article to the appropriate section (Concepts or
-      Source Summaries). If no MOC exists for that tag (and it is not a
-      cross-cutting tag) and 3+ articles now share it, create the MOC
-      following the MOC File Format in CLAUDE.md, then add the new MOC
-      as a row in the Maps of Content table in wiki/home.md and remove
-      that tag's row from the Tags Without a MOC table in wiki/home.md.
-      If no MOC exists and fewer than 3 articles share the tag, add or
-      update the tag's row in the Tags Without a MOC table in wiki/home.md
-      (columns: Tag | Articles sharing this tag | Count; articles as
-      [[wikilinks]], comma-separated; rows sorted by Count descending).
-      If the tag row already exists, append the new [[wikilink]] and
-      increment the Count.
+   g. For each canonical, non-cross-cutting tag on the new article:
+      - MOC exists → add article to its Concepts or Source Summaries section.
+      - No MOC, 3+ articles share tag → create MOC (MOC File Format in
+        CLAUDE.md); add a row to home.md Maps of Content; remove its row
+        from home.md Tags Without a MOC.
+      - No MOC, <3 articles → add/update the tag's row in home.md
+        Tags Without a MOC (following Home Page Format in CLAUDE.md).
 
-6. After processing all new files, check if any of the 
-   newly added concepts create backlink opportunities in 
-   older concept articles. If so, update those articles.
-
-7. Report a summary of everything you created or modified.
+6. Report a summary of everything you created or modified.

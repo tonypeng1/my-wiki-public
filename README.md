@@ -28,7 +28,7 @@ wiki/
     current.md    → active session full Q&A log (deleted on close)
     log.md        → compact session summary, one entry per turn (deleted on close)
     archive/      → closed sessions saved as YYYY-MM-DD.md + YYYY-MM-DD-log.md
-scripts/          → shell scripts invoked by slash commands (e.g. sync-to-public.sh)
+scripts/          → automation scripts (Python pre-filters for lint prompts, sync helper)
 memory/           → persistent facts and corrections used by Claude
 .claude/
   commands/       → slash command definitions that power the workflows
@@ -48,8 +48,11 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 | `p3a-session-qa.md` | `/session-qa` | Ask a question inside a live session — auto-starts the session if none is active; full prior conversation is in context for each follow-up |
 | `p3b-session-close.md` | `/session-close` | End the session — saves worthy Q&A turns to `wiki/queries/`, archives the session log, and cleans up |
 | `p3c-session-reopen.md` | `/session-reopen` | Restore a closed session from archive back to `current.md` to continue it |
-| `p4-lint.md` | `/lint` | Health check — find missing concept pages, thin articles, broken backlinks |
+| `p4a-post-ingest.md` | `/post-ingest` | Post-ingest housekeeping — canonicalize tags, check backlinks, refresh MOCs; run after every `/ingest-increm` |
 | `p4b-contradiction-check.md` | `/contradiction-check` | Scan wiki articles for contradictions |
+| `p4c-deep-check.md` | `/deep-check` | Monthly content quality check — thin/missing articles, missing aliases, new article candidates |
+| `p4d-triage-queries.md` | `/triage-queries` | Interactive triage of misplaced files in `wiki/queries/` root |
+| `p4-lint.md` | `/lint` | Full quarterly health check — all tasks above plus a written report to `wiki/maintenance/` |
 | `p5-slides.md` | `/slides` | Generate a Marp slide deck on a topic from wiki content |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
 | `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, templates) to the companion public repo and suggest a commit message. Not needed if you are a user who cloned this repo. |
@@ -62,13 +65,16 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
    ```
 2. Drop source documents into `raw/`.
 3. Run `/ingest-first` to build the wiki from scratch, or `/ingest-increm` to add only new files.
-4. Use `/qa` to ask a one-off question. The result is saved immediately to `wiki/queries/`.
-5. For a conversational session with follow-up questions:
+4. After each `/ingest-increm`, run `/post-ingest` to canonicalize tags, check backlinks, and refresh MOCs.
+5. Use `/qa` to ask a one-off question. The result is saved immediately to `wiki/queries/`.
+6. For a conversational session with follow-up questions:
    - Run `/session-qa your question` — the session starts automatically on the first question.
    - Keep asking follow-ups with `/session-qa your next question`; each turn appends a compact summary to `wiki/sessions/log.md` (read for context on the next turn) and the full answer to `wiki/sessions/current.md` (used only when the session closes).
    - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives both session files to `wiki/sessions/archive/` (as `YYYY-MM-DD.md` + `YYYY-MM-DD-log.md`), and removes both `current.md` and `log.md`.
-6. Run `/lint` periodically to keep the wiki healthy.
-7. Use `/slides` to generate a Marp presentation on any topic covered in the wiki.
+7. Run `/deep-check` monthly for content quality (thin articles, missing aliases, coverage gaps).
+8. Run `/triage-queries` as needed to move misplaced files out of `wiki/queries/` root.
+9. Run `/lint` quarterly for a full health check with a written maintenance report.
+10. Use `/slides` to generate a Marp presentation on any topic covered in the wiki.
 
 ## Conventions
 
