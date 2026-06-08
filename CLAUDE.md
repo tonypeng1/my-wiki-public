@@ -1,5 +1,10 @@
 # Wiki Conventions
 
+## Memory
+All persistent memory lives in `memory/` at the project root. At the start of every conversation,
+read `memory/MEMORY.md` to load the index, then read individual files as needed.
+When saving a new memory or updating an existing one, write to `memory/` — not to `~/.claude/projects/`.
+
 ## Directory Structure
 - raw/              → source documents (never modify these)
 - wiki/summaries/   → one .md per source document
