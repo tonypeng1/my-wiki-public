@@ -1,8 +1,14 @@
 Your task is to generate a Marp slide deck on the topic of: 
 "{YOUR TOPIC HERE}"
 
-1. Read wiki/index.md to identify all wiki articles relevant 
-   to this topic.
+1. Run the following command to find all wiki articles relevant to this topic
+   (replace KEYWORD with the topic name; add more keywords as needed):
+
+   bash scripts/search-index.sh KEYWORD [KEYWORD2 ...]
+
+   Use the matching entries to identify which article files to read.
+   If results are too few, broaden with related terms.
+   If results are too many, add a second keyword to narrow them.
 
 2. Read each relevant article in full.
 
