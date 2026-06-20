@@ -4,6 +4,10 @@ currently in raw/.
 For each file in raw/, do the following in order:
 
 1. Read the full contents of the file.
+   For image files (.png, .jpg, .jpeg): read the file visually and extract
+   chart titles, axes, time ranges, key data series, notable trends,
+   anomalies, and specific values. Treat this extracted information as the
+   "contents" for the rest of the pipeline.
 
 2. Create wiki/summaries/{filename}.md following the summary 
    format in CLAUDE.md. Extract all key concepts and 

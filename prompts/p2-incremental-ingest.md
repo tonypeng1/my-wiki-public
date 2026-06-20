@@ -14,6 +14,10 @@ source documents added to raw/.
 
 5. For each new file, do the following in order:
    a. Read the full contents of the file.
+      For image files (.png, .jpg, .jpeg): read the file visually and extract
+      chart titles, axes, time ranges, key data series, notable trends,
+      anomalies, and specific values. Treat this extracted information as the
+      "contents" for the rest of the pipeline.
    b. Create wiki/summaries/{filename}.md following the 
       summary format in CLAUDE.md.
    c. For each key concept extracted:
