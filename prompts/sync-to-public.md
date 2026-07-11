@@ -1,4 +1,4 @@
-Sync public files from /Users/tony3/Documents/my-wiki to /Users/tony3/Documents/my-wiki-public.
+Sync public files from /Users/tony3/Projects/my-wiki to /Users/tony3/Projects/my-wiki-public.
 
 The public repo mirrors only these files/directories:
 - prompts/          (all .md files)
