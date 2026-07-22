@@ -18,6 +18,8 @@ When saving a new memory or updating an existing one, write to `memory/` — not
 - wiki/maintenance/ → health check reports
 - wiki/sessions/    → transient session scratch pad (NOT wiki content; do not index)
   - current.md      → active session conversation (deleted when session closes)
+  - log.md          → compact session history, one entry per turn; read at the start
+                      of each turn to restore context (deleted when session closes)
   - archive/        → closed sessions saved as YYYY-MM-DD-{topic-slug}.md (+ -log.md) for reference
 - wiki/index.md     → master index of all wiki content
 - wiki/processed.log → list of already-processed raw/ files

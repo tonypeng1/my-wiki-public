@@ -9,8 +9,20 @@ SRC="$(cd "$(dirname "$0")/.." && pwd)"
 REPO_NAME="$(basename "$SRC")"
 DST="$(dirname "$SRC")/${REPO_NAME}-public"
 
+# This script ships to the public repo, where running it would look for a
+# nonsensical <name>-public-public. Explain that instead of a path error.
+if [[ "$REPO_NAME" == *-public ]]; then
+  echo "Nothing to do: this is the public repo ($REPO_NAME)."
+  echo
+  echo "sync-to-public.sh is maintainer-only. It runs in the private source repo"
+  echo "and copies files OUT to this one; there is no upstream to sync from here."
+  echo "See the /sync-to-public row in README.md."
+  exit 0
+fi
+
 if [[ ! -d "$DST" ]]; then
   echo "ERROR: destination not found: $DST"
+  echo "Expected a sibling directory of $SRC named ${REPO_NAME}-public."
   exit 1
 fi
 

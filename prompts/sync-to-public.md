@@ -1,8 +1,13 @@
-Sync public files from /Users/tony3/Projects/my-wiki to /Users/tony3/Projects/my-wiki-public.
+Mirror this repo's public files to its companion public repo — the sibling
+directory named `<repo-name>-public`. Both paths are derived by the script from
+its own location; nothing here is machine-specific.
 
 This workflow is script-driven. Run `bash scripts/sync-to-public.sh` and report its
 output — do not diff files yourself. This document records *what* the script mirrors
 and why, so the two repos stay functionally equivalent.
+
+Maintainer-only: it runs in the private source repo and copies files out. Run from
+a clone of the public repo, the script says so and exits without doing anything.
 
 ## What the public repo mirrors
 
