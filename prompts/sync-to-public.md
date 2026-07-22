@@ -33,7 +33,9 @@ Conventions and entry points:
   empty .gitkeep placeholders for these directories; the script must never overwrite
   them with real content.
 - memory/ — everything except the glossary above (MEMORY.md and all personal,
-  project, and feedback memories stay private)
+  project, and feedback memories stay private). The public repo keeps its own
+  hand-written `memory/MEMORY.md` starter index; the script must never overwrite
+  it with this repo's private one.
 
 ## Rules
 

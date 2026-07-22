@@ -57,7 +57,7 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 | `p4-lint.md` | `/lint` | Full quarterly health check — all tasks above plus a written report to `wiki/maintenance/` |
 | `p5-slides.md` | `/slides` | Generate a Marp slide deck on a topic from wiki content |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
-| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, templates) to the companion public repo and suggest a commit message. Not needed if you are a user who cloned this repo. |
+| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, Codex skills, `scripts/`, the shared glossary, conventions and templates) to the companion public repo and suggest a commit message. Never copies `raw/`, wiki content, or private memory. Not needed if you are a user who cloned this repo. |
 
 ### Backfilling translations (best practice)
 
@@ -118,6 +118,27 @@ backfill pass over already-existing articles.
 
   However the scope is expressed, the resolved file list is reported for approval
   before any file is edited.
+
+## Prerequisites
+
+| Requirement | Needed for | Notes |
+|---|---|---|
+| **Claude Code** or **Codex** | every workflow | The prompts are the program; the agent executes them. |
+| **Python 3.9+** | `/post-ingest`, `/deep-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers are standard-library only — no `pip install` step. 3.9 is the floor (built-in generic annotations). |
+| **Node.js** | `/slides` only | Decks render via `npx --yes @marp-team/marp-cli@latest`. Without Node, every other workflow still works. |
+| **Obsidian** | optional | For browsing the vault and following `[[backlinks]]`. No workflow depends on it. |
+
+Ingest, `/qa`, and the session workflows need only the agent — Python is required
+once you start running the maintenance and translation checkers.
+
+To confirm the Python side on a fresh clone:
+
+```
+python3 scripts/tag-index.py
+```
+
+It prints empty `CONCEPTS` and `SUMMARIES` tables until you ingest something; that
+empty output is the success case.
 
 ## Getting Started
 
