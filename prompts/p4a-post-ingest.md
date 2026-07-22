@@ -49,4 +49,12 @@ backlinks, and MOCs consistent with newly added content.
    the entire table in one pass, then write wiki/home.md once.
    Report all additions, removals, and new MOCs created.
 
-4. Report a brief summary of everything changed.
+4. BILINGUAL MIRROR QA
+   If this workflow edits any MOC file, `wiki/index.md`, or `wiki/home.md`,
+   run:
+   `python3 scripts/check-bilingual-terms.py --git-diff wiki/mocs wiki/index.md wiki/home.md`
+   Treat the output as a suspect list, patch real misses in the files touched
+   by this workflow, and rerun until no unreviewed high-confidence suspects
+   remain.
+
+5. Report a brief summary of everything changed.

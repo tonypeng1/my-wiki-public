@@ -50,7 +50,10 @@ Follow these steps to answer it:
 
 4. Write a thorough answer and save it to the appropriate location,
    using the query file format from the project conventions. Include
-   `status: current` in the frontmatter.
+   `status: current` in the frontmatter. Name the file
+   `{date}-{slug}.md`, where `{date}` is the answer's date (YYYY-MM-DD,
+   the `date:` frontmatter value) — same date-prefix convention as
+   wiki/sessions/archive/.
 
    Save destination rules:
    - If this is a clean handoff document with no Key Points / Source

@@ -38,18 +38,29 @@ sync_file() {
   fi
 }
 
+# sync_dir <rel_dir> [pattern ...] — defaults to *.md when no pattern is given
 sync_dir() {
-  local rel_dir="$1"
-  local pattern="${2:-*.md}"
+  local rel_dir="$1"; shift
+  local patterns=("$@")
+  [[ ${#patterns[@]} -gt 0 ]] || patterns=("*.md")
   local src_dir="$SRC/$rel_dir"
   local dst_dir="$DST/$rel_dir"
+
+  # Build a find expression: \( -name p1 -o -name p2 ... \)
+  local find_expr=(\()
+  local i
+  for i in "${!patterns[@]}"; do
+    [[ $i -eq 0 ]] || find_expr+=(-o)
+    find_expr+=(-name "${patterns[$i]}")
+  done
+  find_expr+=(\))
 
   # Copy new/modified files from src → dst
   if [[ -d "$src_dir" ]]; then
     mkdir -p "$dst_dir"
     while IFS= read -r -d '' f; do
       sync_file "${f#"$SRC/"}"
-    done < <(find "$src_dir" -name "$pattern" -print0)
+    done < <(find "$src_dir" "${find_expr[@]}" -print0)
   fi
 
   # Detect files in dst that no longer exist in src (pending deletion)
@@ -57,18 +68,55 @@ sync_dir() {
     while IFS= read -r -d '' f; do
       local rel="${f#"$DST/"}"
       [[ -f "$SRC/$rel" ]] || to_delete+=("$rel")
-    done < <(find "$dst_dir" -name "$pattern" -print0)
+    done < <(find "$dst_dir" "${find_expr[@]}" -print0)
   fi
+}
+
+# Commit-message label. Bare basenames collide (every Codex skill is SKILL.md,
+# and each command shares its prompt's filename), so qualify those two cases.
+label() {
+  local rel="$1"
+  case "$rel" in
+    .agents/skills/*/SKILL.md) echo "$(basename "$(dirname "$rel")") Codex skill" ;;
+    .claude/commands/*)        echo "$(basename "$rel" .md) command" ;;
+    *)                         basename "$rel" ;;
+  esac
+}
+
+# Flag tracked top-level docs in dst that no longer exist in src.
+# sync_dir only sees directories it mirrors, so stray root files went unnoticed.
+check_orphan_root_docs() {
+  [[ -d "$DST/.git" ]] || return 0
+  local rel
+  while IFS= read -r rel; do
+    [[ "$rel" == */* ]] && continue          # top-level only
+    [[ "$rel" == .* ]] && continue           # dotfiles handled explicitly
+    [[ -f "$SRC/$rel" ]] || to_delete+=("$rel")
+  done < <(git -C "$DST" ls-files -- '*.md' 2>/dev/null)
 }
 
 # ── sync ───────────────────────────────────────────────────────────────────
 
 sync_dir "prompts"
 sync_dir ".claude/commands"
-sync_dir "scripts" "*.sh"
+# Codex skill wrappers around the same prompts; AGENTS.md points at these.
+sync_dir ".agents/skills"
+# Python pre-filters are load-bearing for the lint/backfill prompts — sync them
+# alongside the shell helpers, or the public workflows reference missing files.
+sync_dir "scripts" "*.sh" "*.py"
 sync_file "wiki/slides/_marp-template.md"
 sync_file "CLAUDE.md"
 sync_file "README.md"
+sync_file "AGENTS.md"
+# Permission allowlist for the synced scripts (settings.local.json stays private).
+sync_file ".claude/settings.json"
+# Shared glossary: check-bilingual-terms.py, check-glossary-delta.py and
+# extract-term-candidates.py all default to this path.
+sync_file "memory/medical-term-translations.md"
+# Keeps __pycache__/*.pyc out of the public repo now that .py files ship.
+sync_file ".gitignore"
+
+check_orphan_root_docs
 
 # ── report ─────────────────────────────────────────────────────────────────
 
@@ -86,6 +134,6 @@ echo ""
 echo "=== Suggested git commit message ==="
 echo "feat: sync from my-wiki"
 echo ""
-for f in "${added[@]}";    do echo "- add $(basename "$f")"; done
-for f in "${updated[@]}";  do echo "- update $(basename "$f")"; done
-for f in "${to_delete[@]}"; do echo "- (pending) remove $(basename "$f")"; done
+for f in "${added[@]}";    do echo "- add $(label "$f")"; done
+for f in "${updated[@]}";  do echo "- update $(label "$f")"; done
+for f in "${to_delete[@]}"; do echo "- (pending) remove $(label "$f")"; done

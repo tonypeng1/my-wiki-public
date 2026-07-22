@@ -19,7 +19,7 @@ wiki/
   summaries/      → one .md per source document
   concepts/       → one .md per concept/topic
   mocs/           → one moc-{domain}.md per clinical domain
-  queries/        → saved Q&A outputs
+  queries/        → saved Q&A outputs (files named YYYY-MM-DD-{slug}.md)
     _handoff/     → clean versions intended to be given to someone
     _superseded/  → answers replaced by a newer query
   slides/         → Marp slide decks
@@ -27,13 +27,14 @@ wiki/
   sessions/       → transient session scratch pad (not wiki content)
     current.md    → active session full Q&A log (deleted on close)
     log.md        → compact session summary, one entry per turn (deleted on close)
-    archive/      → closed sessions saved as YYYY-MM-DD.md + YYYY-MM-DD-log.md
-scripts/          → automation scripts (Python pre-filters for lint prompts, sync helper)
-memory/           → persistent facts and corrections used by Claude
+    archive/      → closed sessions saved as YYYY-MM-DD-{topic-slug}.md + YYYY-MM-DD-{topic-slug}-log.md
+scripts/          → automation scripts (Python pre-filters for lint prompts, bilingual/glossary/medication checkers, term-candidate extractor, sync helper)
+memory/           → persistent facts and corrections used by Claude/Codex
 .claude/
   commands/       → slash command definitions that power the workflows
 prompts/          → reusable AI prompt files
 CLAUDE.md         → project conventions auto-loaded by Claude Code each session
+AGENTS.md         → Codex entry point that delegates to CLAUDE.md and prompts/
 ```
 
 ## Workflows
@@ -52,12 +53,75 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 | `p4b-contradiction-check.md` | `/contradiction-check` | Scan wiki articles for contradictions |
 | `p4c-deep-check.md` | `/deep-check` | Monthly content quality check — thin/missing articles, missing aliases, new article candidates |
 | `p4d-triage-queries.md` | `/triage-queries` | Interactive triage of misplaced files in `wiki/queries/` root |
+| `translation-backfill.md` | `/translation-backfill` | Repair missing Traditional Chinese medical-term translations in existing wiki content (see [Backfilling best practice](#backfilling-translations-best-practice)) |
 | `p4-lint.md` | `/lint` | Full quarterly health check — all tasks above plus a written report to `wiki/maintenance/` |
 | `p5-slides.md` | `/slides` | Generate a Marp slide deck on a topic from wiki content |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
 | `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, templates) to the companion public repo and suggest a commit message. Not needed if you are a user who cloned this repo. |
 
+### Backfilling translations (best practice)
+
+The patient is a native Traditional Chinese reader, so clinical vocabulary is
+glossed inline (`atherosclerosis (動脈粥狀硬化)`). The rules for *what* to translate
+live in `CLAUDE.md` (single source of truth); this note covers *how to scope* a
+backfill pass over already-existing articles.
+
+- **Prefer domain-sized batches, not file-by-file.** Pass a whole domain/MOC as the
+  scope (e.g. `/translation-backfill moc-imaging-finding`) rather than one concept
+  at a time. A MOC is used as a **manifest**: the workflow expands its `[[links]]`
+  into the member concept and summary files, runs the checker over the whole set,
+  and edits each. Batching keeps the same term translated consistently across
+  sibling files (the glossary is loaded once and reused), and syncs `wiki/index.md`
+  and the MOC prose in the same pass.
+- **A MOC scope does not recurse outward.** Only the concept/summary members listed
+  in that MOC are pulled in. A `[[link]]` pointing to an article in a *different*
+  domain is not followed — that article is covered when you run its own domain.
+- **Order by glossary coverage.** Do domains where the glossary is already warm
+  first (cleaner passes, fewer new guesses), then move to sparser domains.
+- **The checkers are a floor, not a ceiling.** `scripts/check-bilingual-terms.py`
+  only flags terms already in the glossary dictionary — a missing first-mention
+  translation, or a `(2nd)` suffix when a term recurs within one counting unit
+  (the innermost heading section; for `wiki/index.md` a Compilation Summary
+  paragraph or a `## {file}.md` entry block) but carries fewer than the two
+  translations the policy requires (`[[backlinks]]` never count as occurrences;
+  query files are exempt from this within-unit rule). Meanwhile
+  `scripts/extract-term-candidates.py` surfaces pattern-detectable candidates
+  (acronyms and `Phrase (ACRONYM)` definitions) that are *not* yet in the glossary
+  — but neither can catch lowercase multi-word terms. The edit itself runs a
+  **two-pass find**: Pass A enumerates every candidate (from the extractor worklist
+  plus terms only a human/LLM reading the prose would notice), Pass B dispositions
+  each one. Finish with a whole-file gate — rerun `check-bilingual-terms.py` plus a
+  `--git-diff` QA pass, and `check-medication-first-mentions.py` and
+  `check-glossary-delta.py` on the edited files.
+- **Every clinical term is translated inline; glossary additions are selective.**
+  These are two separate actions when the agent meets a new term. It is always
+  glossed inline (`atherosclerosis (動脈粥狀硬化)`). It is added to
+  `memory/medical-term-translations.md` only when it is *standalone and reusable*
+  (analyte/lab names, anatomy, pathology, procedures, enzymes, abbreviation full
+  forms, ratio names) per the "What belongs in the glossary" criterion in
+  `CLAUDE.md`; a one-off phrase tied to a single sentence gets its inline Chinese
+  and nothing more. If unsure of the correct Taiwan wording, add it for later
+  review rather than guessing. This is *why* the checker is only a floor — the
+  glossary deliberately does not contain every translatable phrase.
+- **Sub-batch large MOCs.** Files are translated one-by-one, and a single pass stays
+  reliable only up to ~8–12 files before the context window fills. The big MOCs
+  (`moc-cardiology` ~38, `moc-screening` ~29, `moc-metabolic` ~27, `moc-lipid` ~23,
+  `moc-imaging-finding` ~20) should be split into 3–4 passes of ~10 files, each with
+  its own `--git-diff` QA and commit so it is self-contained and resumable. MOCs with
+  ≤ ~10 members are fine to do whole in one pass.
+- **Scoping a sub-batch — three ways, no need to hand-list paths.** The scope after
+  `/translation-backfill` is free text:
+  - explicit paths — `/translation-backfill wiki/concepts/a.md wiki/concepts/b.md …`
+  - a description — `/translation-backfill first 10 concept files in moc-cardiology`
+  - by suspect count — `/translation-backfill moc-cardiology — do the ~10 files with
+    the most bilingual gaps first` (the checker ranks members; worst offenders first)
+
+  However the scope is expressed, the resolved file list is reported for approval
+  before any file is edited.
+
 ## Getting Started
+
+### Claude Code
 
 1. Open a terminal in this directory and start Claude Code:
    ```
@@ -70,11 +134,54 @@ This project runs in **Claude Code**. Workflows are invoked as slash commands �
 6. For a conversational session with follow-up questions:
    - Run `/session-qa your question` — the session starts automatically on the first question.
    - Keep asking follow-ups with `/session-qa your next question`; each turn appends a compact summary to `wiki/sessions/log.md` (read for context on the next turn) and the full answer to `wiki/sessions/current.md` (used only when the session closes).
-   - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives both session files to `wiki/sessions/archive/` (as `YYYY-MM-DD.md` + `YYYY-MM-DD-log.md`), and removes both `current.md` and `log.md`.
+   - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives both session files to `wiki/sessions/archive/` (as `YYYY-MM-DD-{topic-slug}.md` + `YYYY-MM-DD-{topic-slug}-log.md`), and removes both `current.md` and `log.md`.
 7. Run `/deep-check` monthly for content quality (thin articles, missing aliases, coverage gaps).
 8. Run `/triage-queries` as needed to move misplaced files out of `wiki/queries/` root.
 9. Run `/lint` quarterly for a full health check with a written maintenance report.
 10. Use `/slides` to generate a Marp presentation on any topic covered in the wiki.
+
+### Codex
+
+Codex can work in the same repository using `AGENTS.md`, which points it to the
+shared conventions in `CLAUDE.md`, shared memory in `memory/`, and workflow
+prompts in `prompts/`.
+
+Codex does not use the Claude Code slash-command wrappers in `.claude/commands/`
+directly. To run the same workflow in Codex, ask it to read and execute the
+corresponding prompt file, for example:
+
+```
+Read and execute prompts/p2-incremental-ingest.md
+```
+
+Reusable workflows are also available as repo-scoped Codex skills with names
+matching the Claude slash commands:
+
+| Claude Code | Codex |
+|-------------|-------|
+| `/ingest-first` | `$ingest-first` |
+| `/ingest-increm` | `$ingest-increm` |
+| `/post-ingest` | `$post-ingest` |
+| `/qa` | `$qa` |
+| `/session-qa` | `$session-qa` |
+| `/session-close` | `$session-close` |
+| `/session-reopen` | `$session-reopen` |
+| `/contradiction-check` | `$contradiction-check` |
+| `/deep-check` | `$deep-check` |
+| `/triage-queries` | `$triage-queries` |
+| `/translation-backfill` | `$translation-backfill` |
+| `/lint` | `$lint` |
+| `/slides` | `$slides` |
+| `/synthesis` | `$synthesis` |
+| `/sync-to-public` | `$sync-to-public` |
+| `/commit-push` | `$commit-push-codex` |
+
+`$commit-push-codex` mirrors `/commit-push` but uses a Codex-specific
+`Co-Authored-By: Codex <noreply@openai.com>` trailer.
+
+All durable project changes should stay in the shared repo paths (`wiki/`,
+`prompts/`, `scripts/`, `memory/`) so switching between Claude Code and Codex
+keeps changes synchronized through git.
 
 ## Conventions
 
@@ -119,10 +226,19 @@ To put this folder under version control:
    ```
    git init
    ```
-2. Create a `.gitignore` to exclude files you don't want tracked (optional but recommended):
+2. Create a `.gitignore` to exclude files you don't want tracked (optional but recommended). This repo's `.gitignore` covers OS, Python, and Obsidian cruft:
    ```
-   echo "wiki/sessions/current.md" > .gitignore
-   echo "wiki/sessions/log.md" >> .gitignore
+   # macOS
+   .DS_Store
+   .AppleDouble
+   .LSOverride
+
+   # Python
+   __pycache__/
+   *.pyc
+
+   # Obsidian
+   .obsidian/
    ```
 3. Stage all files and make the initial commit:
    ```

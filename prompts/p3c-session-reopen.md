@@ -8,16 +8,24 @@ The user wants to reopen a previously closed session. Follow these steps:
 
 2. List all files in wiki/sessions/archive/ that do NOT end in
    -log.md (excluding .gitkeep). For each file, read only its
-   frontmatter to extract the session-start date, and grep the file
-   for "## Turn" to count turns without reading it in full.
-   Display a numbered list newest-first:
+   frontmatter to extract the session-start date and the `topic:`
+   field, and grep the file for "## Turn" to count turns without
+   reading it in full.
 
-     [1] 2026-05-21.md    — started 2026-05-21  (N turns)
-     [2] 2026-05-21-2.md  — started 2026-05-21  (N turns)
+   For older archives with no `topic:` field, fall back to the topic
+   words in the filename (the part after the date), or "—" if none.
+
+   Display a numbered list newest-first showing the topic, date, and
+   turn count. Do NOT also print the filename — its date duplicates the
+   date column. Keep an internal number → filename mapping for step 4:
+
+     [1] Liver health Q&A         — 2026-07-07  (5 turns)
+     [2] QTc & Holter follow-up   — 2026-07-04  (1 turn)
      ...
 
 3. Ask the user which session they want to reopen. Wait for their
-   response before continuing.
+   response before continuing. Resolve their choice back to the archive
+   filename using the mapping from step 2.
 
 4. Restore both session files:
 

@@ -73,6 +73,16 @@ Follow these steps to answer it:
    and the wiki articles. You may refer to earlier turns naturally
    (e.g. "as we discussed…") since you have the full session in context.
 
+   As you write, apply the Traditional Chinese Medical Terms policy in
+   CLAUDE.md (single source of truth) to the answer prose — reuse the
+   `memory/medical-term-translations.md` glossary wording, follow the
+   query-file exception for the aggressive repeat rules, and use the
+   `generic (Brand, Taiwan name)` medication first-mention format. This
+   keeps the transient session text mostly translated so the checker pass
+   at session-close (p3b) is a verification-and-patch step, not a rewrite.
+   Do not run the checker scripts here — current.md is transient and all
+   verification is deferred to session-close.
+
 6. Append to both session files.
 
    To wiki/sessions/current.md (full record):

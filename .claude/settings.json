@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 scripts/check-bilingual-terms.py *)",
+      "Bash(python3 scripts/check-medication-first-mentions.py *)",
+      "Bash(python3 scripts/check-glossary-delta.py *)",
+      "Bash(python3 scripts/extract-term-candidates.py *)",
+      "Bash(python3 scripts/tag-index.py *)",
+      "Bash(python3 scripts/connections-index.py *)",
+      "Bash(python3 scripts/detect-missing-thin.py *)",
+      "Bash(bash scripts/search-index.sh:*)",
+      "Bash(npx --yes @marp-team/marp-cli@latest:*)"
+    ]
+  }
+}
