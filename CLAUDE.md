@@ -113,8 +113,8 @@ their own translation rules, only point here.
   unless repeating the brand/Taiwan name materially improves clarity.
 - Keep `#` titles, frontmatter titles, filenames, and Obsidian backlinks in
   English only; do not add brand/Taiwan-name parentheticals there.
-- Examples: `bisoprolol (Concor, 康肯錠)`, `clonazepam (Rivotril, 利福全)`,
-  `trazodone (Trittico, 美舒鬱)`.
+- Examples: `amlodipine (Norvasc, 脈優)`, `atorvastatin (Lipitor, 立普妥)`,
+  `alprazolam (Xanax, 贊安諾)`.
 
 ### Abbreviations
 - A term and its abbreviation are the **same term**. Whether an article uses only
