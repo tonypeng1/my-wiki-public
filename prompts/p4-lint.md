@@ -108,3 +108,23 @@ checks in order:
 10. Using the in-memory wiki/index.md (already updated with any new MOC
     entries in step 6), append the health check report entry and write
     wiki/index.md once.
+
+11. BILINGUAL QA
+    Every run of this workflow edits MOC files, wiki/home.md, and
+    wiki/index.md, and step 2 may create or expand concept articles — all
+    of which can introduce English clinical terms without their Traditional
+    Chinese translations. Run this LAST, after every edit above is written,
+    so the diff it inspects is complete:
+    Run: python3 scripts/check-bilingual-terms.py --git-diff
+    With no path arguments this covers all main content (concepts,
+    summaries, MOCs, wiki/index.md, wiki/home.md); --git-diff bounds the
+    output to the lines this run changed and scans any new/untracked file
+    in full. This follows the Traditional Chinese Medical Terms policy in
+    CLAUDE.md.
+
+    Treat the output as a heuristic suspect list — some suspects are known
+    false positives (see memory/reference-bilingual-checker-behavior.md for
+    the recurring patterns). Patch real misses in the files this workflow
+    touched, editing only those files, then rerun until no unreviewed
+    high-confidence suspects remain. Append a one-line Bilingual QA result
+    (terms patched, or "clean") to the health check report from step 9.

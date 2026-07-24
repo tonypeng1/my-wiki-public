@@ -45,6 +45,14 @@ source documents added to raw/.
         `extract-term-candidates.py`, add the terms it cannot detect,
         disposition each) before finishing the concept; do not stop after the
         first term in a paragraph.
+      - Backlink targets must resolve to a real file. When you reference a
+        clinical **domain** (a canonical domain tag such as `hepatic`,
+        `musculoskeletal`, `cardiology`), link to that domain's MOC —
+        `[[moc-<domain>]]`, never the bare `[[<domain>]]`, which matches no
+        file and leaves a dangling link. Every `[[name]]` you write — in
+        concept prose, the Connections section, and the summary Backlinks
+        section — must match an existing file basename (a concept, summary,
+        MOC, or query file); never link a bare domain or tag name.
    d. Use only canonical tags (see CLAUDE.md). If no existing tag fits,
       follow the "Adding a new canonical tag" procedure in CLAUDE.md
       before using it in any file.

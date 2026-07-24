@@ -28,7 +28,7 @@ wiki/
     current.md    → active session full Q&A log (deleted on close)
     log.md        → compact session summary, one entry per turn (deleted on close)
     archive/      → closed sessions saved as YYYY-MM-DD-{topic-slug}.md + YYYY-MM-DD-{topic-slug}-log.md
-scripts/          → automation scripts (Python pre-filters for lint prompts, claim extractor for the contradiction check, bilingual/glossary/medication checkers, term-candidate extractor, search and sync helpers)
+scripts/          → automation scripts (Python pre-filters for lint prompts, claim extractor for the contradiction check, bilingual/glossary/medication/dangling-link checkers, term-candidate extractor, search and sync helpers)
 memory/           → persistent facts and corrections used by Claude/Codex
 .claude/
   commands/       → slash command definitions that power the workflows
@@ -136,8 +136,9 @@ holds answers replaced by a newer, more complete one.
 |---|:--:|:--:|:--:|:--:|
 | Tag canonicalization | ✅ | — | — | ✅ |
 | Missing backlinks | ✅ | — | — | ✅ |
+| Dangling backlink check | ✅ | — | — | — |
 | MOC freshness + `home.md` sync | ✅ | — | — | ✅ |
-| Bilingual mirror QA | ✅ | — | — | — |
+| Bilingual QA | ✅ | — | — | ✅ |
 | Numeric contradictions | — | ✅ | — | — |
 | Missing / thin concepts | — | — | ✅ | ✅ |
 | Missing aliases | — | — | ✅ | ✅ |
@@ -149,11 +150,11 @@ Read the columns as cadence: `/post-ingest` after **every** `/ingest-increm` (ne
 arrive with unnormalized tags, no backlinks, and absent from their MOC); `/deep-check`
 monthly; `/contradiction-check` occasionally; `/lint` quarterly.
 
-Two gaps are deliberate but worth knowing. `/lint` covers everything `/post-ingest` and
-`/deep-check` do **except** the bilingual mirror QA — even though it writes to MOCs,
-`index.md`, and `home.md` more than `/post-ingest` does. And `/contradiction-check`
-sits outside `/lint` entirely, so running only `/lint` never checks whether values
-agree across articles.
+Two things are worth knowing. `/contradiction-check` sits outside `/lint` entirely, so
+running only `/lint` never checks whether values agree across articles. And the dangling
+backlink check is `/post-ingest`-only — it runs right after ingest, where new links are
+introduced; `/lint` still surfaces the same unresolved targets indirectly, as "missing
+concepts" in its thin/missing pass.
 
 ### How the contradiction check works
 
@@ -355,6 +356,7 @@ keeps changes synchronized through git.
 ## Conventions
 
 - All cross-references use Obsidian-style backlinks: `[[article-name]]` (filename without `.md`).
+- Every `[[link]]` must resolve to a real file; domain references point to the domain's MOC (`[[moc-<domain>]]`), never a bare `[[<domain>]]`.
 - Article formats (concept, summary, query, MOC) are defined in `CLAUDE.md` (auto-loaded by Claude Code; also human-readable).
 - Never edit files in `raw/` — they are the source of truth.
 - `wiki/index.md` is the entry point for browsing all content.

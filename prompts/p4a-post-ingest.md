@@ -57,4 +57,24 @@ backlinks, and MOCs consistent with newly added content.
    by this workflow, and rerun until no unreviewed high-confidence suspects
    remain.
 
-5. Report a brief summary of everything changed.
+5. DANGLING BACKLINK CHECK
+   Newly ingested content, and any backlinks added in steps 2-3, can introduce
+   `[[links]]` whose target has no file. Run:
+   `python3 scripts/check-dangling-links.py --git-diff`
+   With no path arguments this scans all authored content (concepts, summaries,
+   MOCs, queries, wiki/index.md, wiki/home.md); --git-diff bounds it to the
+   lines this ingest changed and scans any new/untracked file in full. A link
+   is dangling when its target basename matches no .md file anywhere under
+   wiki/ (Obsidian resolves `[[name]]` by basename across the vault, so
+   concepts, summaries, MOCs, and query files are all valid targets — this is
+   why the checker clears `[[moc-*]]` and query links that detect-missing-thin
+   would false-flag).
+   Fix each dangling link in the file this workflow touched:
+   - a reference to a clinical domain → repoint to that domain's MOC,
+     `[[moc-<domain>]]` (e.g. `[[hepatic]]` → `[[moc-hepatic]]`);
+   - a typo or wrong target → correct the target;
+   - a genuine concept that does not exist yet → leave it, and let the monthly
+     `/deep-check` create it (do NOT create a stub here).
+   Rerun until no dangling links remain on changed lines.
+
+6. Report a brief summary of everything changed.
