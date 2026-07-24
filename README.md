@@ -272,12 +272,14 @@ backfill pass over already-existing articles.
 | Requirement | Needed for | Notes |
 |---|---|---|
 | **Claude Code** or **Codex** | every workflow | The prompts are the program; the agent executes them. |
-| **Python 3.9+** | `/post-ingest`, `/contradiction-check`, `/deep-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers are standard-library only — no `pip install` step. 3.9 is the floor (built-in generic annotations). |
+| **Python 3.9+** | `/ingest-first`, `/ingest-increm`, `/post-ingest`, `/session-close`, `/contradiction-check`, `/deep-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers are standard-library only — no `pip install` step. 3.9 is the floor (built-in generic annotations). |
 | **Node.js** | `/slides` only | Decks render via `npx --yes @marp-team/marp-cli@latest`. Without Node, every other workflow still works. |
 | **Obsidian** | optional | For browsing the vault and following `[[backlinks]]`. No workflow depends on it. |
 
-Ingest, `/qa`, and the session workflows need only the agent — Python is required
-once you start running the maintenance and translation checkers.
+`/qa`, `/session-qa`, `/session-reopen`, `/triage-queries`, and `/synthesis` need only the
+agent. Ingest and `/session-close` invoke the Python translation/QA checkers, as do the
+maintenance passes (`/post-ingest`, `/contradiction-check`, `/deep-check`, `/lint`,
+`/translation-backfill`).
 
 To confirm the Python side on a fresh clone:
 
@@ -365,7 +367,7 @@ keeps changes synchronized through git.
 
 All concept and summary files use a **closed set of 24 canonical tags**. New tags require explicit justification (no existing tag fits, 2+ articles would use it).
 
-**Clinical domain tags** — each has a corresponding MOC file in `wiki/mocs/`:
+**Clinical domain tags** — a MOC (`wiki/mocs/moc-{tag}.md`) is created once **3+ articles** share the tag. `biomarker` is the deliberate exception — it spans every domain, so it has no dedicated MOC. Tags still below the 3-article threshold have no MOC yet and are tracked in `home.md`'s "Tags Without a MOC" table:
 
 | Group | Tags |
 |---|---|
@@ -377,7 +379,7 @@ All concept and summary files use a **closed set of 24 canonical tags**. New tag
 | Integumentary & sleep | `dermatology`, `sleep-medicine` |
 | Sexual health | `sexual-health` |
 
-**Cross-cutting tags** (no dedicated MOC):
+**Cross-cutting tags** — span multiple domains but still earn a MOC at the same 3+ threshold (all five currently have one):
 `screening` · `imaging-finding` · `clinical-finding` · `medication` · `procedure`
 
 **Imaging modality tags** (summaries only, used alongside `imaging-finding`):
@@ -411,18 +413,23 @@ To put this folder under version control:
    # Obsidian
    .obsidian/
    ```
-3. Stage all files and make the initial commit:
+3. Create a `.gitattributes` to normalize line endings, so files aren't flagged as "modified" just because two platforms (e.g. macOS and a mobile Obsidian Git client) disagree on line endings — a common cause of pulls stalling on the mobile side:
+   ```
+   * text=auto eol=lf
+   ```
+   (This repo's `.gitattributes` also marks common binary assets — images, PDFs, zips — as `binary` so they're never EOL-converted.)
+4. Stage all files and make the initial commit:
    ```
    git add .
    git commit -m "Initial commit"
    ```
-4. To back it up to a remote (e.g. GitHub), create a new repository on GitHub, then:
+5. To back it up to a remote (e.g. GitHub), create a new repository on GitHub, then:
    ```
    git remote add origin https://github.com/<your-username>/<your-repo>.git
    git branch -M main
    git push -u origin main
    ```
-5. After that, commit changes as usual:
+6. After that, commit changes as usual:
    ```
    git add .
    git commit -m "your message"

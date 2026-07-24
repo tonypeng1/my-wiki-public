@@ -143,7 +143,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Representative rhythm strip / representative rhythm strips: 代表性節律條帶
 - Resting 12-lead ECG / EKG: 靜態十二導程心電圖
 - Sinoatrial node / SA node: 竇房結
-- Torsades de pointes / TdP: 扭轉型心室頻脈
+- Torsades de pointes / TdP: 尖端扭轉型心室頻脈
 - Sinus bradycardia: 竇性心搏過緩
 - Sinus pause: 竇性暫停
 - Sinus rhythm: 竇性心律
@@ -227,10 +227,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Central adiposity: 中心性肥胖
 - Chloride / Cl: 氯
 - Cholestasis: 膽汁鬱積
-- Cholestasis: 膽汁鬱積
 - Cholesterol biosynthesis: 膽固醇生合成
 - Cholesterol fraction / cholesterol fractions: 膽固醇分率
-- Cirrhosis: 肝硬化
 - Cirrhosis: 肝硬化
 - Common bile duct / CBD: 總膽管
 - Comprehensive metabolic panel / CMP: 完整代謝功能套組
@@ -265,7 +263,6 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Fatty liver: 脂肪肝
 - Fatty pancreas: 脂肪胰
 - Fetal liver: 胎兒肝臟
-- Fibrosis: 纖維化
 - Fibrosis: 纖維化
 - Focal fat: 局部脂肪
 - Focal nodular hyperplasia / FNH: 局灶性結節性增生
@@ -305,7 +302,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hepatic glucose output: 肝臟葡萄糖輸出
 - Hepatic insult: 肝臟損傷
 - Hepatic lesion: 肝病灶
-- Hepatic lobe / right hepatic lobe: 肝葉 / 肝右葉
+- Hepatic lobe: 肝葉
 - Hepatic nodule / liver nodule: 肝結節
 - Hepatic release: 肝臟釋放
 - Hepatic segment (S1–S8): 肝段
@@ -327,7 +324,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hyperglycemia: 高血糖
 - Hyperlipidemia: 高血脂
 - Hyperthyroidism: 甲狀腺機能亢進
-- Hypodensity / hypodense lesion: 低密度病灶
+- Hypodense lesion: 低密度病灶
+- Hypodensity: 低密度
 - Hypoglycemia: 低血糖
 - Immunoglobulin / immunoglobulins: 免疫球蛋白
 - Impaired fasting glucose / IFG: 空腹血糖異常
@@ -351,6 +349,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Lipid profile: 血脂分析
 - Lipoprotein: 脂蛋白
 - Lipoprotein sub-fraction: 脂蛋白分率
+- Left hepatic lobe: 肝左葉
 - Liver and biliary enzyme: 肝膽酵素
 - Liver enzyme: 肝臟酵素
 - Liver function: 肝功能
@@ -366,6 +365,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Macrovascular complication: 大血管併發症
 - Magnetic resonance imaging / MRI: 磁振造影
 - Metabolic dysfunction-associated steatotic liver disease / MASLD: 代謝功能障礙相關脂肪性肝病
+- Metabolic dysfunction-associated steatohepatitis / MASH: 代謝功能障礙相關脂肪性肝炎
 - Metabolic improvement: 代謝改善
 - Metabolic nadir: 代謝低點
 - Metabolic panel: 代謝功能套組
@@ -380,6 +380,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Neurologist: 神經科醫師
 - Neuropathy: 神經病變
 - Non-alcoholic fatty liver disease / NAFLD: 非酒精性脂肪肝病
+- Non-alcoholic steatohepatitis / NASH: 非酒精性脂肪性肝炎
 - Non-diabetic: 非糖尿病
 - Non-HDL cholesterol / non-HDL-C: 非高密度脂蛋白膽固醇
 - Non-invasive: 非侵入性
@@ -413,7 +414,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Pulmonary nodule: 肺結節
 - Random glucose: 隨機血糖
 - Rate-limiting enzyme: 限速酶
-- Reactive airway disease: 氣道高反應性疾病
+- Reactive airway disease: 反應性氣道疾病
 - Rebound effect: 反彈效應
 - Rebound tachycardia: 反彈性心搏過速
 - Red blood cell: 紅血球
@@ -424,6 +425,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Renal impairment: 腎功能不全
 - Retinopathy: 視網膜病變
 - Rhabdomyolysis: 橫紋肌溶解
+- Right hepatic lobe: 右肝葉
 - Risk stratification: 風險分層
 - Risk factor / risk factors: 危險因子
 - Sedation: 鎮靜
@@ -433,8 +435,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Sodium / Na: 鈉
 - Spleen: 脾臟
 - Stabilization: 穩定化
-- Statin: 史達汀
-- Steatohepatitis / NASH / MASH: 脂肪性肝炎
+- Statin: 史他汀類藥物
+- Steatohepatitis: 脂肪性肝炎
 - Sulfonylurea: 磺醯脲類
 - Surveillance marker: 監測指標
 - Synthetic function: 合成功能
@@ -444,7 +446,6 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Total cholesterol: 總膽固醇
 - Total protein / TP: 總蛋白
 - Transaminase: 轉胺酶
-- Transfusion: 輸血
 - Triglycerides / TG: 三酸甘油脂
 - Tumor marker: 腫瘤標記
 - Type 1 diabetes: 第一型糖尿病
@@ -486,7 +487,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Bacteriuria: 菌尿
 - Basophil: 嗜鹼性球
 - Benign prostatic hyperplasia / BPH: 良性攝護腺肥大
-- Bicarbonate / CO2: 碳酸氫鹽
+- Bicarbonate / HCO3-: 碳酸氫根
 - Bladder: 膀胱
 - Bleeding risk: 出血風險
 - Blood cell count / blood cell counts: 血球計數
@@ -495,6 +496,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Bone marrow: 骨髓
 - BUN/Creatinine ratio / BUN/creat ratio: 血尿素氮／肌酸酐比值
 - Cancer screening: 癌症篩檢
+- Carbon dioxide / CO2 / total CO2: 二氧化碳 / 總二氧化碳
 - Carcinoembryonic antigen / CEA: 癌胚抗原
 - Cell lineage / cell lineages: 細胞系譜
 - Casts: 圓柱體
@@ -526,7 +528,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Eosinophilia: 嗜酸性球增多
 - Epithelial cell / epithelial cells / epithelium: 上皮細胞
 - Epithelial tumor / epithelial tumors: 上皮性腫瘤
-- Equivocal: 臨界值
+- Equivocal: 結果不明確
 - Erythrocyte: 紅血球
 - Enzyme / enzymes: 酵素
 - Estimated glomerular filtration rate / eGFR: 估算腎絲球過濾率
@@ -714,6 +716,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 
 - Digestive tract: 消化道
 - Lower gastrointestinal / lower GI: 下消化道
+- Gastrointestinal tract / GI tract: 胃腸道
 - Endoscopic procedure: 內視鏡檢查
 - Colonoscopy: 大腸鏡檢查
 - Surveillance colonoscopy: 追蹤性大腸鏡檢查
@@ -726,14 +729,18 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Adenomatous polyp: 腺瘤性息肉
 - Colorectal cancer / CRC: 結直腸癌
 - Colon: 結腸
+- Ileum: 迴腸
 - Cecum: 盲腸
 - Transverse colon: 橫結腸
 - Sigmoid colon: 乙狀結腸
 - Descending colon: 降結腸
+- Rectum: 直腸
 - Mucosa: 黏膜
 - Colonic mucosa: 結腸黏膜
 - Glandular epithelium: 腺體上皮
 - Surgical pathology: 外科病理
+- Pathology: 病理
+- Pathologist: 病理科醫師
 - Pathology report: 病理報告
 - Specimen / specimens: 檢體
 - Histology: 組織學
@@ -747,9 +754,10 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Invasive carcinoma: 浸潤性癌
 - Malignancy: 惡性腫瘤
 - Inflammatory polyp: 發炎性息肉
-- Inflammatory bowel disease / IBD: 炎症性腸道疾病
+- Inflammatory bowel disease / IBD: 發炎性腸道疾病
 - Crohn's disease: 克隆氏症
 - Ulcerative colitis / UC: 潰瘍性結腸炎
+- Transmural: 穿壁性
 - Benign lymphoid aggregate / benign lymphoid aggregates: 良性淋巴組織聚集
 - Neutrophilic infiltrate: 嗜中性球浸潤
 - Crypt abscess: 腺窩膿瘍
@@ -767,7 +775,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Additive sedation: 加成鎮靜
 - Adenosine: 腺苷
 - APAP / auto-adjusting positive airway pressure: 自動調壓正壓呼吸治療
-- Airway tone / upper-airway tone: 上呼吸道張力
+- Airway tone: 氣道張力
 - Apnea-Hypopnea Index / AHI: 呼吸中止低通氣指數
 - Apnea: 呼吸中止
 - Arousal / arousals: 覺醒
@@ -785,7 +793,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Behavioral sleep medicine therapist: 行為睡眠醫學治療師
 - Benzodiazepine / BZD: 苯二氮平類
 - Bidirectional loop / bidirectional feedback loop: 雙向回饋迴路
-- BiPAP / bilevel positive airway pressure: 雙相氣道正壓
+- BiPAP / bilevel positive airway pressure: 雙水平氣道正壓通氣
 - Body temperature: 體溫
 - Bright light: 明亮光照
 - Bruxism: 磨牙
@@ -813,7 +821,6 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - CPAP / continuous positive airway pressure: 連續氣道正壓
 - Deep NREM sleep: 深層非快速動眼睡眠
 - Deep sleep: 深層睡眠
-- Diagnostic weight: 診斷權重
 - Dim light melatonin onset / DLMO: 昏暗光線下褪黑激素起始時間
 - Electroencephalography / EEG: 腦電圖
 - Electromyography / EMG: 肌電圖
@@ -848,7 +855,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Mandibular advancement device / MAD: 下顎前移裝置
 - Mechanism: 機轉
 - Melatonin: 褪黑激素
-- Melanopsin: 黑視素
+- Melanopsin: 黑視蛋白
 - Memory consolidation: 記憶鞏固
 - Metabolic autonomic dysregulation: 代謝性自律神經失調
 - Metabolic management: 代謝管理
@@ -872,7 +879,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Oxygen desaturation index / ODI: 血氧下降指數
 - Oxygen nadir: 最低血氧
 - Oxygen saturation / SpO2: 血氧飽和度
-- Oxygenation: 血氧
+- Oxygenation: 氧合
 - Parasomnia: 異睡症
 - Peripheral arterial tone: 周邊動脈張力
 - Periodicity: 週期性指標
@@ -924,7 +931,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Sleep quality index / SQI: 睡眠品質指數
 - Sleep quality score: 睡眠品質分數
 - Sleep restriction therapy / SRT: 睡眠限制療法
-- Sleep stage / sleep stages: 睡眠分期
+- Sleep stage / sleep stages: 睡眠階段
 - Sleep-disordered breathing: 睡眠呼吸障礙
 - Sleep staging: 睡眠分期
 - Sleep study / sleep studies: 睡眠檢查
@@ -948,6 +955,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Tricyclic antidepressant / TCA: 三環抗憂鬱劑
 - Unstable sleep: 不穩定睡眠
 - Upper airway: 上呼吸道
+- Upper-airway tone: 上呼吸道張力
 - Uvulopalatopharyngoplasty / UPPP: 懸雍垂顎咽整形術
 - Wake after sleep onset / WASO: 入睡後清醒時間
 - Wake time: 起床時間
@@ -965,12 +973,14 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Anterior cerebral artery: 前大腦動脈
 - Anterior disc displacement without reduction: 關節盤前移位無復位
 - Anterior disc displacement: 關節盤前移位
+- Anterolisthesis: 椎體前滑脫
 - Antiemetic / antiemetics: 止吐藥
 - Antidepressant dose / antidepressant dosing: 抗憂鬱劑量
 - Antihistamine / antihistamines: 抗組織胺
 - Anticonvulsant: 抗癲癇藥物
 - Anticonvulsant effect / anticonvulsant effects: 抗癲癇作用
-- Anxiolytic: 抗焦慮作用
+- Anxiolytic: 抗焦慮劑
+- Anxiolytic effect / anxiolytic effects: 抗焦慮作用
 - Arousal response: 覺醒反應
 - Arteriole / arterioles: 小動脈
 - Arthralgia: 關節痛
@@ -1007,7 +1017,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Daytime carryover sedation: 日間殘餘鎮靜
 - Degenerative disc disease: 退化性椎間盤疾病
 - Demyelination: 脫髓鞘
-- Denosumab: 地舒單抗
+- Denosumab: 地諾單抗
 - DEXA / dual-energy X-ray absorptiometry: 雙能量X光吸收測定法
 - Diabetic neuropathy: 糖尿病神經病變
 - Diffusion-weighted imaging / DWI: 擴散加權影像
@@ -1020,7 +1030,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Disc narrowing / disc space narrowing: 椎間盤狹窄
 - Disc repositioning surgery: 關節盤復位手術
 - Dry mouth: 口乾
-- Dysesthesia: 感覺異常
+- Dysesthesia: 不悅異常感
 - Dynamic study: 動態檢查
 - ENT / otolaryngology: 耳鼻喉科
 - Extracranial: 顱外
@@ -1061,7 +1071,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Joint / joints: 關節
 - Joint effusion: 關節積液
 - Lacunar infarction / lacunar infarct: 腔隙性梗塞
-- Lancinating pain: 電擊刺痛樣疼痛
+- Lancinating pain: 刺戳樣疼痛
 - Leukoaraiosis: 腦白質疏鬆
 - Limited mouth opening: 張口受限
 - Lithium: 鋰鹽
@@ -1110,7 +1120,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Oral appliance / oral appliances: 口腔裝置
 - Opioid / opioids: 鴉片類藥物
 - Orbit / orbits: 眼眶
-- Orthostasis: 姿勢性低血壓
+- Orthostasis: 姿勢性反應
 - Orthostatic hypotension: 姿勢性低血壓
 - Osteopenia: 骨質缺乏
 - Osteophyte / osteophytes / bone spur / bone spurs: 骨刺
@@ -1163,7 +1173,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Spine: 脊椎
 - Sub-antidepressant dose / sub-antidepressant doses: 低於抗憂鬱劑量
 - Superior cerebellar artery: 上小腦動脈
-- Spondylolisthesis / anterolisthesis: 椎體前滑脫
+- Spondylolisthesis: 椎體滑脫
 - Spontaneous remission: 自發性緩解
 - Synapse: 突觸
 - T-score: T值

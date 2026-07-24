@@ -1,0 +1,16 @@
+# Normalize line endings across platforms (macOS + iOS Obsidian).
+# Store everything as LF in the repo and check out LF everywhere, so files
+# are never marked "modified" just because two devices disagree on EOL.
+* text=auto eol=lf
+
+# Markdown is the wiki's content — always treat as text.
+*.md text eol=lf
+
+# Common binary assets: leave untouched (no EOL conversion, no diff churn).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary
+*.zip binary

@@ -127,6 +127,9 @@ sync_file ".claude/settings.json"
 sync_file "memory/medical-term-translations.md"
 # Keeps __pycache__/*.pyc out of the public repo now that .py files ship.
 sync_file ".gitignore"
+# Normalizes line endings (LF) in the public repo too, and keeps the README's
+# .gitattributes reference accurate there.
+sync_file ".gitattributes"
 
 check_orphan_root_docs
 
