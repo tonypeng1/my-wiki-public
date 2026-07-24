@@ -130,6 +130,8 @@ sync_file ".gitignore"
 # Normalizes line endings (LF) in the public repo too, and keeps the README's
 # .gitattributes reference accurate there.
 sync_file ".gitattributes"
+# README hero image (safe to publish: only the benign 'lipid-panel' node is legible).
+sync_file "docs/graph-view.png"
 
 check_orphan_root_docs
 
