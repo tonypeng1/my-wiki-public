@@ -17,10 +17,10 @@ Your task is to generate a Marp slide deck on the topic of:
    structure before writing the full deck.
 
 4. Write the complete Marp slide deck and save it to:
-   wiki/slides/{topic-name}-{YYYY-MM-DD}.md
+   wiki/deliverables/{topic-name}-{YYYY-MM-DD}.md
    where {YYYY-MM-DD} is today's date.
 
-   Read wiki/slides/_marp-template.md and copy its frontmatter exactly as the
+   Read wiki/deliverables/_marp-template.md and copy its frontmatter exactly as the
    opening of the file.
 
    Follow these slide guidelines:
@@ -33,4 +33,14 @@ Your task is to generate a Marp slide deck on the topic of:
    - Each slide should have a clear, short title
    - Keep text per slide under 60 words
 
-5. Add an entry for the slide deck to wiki/index.md.
+5. Render the deck to PDF alongside the markdown, so the deliverable is a
+   {topic-name}-{YYYY-MM-DD}.md + .pdf pair in wiki/deliverables/. Run:
+
+   npx --yes @marp-team/marp-cli@latest wiki/deliverables/{topic-name}-{YYYY-MM-DD}.md --allow-local-files --pdf -o wiki/deliverables/{topic-name}-{YYYY-MM-DD}.pdf
+
+   `--allow-local-files` is required for decks that embed images from
+   wiki/deliverables/img/. This step needs Node.js (see the README
+   prerequisites); if Node is unavailable and the render fails, report that
+   and leave the .md deck in place.
+
+6. Add an entry for the slide deck to wiki/index.md.

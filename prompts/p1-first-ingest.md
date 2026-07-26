@@ -28,10 +28,18 @@ For each file in raw/, do the following in order:
 4. For each key concept you extracted:
    a. Check if wiki/concepts/{concept-name}.md already exists.
    b. If it does not exist, create it following the concept
-      article format in CLAUDE.md.
+      article format in CLAUDE.md. If the concept is a medication,
+      it MUST carry the `brand` and `taiwan-brand-name` fields and
+      the Chinese brand name in `aliases` (see Medication concepts
+      in CLAUDE.md) — `check-medication-first-mentions.py`, the final
+      gate below, silently skips any medication concept missing them.
    c. If it already exists, read it and integrate new information
       without erasing existing content. If missing an `aliases`
-      field, add one.
+      or `cn-title` field, add one (see Frontmatter aliases and
+      `cn-title` in CLAUDE.md). Keep patient test-data values in a Markdown
+      table — one row per measurement, even a single value in a
+      one-row table — never a bulleted list (see Key Details in
+      CLAUDE.md).
    d. For every created or updated concept, add Traditional Chinese
       translations per the Traditional Chinese Medical Terms policy in CLAUDE.md,
       and add useful Chinese terms to `aliases`. Apply the same two-pass find as

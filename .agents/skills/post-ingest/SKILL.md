@@ -1,6 +1,6 @@
 ---
 name: post-ingest
-description: Run this repository's post-ingest housekeeping workflow after incremental ingest. Use when the user asks for post-ingest, post ingest, canonicalizing tags, backlink cleanup, MOC freshness, or home/index refresh after ingest.
+description: Run this repository's post-ingest housekeeping workflow after incremental ingest. Use when the user asks for post-ingest, post ingest, canonicalizing tags, canonical record format, frontmatter completeness (aliases, cn-title, medication brand fields), backlink cleanup for newly ingested concepts, MOC freshness, or home/index refresh after ingest.
 ---
 
 # Post Ingest

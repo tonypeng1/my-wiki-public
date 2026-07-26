@@ -1166,6 +1166,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Sinus CT / non-contrast sinus CT: 鼻竇電腦斷層
 - Sinusitis / paranasal sinusitis: 鼻竇炎
 - Skull base: 顱底
+- Sleep aid: 助眠劑
 - Small vessel disease / SVD: 小血管疾病
 - Sodium channel blocker: 鈉離子通道阻斷劑
 - Spinal dorsal horn: 脊髓背角
@@ -1235,3 +1236,4 @@ Add uncertain or source-specific translation questions here instead of guessing.
 
 - EBV-IgA (Epstein–Barr virus IgA, nasopharyngeal-carcinoma screening marker): proposed EB 病毒 IgA 抗體 — confirm Taiwan clinical wording before promoting to a glossary entry. Left in English inline in `moc-screening.md` for now.
 - CA19-9 (cancer antigen 19-9, pancreatic/GI tumor marker): commonly kept as the English code in Taiwan reports; proposed 醣類抗原 19-9 — confirm before promoting. Left in English inline in `moc-screening.md` for now.
+- General health panel (broad adult screening bundle, e.g. CPL-9329): proposed 健康檢查套組 (composed from confirmed 健康檢查 + 套組) — confirm preferred Taiwan wording (vs. 一般健康檢查/健檢套組) before promoting. Added only as a search `aliases` entry on `general-health-panel.md` for now, not used in inline prose.

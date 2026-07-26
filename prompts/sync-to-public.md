@@ -3,8 +3,10 @@ directory named `<repo-name>-public`. Both paths are derived by the script from
 its own location; nothing here is machine-specific.
 
 This workflow is script-driven. Run `bash scripts/sync-to-public.sh` and report its
-output — do not diff files yourself. This document records *what* the script mirrors
-and why, so the two repos stay functionally equivalent.
+output — do not diff files yourself. (`--dry-run` reports without copying;
+`--claude-md-reviewed` is part of the CLAUDE.md review flow below.) This document
+records *what* the script mirrors and why, so the two repos stay functionally
+equivalent.
 
 Maintainer-only: it runs in the private source repo and copies files out. Run from
 a clone of the public repo, the script says so and exits without doing anything.
@@ -24,16 +26,16 @@ Automation the prompts depend on:
   (.claude/settings.local.json is machine-local and never synced)
 
 Conventions and entry points:
-- CLAUDE.md
 - AGENTS.md
 - README.md
-- .gitignore
-- wiki/slides/_marp-template.md
+- .gitignore, .gitattributes
+- docs/graph-view.png (README hero image)
+- wiki/deliverables/_marp-template.md
 
 ## What is never synced
 
 - raw/ — source documents
-- wiki/ content: summaries/, concepts/, queries/, mocs/, slides/ (except the Marp
+- wiki/ content: summaries/, concepts/, queries/, mocs/, deliverables/ (except the Marp
   template), sessions/, maintenance/, index.md, processed.log. The public repo keeps
   empty .gitkeep placeholders for these directories; the script must never overwrite
   them with real content.
@@ -41,6 +43,38 @@ Conventions and entry points:
   project, and feedback memories stay private). The public repo keeps its own
   hand-written `memory/MEMORY.md` starter index; the script must never overwrite
   it with this repo's private one.
+- CLAUDE.md — the private copy documents conventions with the patient's real
+  medications and conditions as examples, and drifts back to them even after
+  cleanups. The public repo carries a hand-maintained copy instead: identical
+  conventions, fictional examples. See the review flow below.
+
+## The privacy gate
+
+Before copying anything, the script derives a denylist from the vault itself —
+medication generic names (basenames of medication-tagged concepts), their
+`brand`/`taiwan-brand-name` field values, and the patient's Chinese name from
+memory/patient-name.md — and scans every file it could ship, plus the two
+hand-maintained public files (CLAUDE.md, memory/MEMORY.md). Any hit blocks the
+entire sync with the file, line, and matched term.
+
+On a block: genericize the flagged line (or fix the file) and rerun. Never
+bypass the gate, and never "fix" a block by removing a term from the
+derivation. A brand name that is also a common English word is skipped
+automatically (with a notice) and stays covered by its generic name.
+
+## The CLAUDE.md review flow
+
+The script snapshots the private CLAUDE.md at each review
+(`.sync-claude-md-reviewed`, private, never synced). On every run it compares:
+
+- unchanged → nothing to do.
+- changed → it prints the cumulative diff since the last review. Present each
+  hunk to the user with a disposition: port as-is (pure convention change),
+  port genericized (a real rule illustrated with a real medication or
+  condition — the rule crosses, the example gets a fictional substitute), or
+  skip (patient-specific, or touches a section the public copy intentionally
+  lacks). Edit the public CLAUDE.md accordingly. Only after the user confirms
+  the port, rerun with `--claude-md-reviewed` to record it.
 
 ## Rules
 

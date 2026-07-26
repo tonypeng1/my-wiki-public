@@ -2,7 +2,7 @@
 
 An **AI-compiled personal health wiki** — raw lab results, imaging reports, and clinical notes go in; a cross-linked, bilingual medical knowledge base comes out, compiled and maintained entirely by AI prompts.
 
-The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17** clinical domains · 📄 **81** source documents · 💬 **23** saved Q&As · 🎞️ **9** slide decks · 🈶 bilingual (English · 繁體中文). The Obsidian graph view below shows the current state of the wiki. **A fresh clone starts empty and grows as you ingest your own documents.**
+The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17** clinical domains · 📄 **80** source documents · 💬 **19** saved Q&As · 🎞️ **9** slide decks · 🤝 **4** handoff docs · 🈶 bilingual (English · 繁體中文). The Obsidian graph view below shows the current state of the wiki. **A fresh clone starts empty and grows as you ingest your own documents.**
 
 <p align="center">
   <img src="docs/graph-view.png" alt="Obsidian graph view of the wiki" width="380">
@@ -41,13 +41,13 @@ The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️
 
 ## ✨ Overview
 
-Source documents in `raw/` — lab panels, imaging reports, clinical notes, medication records — are ingested and transformed into structured **concept articles**, **summaries**, **Q&A records**, and **slide decks**, all cross-linked with Obsidian-style `[[backlinks]]` and glossed inline with Traditional Chinese for clinical vocabulary.
+Source documents in `raw/` — lab panels, imaging reports, clinical notes, medication records — are ingested and transformed into structured **concept articles**, **summaries**, **Q&A records**, and **deliverables** (physician handoffs and Marp slide decks), all cross-linked with Obsidian-style `[[backlinks]]` and glossed inline with Traditional Chinese for clinical vocabulary.
 
 ```mermaid
 flowchart LR
     R["📄 raw/<br/>source documents"] --> S["🗂️ wiki/summaries/<br/>one per document"]
     S --> C["📚 wiki/concepts/<br/>cumulative articles"]
-    C --> O["🧭 navigation · 💬 queries · 🎞️ slides"]
+    C --> O["🧭 navigation · 💬 queries · 🎞️ deliverables"]
 ```
 
 Two file types, two jobs: a **summary** answers *"what did this report say?"* (frozen at its date); a **concept** answers *"what do we know about this now?"* (cumulative across every document that touches the topic). The [Deep Dive](#-deep-dive-how-it-works) explains the machinery behind that split.
@@ -57,13 +57,13 @@ Two file types, two jobs: a **summary** answers *"what did this report say?"* (f
 | Requirement | Needed for | Notes |
 |---|---|---|
 | **Claude Code** or **Codex** | every workflow | The prompts are the program; the agent executes them. |
-| **Python 3.9+** | `/ingest-first`, `/ingest-increm`, `/post-ingest`, `/session-close`, `/contradiction-check`, `/deep-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers are standard-library only — no `pip install` step. 3.9 is the floor (built-in generic annotations). |
+| **Python 3.9+** | `/ingest-first`, `/ingest-increm`, `/post-ingest`, `/session-close`, `/contradiction-check`, `/coverage-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers are standard-library only — no `pip install` step. 3.9 is the floor (built-in generic annotations). |
 | **Node.js** | `/slides` only | Decks render via `npx --yes @marp-team/marp-cli@latest`. Without Node, every other workflow still works. |
-| **Obsidian** | optional | For browsing the vault and following `[[backlinks]]`. No workflow depends on it. |
+| **Obsidian** | reading the vault | Recommended reading UI — graph view, `[[backlinks]]`, and search. No *authoring* workflow depends on it, but it's how the wiki is meant to be read. |
 
 `/qa`, `/session-qa`, `/session-reopen`, `/triage-queries`, and `/synthesis` need only the
 agent. Ingest and `/session-close` invoke the Python translation/QA checkers, as do the
-maintenance passes (`/post-ingest`, `/contradiction-check`, `/deep-check`, `/lint`,
+maintenance passes (`/post-ingest`, `/contradiction-check`, `/coverage-check`, `/lint`,
 `/translation-backfill`).
 
 To confirm the Python side on a fresh clone:
@@ -85,7 +85,7 @@ Using **Claude Code** (for Codex, see [Running in Codex](#-running-in-codex)):
    ```
 2. Drop source documents into `raw/`.
 3. Run `/ingest-first` to build the wiki from scratch, or `/ingest-increm` to add only new files.
-4. After each `/ingest-increm`, run `/post-ingest` to canonicalize tags, check backlinks, and refresh MOCs.
+4. `/ingest-increm` automatically runs `/post-ingest` afterward (whenever new files were added) to canonicalize tags, check record format, fill any missing frontmatter, check Connections on the concepts just touched, and add the new content to its MOCs — no separate step. Run `/post-ingest` on its own only to re-check after manual edits.
 5. Use `/qa` to ask a one-off question. The result is saved immediately to `wiki/queries/`.
 6. For a conversational session with follow-up questions:
    - Run `/session-qa your question` — the session starts automatically on the first question.
@@ -93,9 +93,9 @@ Using **Claude Code** (for Codex, see [Running in Codex](#-running-in-codex)):
    - When done, run `/session-close` — it saves substantive Q&A turns to `wiki/queries/`, archives both session files to `wiki/sessions/archive/` (as `YYYY-MM-DD-{topic-slug}.md` + `YYYY-MM-DD-{topic-slug}-log.md`), and removes both `current.md` and `log.md`.
 
 <details>
-<summary><b>Ongoing maintenance &amp; extras</b> — the periodic commands beyond your first run: monthly <code>/deep-check</code> for content quality, occasional <code>/contradiction-check</code> and <code>/triage-queries</code>, quarterly <code>/lint</code>, and <code>/slides</code> for presentations</summary>
+<summary><b>Ongoing maintenance &amp; extras</b> — the periodic commands beyond your first run: monthly <code>/coverage-check</code> for content quality plus the repo-wide structural passes, occasional <code>/contradiction-check</code> and <code>/triage-queries</code>, quarterly <code>/lint</code>, and <code>/slides</code> for presentations</summary>
 
-7. Run `/deep-check` monthly for content quality (thin articles, missing aliases, coverage gaps).
+7. Run `/coverage-check` monthly to find what the vault is missing — thin or missing articles, concept pairs that should link but don't, MOC and `home.md` drift, and new articles worth writing.
 8. Run `/contradiction-check` occasionally to catch numeric claims that drifted out of sync — it applies the unambiguous corrections itself and hands you a menu for the rest. Expect a diff; review it with `git diff` before committing.
 9. Run `/triage-queries` as needed to move misplaced files out of `wiki/queries/` root.
 10. Run `/lint` quarterly for a full health check with a written maintenance report.
@@ -113,20 +113,20 @@ This project runs in either **Claude Code** or **Codex**, depending on your pref
 | Prompt | Slash Command | Purpose |
 |--------|---------------|---------|
 | `p1-first-ingest.md` | `/ingest-first` | Compile the wiki from scratch using all files in `raw/` |
-| `p2-incremental-ingest.md` | `/ingest-increm` | Add only new files in `raw/` that haven't been processed yet |
+| `p2-incremental-ingest.md` | `/ingest-increm` | Add only new files in `raw/` that haven't been processed yet — automatically chains `/post-ingest` when new files were added |
 | `p3-qa.md` | `/qa` | Answer a one-off question and save the result directly to `wiki/queries/` |
 | `p3a-session-qa.md` | `/session-qa` | Ask a question inside a live session — auto-starts the session if none is active; full prior conversation is in context for each follow-up |
 | `p3b-session-close.md` | `/session-close` | End the session — saves worthy Q&A turns to `wiki/queries/`, archives the session log, and cleans up |
 | `p3c-session-reopen.md` | `/session-reopen` | Restore a closed session from archive back to `current.md` to continue it |
-| `p4a-post-ingest.md` | `/post-ingest` | Post-ingest housekeeping — canonicalize tags, check backlinks, refresh MOCs; run after every `/ingest-increm` |
-| `p4b-contradiction-check.md` | `/contradiction-check` | Compare numeric claims (values, dates, ranges, counts) across `wiki/concepts/` using `scripts/extract-claims.py`. **Edits files:** unambiguous staleness against a canonical table is corrected automatically; anything needing judgement is flagged with a menu of concrete options to pick from. Prose/status contradictions are out of scope — see [Deep Dive: the contradiction check](#-deep-dive-how-it-works) |
-| `p4c-deep-check.md` | `/deep-check` | Monthly content quality check — thin/missing articles, missing aliases, new article candidates |
+| `p4a-post-ingest.md` | `/post-ingest` | Post-ingest housekeeping, every step script-driven or bounded to what the ingest changed — canonicalize tags, convert any bullet-form measurement record into a canonical table (`scripts/detect-list-records.py`), fill missing frontmatter (`aliases`, `cn-title`, medication `brand`/`taiwan-brand-name`), check Connections on the concepts just touched, add new content to its MOCs and refresh `home.md` counts, then close its own diff with the same three translation checkers `/ingest-increm` runs (bilingual, glossary, medication format); runs automatically as the tail of `/ingest-increm`, or on its own after manual edits. The repo-wide passes are deliberately left to `/coverage-check` |
+| `p4b-contradiction-check.md` | `/contradiction-check` | Compare numeric claims (values, dates, ranges, counts) across `wiki/concepts/` using `scripts/extract-claims.py`, then medication and condition status using `scripts/extract-status-claims.py`. **Edits files:** unambiguous numeric staleness against a canonical table is corrected automatically; everything else — and *every* status finding — is flagged with a menu of concrete options to pick from. Level/severity wording, presence, and causal claims stay out of scope — see [Deep Dive: the contradiction check](#-deep-dive-how-it-works) |
+| `p4c-coverage-check.md` | `/coverage-check` | Monthly content quality and coverage check — the repo-wide passes whose cost does not shrink with a small ingest: thin/missing articles, a full missing-backlink review across all concepts, MOC and `home.md` reconciliation (every file against every MOC, recounted, `Tags Without a MOC` rebuilt), new article candidates, and a closing bilingual, glossary, and medication-format QA over everything the pass wrote — the same three checkers `/ingest-increm` runs, since this pass writes new clinical prose too. Steps 2-4 share one load of `connections-index.py` and `tag-index.py` |
 | `p4d-triage-queries.md` | `/triage-queries` | Interactive triage of misplaced files in `wiki/queries/` root |
 | `translation-backfill.md` | `/translation-backfill` | Repair missing Traditional Chinese medical-term translations in existing wiki content (see [Deep Dive: backfilling translations](#-deep-dive-how-it-works)) |
-| `p4-lint.md` | `/lint` | Full quarterly health check — all tasks above plus a written report to `wiki/maintenance/` |
-| `p5-slides.md` | `/slides` | Generate a Marp slide deck on a topic from wiki content |
+| `p4-lint.md` | `/lint` | Full quarterly health check — all tasks above, plus converting any bullet-form measurement record back into a canonical table (`scripts/detect-list-records.py`), plus a written report to `wiki/maintenance/` |
+| `p5-slides.md` | `/slides` | Generate a Marp slide deck (+ rendered PDF) on a topic, saved to `wiki/deliverables/` |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
-| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, Codex skills, `scripts/`, the shared glossary, conventions and templates) to the companion public repo and suggest a commit message. Never copies `raw/`, wiki content, or private memory. Not needed if you are a user who cloned this repo. |
+| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public files (prompts, commands, Codex skills, `scripts/`, the shared glossary, entry points and templates) to the companion public repo and suggest a commit message. A fail-closed privacy gate — its denylist derived from the vault at run time — blocks the whole sync if any outbound file names a medication, a brand, or the patient. `CLAUDE.md` is never auto-synced: the public copy is hand-maintained with fictional examples, and the script flags private changes for manual porting (`--claude-md-reviewed` records each review). Never copies `raw/`, wiki content, or private memory. Not needed if you are a user who cloned this repo. |
 
 </details>
 
@@ -160,7 +160,7 @@ matching the Claude slash commands:
 | `/session-close` | `$session-close` |
 | `/session-reopen` | `$session-reopen` |
 | `/contradiction-check` | `$contradiction-check` |
-| `/deep-check` | `$deep-check` |
+| `/coverage-check` | `$coverage-check` |
 | `/triage-queries` | `$triage-queries` |
 | `/translation-backfill` | `$translation-backfill` |
 | `/lint` | `$lint` |
@@ -181,7 +181,7 @@ keeps changes synchronized through git.
 ## 📂 Directory Structure
 
 <details>
-<summary><b>Directory structure</b> — the full annotated layout: <code>raw/</code> sources, the <code>wiki/</code> tree (summaries, concepts, MOCs, queries, slides, sessions), and the supporting <code>scripts/</code>, <code>prompts/</code>, <code>memory/</code>, and config files</summary>
+<summary><b>Directory structure</b> — the full annotated layout: <code>raw/</code> sources, the <code>wiki/</code> tree (summaries, concepts, MOCs, queries, deliverables, sessions), and the supporting <code>scripts/</code>, <code>prompts/</code>, <code>memory/</code>, and config files</summary>
 
 ```
 raw/              → source documents (never modify these)
@@ -193,15 +193,14 @@ wiki/
   concepts/       → one .md per concept/topic
   mocs/           → one moc-{domain}.md per clinical domain
   queries/        → saved Q&A outputs (files named YYYY-MM-DD-{slug}.md)
-    _handoff/     → clean versions intended to be given to someone
     _superseded/  → answers replaced by a newer query
-  slides/         → Marp slide decks
+  deliverables/   → outbound artifacts: prose handoff docs + Marp slide decks (+PDFs)
   maintenance/    → health check and synthesis reports
   sessions/       → transient session scratch pad (not wiki content)
     current.md    → active session full Q&A log (deleted on close)
     log.md        → compact session summary, one entry per turn (deleted on close)
     archive/      → closed sessions saved as YYYY-MM-DD-{topic-slug}.md + YYYY-MM-DD-{topic-slug}-log.md
-scripts/          → automation scripts (Python pre-filters for lint prompts, claim extractor for the contradiction check, bilingual/glossary/medication/dangling-link checkers, term-candidate extractor, search and sync helpers)
+scripts/          → automation scripts (Python pre-filters for lint prompts, numeric and status claim extractors for the contradiction check, canonical-record format detector, bilingual/glossary/medication/dangling-link checkers, term-candidate extractor, search and sync helpers)
 memory/           → persistent facts and corrections used by Claude/Codex
 .claude/
   commands/       → slash command definitions that power the workflows
@@ -336,13 +335,16 @@ To put this folder under version control:
 - All cross-references use Obsidian-style backlinks: `[[article-name]]` (filename without `.md`).
 - Every `[[link]]` must resolve to a real file; domain references point to the domain's MOC (`[[moc-<domain>]]`), never a bare `[[<domain>]]`.
 - Article formats (concept, summary, query, MOC) are defined in `CLAUDE.md` (auto-loaded by Claude Code; also human-readable).
+- Patient test-data values live in a Markdown table, never a bulleted list — even a single value gets a one-row table. That table is the concept's canonical record; see [the canonical record](#-deep-dive-how-it-works) for why the format matters.
+- Concept and MOC frontmatter carries Chinese `aliases` plus a `cn-title` display field (`cn-title: GGT (γ-谷氨醯轉移酶)`), so the vault is searchable and browsable in Chinese while filenames, `title`, and `[[backlinks]]` stay English. Medications are labelled by what kind of drug they are rather than by brand (`cn-title: {generic name} ({drug class in Chinese})`), with the brand kept in `aliases` so the pill-box name still finds the file.
+- The Chinese `aliases` work in Obsidian out of the box; rendering `cn-title` in the sidebar and tabs needs the **Front Matter Title** community plugin, installed per device (`.obsidian/` is not tracked, so it doesn't sync).
 - Never edit files in `raw/` — they are the source of truth.
 - `wiki/index.md` is the entry point for browsing all content.
 
 ## 🔬 Deep Dive: How It Works
 
 <details>
-<summary><b>Expand the full internals</b> — the ingest pipeline, the canonical record and where drift comes from, the navigation layer, sessions vs. queries, how the maintenance passes divide the work, the contradiction check, script-vs-agent division of labor, and translation backfilling.</summary>
+<summary><b>Expand the full internals</b> — the ingest pipeline, the navigation layer, sessions vs. queries, the canonical record and where drift comes from, how the maintenance passes divide the work, the numeric and status contradiction checks, script-vs-agent division of labor, and translation backfilling.</summary>
 
 ### The ingest pipeline
 
@@ -362,22 +364,6 @@ about this now?"
 Every created or updated file also gets an entry in `wiki/index.md`, `[[backlinks]]`
 to related articles, and Traditional Chinese glosses on clinical vocabulary per
 `CLAUDE.md`.
-
-### The canonical record, and where drift comes from
-
-A concept article about a recurring measurement carries a **longitudinal table** —
-one row per draw, with the date, lab, value, flag, and a link to the source summary.
-That table is the record, and ingest is what appends to it.
-
-Other articles then *restate* those values in prose: "ferritin peaked at 310 in 2019",
-"a vitamin D of 28.4 prompted supplementation", "all three draws came back LOW". Ingest
-updates the table; it does not revisit every sentence elsewhere that quoted it.
-
-So contradictions in this wiki are almost never two tables disagreeing. They are **a
-table that moved and a sentence that didn't** — restatement drift. Recognising that
-shape is what makes the contradiction check tractable: instead of comparing every
-article against every other, it only has to compare each restatement against the
-table it refers to.
 
 ### The navigation layer
 
@@ -409,35 +395,103 @@ permanent, indexed, backlinked.
   runs the translation pass and checker gates, then deletes the working copies.
 - `/session-reopen` runs that backwards, restoring an archived session to continue it.
 
-Inside `wiki/queries/`: the root holds current answers; `_handoff/` holds clean
-documents meant to be handed to a physician (no wiki metadata sections); `_superseded/`
-holds answers replaced by a newer, more complete one.
+Inside `wiki/queries/`: the root holds current answers and `_superseded/` holds answers
+replaced by a newer, more complete one. Documents meant to be handed to a physician or
+presented — prose handoffs and Marp slide decks — live in their own top-level
+`wiki/deliverables/` folder, where format is a per-file attribute (`marp: true`
+frontmatter marks a slide deck).
+
+### The canonical record, and where drift comes from
+
+Patient test-data values in a concept article live in a **Markdown table** — one row
+per measurement, with the date, lab, value, flag, and a link to the source summary.
+That table is the record, and ingest is what appends to it. The rule holds all the way
+down to a single result: a one-shot value gets a **one-row table**, so it anchors like
+any other record and the next draw appends cleanly. Reference ranges, medication doses,
+qualitative findings, and dated *events* (a prescribe/discontinue date, a diagnosis
+timeline) stay prose — they carry no measured value to anchor.
+
+That format is load-bearing, not cosmetic. The contradiction check treats a concept's
+own table rows as the authority; the same numbers written as bullets do **not** anchor —
+they are skipped as authority and get misattributed as restatements of a neighbouring
+concept. `scripts/detect-list-records.py` catches records that were written, or drifted
+back, into bullet form — it runs in `/post-ingest`, right where ingest writes them, and
+again in `/lint`.
+
+Other articles then *restate* those values in prose: "ferritin peaked at 310 in 2019",
+"a vitamin D of 28.4 prompted supplementation", "all three draws came back LOW". Ingest
+updates the table; it does not revisit every sentence elsewhere that quoted it.
+
+So contradictions in this wiki are almost never two tables disagreeing. They are **a
+table that moved and a sentence that didn't** — restatement drift. Recognising that
+shape is what makes the contradiction check tractable: instead of comparing every
+article against every other, it only has to compare each restatement against the
+table it refers to.
+
+Reconciling that drift is not ingest's job — ingest only appends to the table and moves
+on. It falls to the **maintenance pipeline**, which runs after the fact on its own
+cadence: `/contradiction-check` is the pass aimed squarely at restatement drift, walking
+each prose claim back to the table it refers to and either correcting the stale sentence
+or flagging it for a decision, while the passes around it keep tags, backlinks, MOCs, and
+translations from sliding out of sync the same way. How that work is divided is what the
+next section lays out.
 
 ### How the maintenance passes divide the work
 
-| Check | `/post-ingest` | `/contradiction-check` | `/deep-check` | `/lint` |
+| Check | `/post-ingest` | `/contradiction-check` | `/coverage-check` | `/lint` |
 |---|:--:|:--:|:--:|:--:|
 | Tag canonicalization | ✅ | — | — | ✅ |
-| Missing backlinks | ✅ | — | — | ✅ |
-| Dangling backlink check | ✅ | — | — | — |
-| MOC freshness + `home.md` sync | ✅ | — | — | ✅ |
-| Bilingual QA | ✅ | — | — | ✅ |
-| Numeric contradictions | — | ✅ | — | — |
+| Frontmatter completeness (`aliases`, `cn-title`, medication fields) | ✅ | — | — | ✅ |
+| Canonical record format (table vs. bullets) | ✅ | — | — | ✅ |
+| Dangling backlink check | ◐ | — | ✅ | ✅ |
+| Missing backlinks | ◐ | — | ✅ | ✅ |
+| MOC freshness + `home.md` sync | ◐ | — | ✅ | ✅ |
+| Bilingual + glossary + medication-format QA | ◐ | — | ✅ | ✅ |
 | Missing / thin concepts | — | — | ✅ | ✅ |
-| Missing aliases | — | — | ✅ | ✅ |
 | New article candidates | — | — | ✅ | ✅ |
 | Misplaced query files | — | — | — | ✅ |
 | Written maintenance report | — | — | — | ✅ |
+| Numeric contradictions | — | ✅ | — | — |
+| Status contradictions (medication · condition) | — | ✅ | — | — |
 
-Read the columns as cadence: `/post-ingest` after **every** `/ingest-increm` (new files
-arrive with unnormalized tags, no backlinks, and absent from their MOC); `/deep-check`
-monthly; `/contradiction-check` occasionally; `/lint` quarterly.
+✅ = the full check · ◐ = bounded to what the ingest just changed
 
-Two things are worth knowing. `/contradiction-check` sits outside `/lint` entirely, so
-running only `/lint` never checks whether values agree across articles. And the dangling
-backlink check is `/post-ingest`-only — it runs right after ingest, where new links are
-introduced; `/lint` still surfaces the same unresolved targets indirectly, as "missing
-concepts" in its thin/missing pass.
+Read the columns as cadence: `/post-ingest` runs automatically as the tail of **every**
+`/ingest-increm` (new files arrive with unnormalized tags, no backlinks, absent from their
+MOC, and — if ingest slipped — without `cn-title`); `/coverage-check` monthly;
+`/contradiction-check` occasionally; `/lint` quarterly.
+
+The ◐ rows are the design point: each of those checks has a cheap per-ingest form and an
+expensive repo-wide one, and `/post-ingest` runs only the cheap form. It adds each ingest's
+new files to their MOCs and checks Connections on the concepts it just touched. The full
+sweep — every concept weighed against
+every other, every file reconciled against every MOC, `home.md` recounted — costs the same
+for a one-document ingest as for twenty, so it runs monthly in `/coverage-check`, where a single
+load of `connections-index.py` and `tag-index.py` pays for three steps instead of one.
+The three translation checkers bound the same way: `--git-diff` limits them to the lines the
+run changed, so `/post-ingest` can afford to close its own diff — the Connections prose and
+MOC entries it writes *after* `/ingest-increm` already ran those checkers, the one slice of
+authored content that would otherwise reach `/coverage-check` unread a month later.
+Frontmatter completeness moved the opposite way, for the same reason `/post-ingest` already
+owns the canonical-record check: ingest is what creates concept and MOC files, so four greps
+should catch a missing field the day it is written. The medication half is the urgent one —
+`check-medication-first-mentions.py` silently skips any medication concept missing `brand`
+or `taiwan-brand-name`, disabling first-mention enforcement for that drug repo-wide while
+still reporting clean.
+
+Three more things are worth knowing. `/contradiction-check` sits outside `/lint` entirely, so
+running only `/lint` never checks whether values agree across articles. The dangling backlink
+check runs in all three content passes, on the same script, so they agree on what "dangling"
+means — `/post-ingest` bounds it to the lines each ingest changed, while `/coverage-check` and
+`/lint` sweep all six authored surfaces. That last part matters: `scripts/check-dangling-links.py`
+is the repo's only wikilink resolver, and it validates the ~3,600 links in `index.md`,
+`summaries/`, `mocs/`, `queries/`, and `home.md` that no other check reads. And the
+canonical-record format check runs at both
+ends: ingest is what writes measurement records, so `/post-ingest` catches a series that
+came out as bullets the same day it was written, while `/lint` backstops the records
+ingest never touched — a hand edit, or a thin article `/coverage-check` expanded out of the
+summaries. Only that second kind can now go a full quarter without anchoring
+`/contradiction-check`.
 
 ### How the contradiction check works
 
@@ -445,11 +499,13 @@ concepts" in its thin/missing pass.
 claim **under the concept it is about**, so a claim arrives next to its counterparts
 instead of buried on line 51 of an unrelated article. Two kinds of block come out:
 
-- **ANCHORED** — the concept has a longitudinal table, so that table is the reference
+- **ANCHORED** — the concept has a canonical table, so that table is the reference
   and every restatement is compared against it.
 - **PEER** — the concept has no table, so no claim is authoritative and they judge each
   other. Asserted values are printed in `[brackets]` and sorted, so agreement clusters
-  and an outlier stands apart.
+  and an outlier stands apart. A record that *should* have anchored but was written as
+  bullets lands here by accident — that silent downgrade is what
+  `scripts/detect-list-records.py` exists to catch.
 
 Blocks with nothing to compare are dropped. The agent then sorts each finding:
 
@@ -468,6 +524,38 @@ One limitation to know: claim text in the script output is truncated at ~200
 characters, so a fix landing past that point will not appear changed on the
 verification re-run. Confirm those against the file using the `file:line` pointer.
 
+### The status pass, and why it never auto-fixes
+
+Numbers are only half of what goes stale. When a medication stops or a condition
+remits, the sentences *around* the numbers are what keep asserting the old world — a
+"currently taking" survives in one article after another long after the drug's own
+concept page recorded it as stopped. `scripts/extract-status-claims.py` is the same pipeline as the numeric
+checker with the claim predicate swapped: instead of a value it looks for a **state
+word** near a concept mention, and instead of comparing values it emits the groups
+holding **opposing states**.
+
+The tiering turns on dates, because an undated claim asserts *now*:
+
+- **CONFLICT** — an undated claim disagrees with another undated one, or with the
+  newest dated one. "Currently taking" against a dated "discontinued" line is drift.
+- **REVIEW** — opposing claims at different dates. That is a state that changed over
+  time, which is history, not a contradiction.
+
+Nothing in this pass is auto-fixable, by construction. The numeric checker can correct
+a value because a canonical table row *proves* what it should be; no table records
+status, so no state word can be computed correct — and changing one means rewriting
+the sentence, which is disqualifying under Tier A anyway. Every status finding goes to
+you with options.
+
+Two exclusions are deliberate, and both came out of testing against the real vault.
+**Level and severity words** — elevated/normal, mild/severe — are not states: two
+dated measurements legitimately differ, which is the same reason the numeric pass
+ignores different values at different dates. **Presence** findings (`--include-presence`)
+are off by default: cues like "ruled out" attach to whatever noun is nearest, so a
+clause ruling out one condition was read as a claim about a different finding that
+happened to sit on the same line. Every presence hit on the real corpus was a false
+positive, and a checker that cries wolf gets ignored.
+
 ### Why scripts find and the agent judges
 
 The maintenance prompts are deliberately script-first. A pass that would otherwise read
@@ -478,8 +566,11 @@ emits only what the decision needs:
 |---|---|
 | `connections-index.py` | reading every concept body to audit backlinks |
 | `tag-index.py` | reading every file to check MOC coverage |
-| `detect-missing-thin.py` | reading every concept to find stubs and gaps |
+| `detect-thin.py` | reading every concept to find stubs |
+| `check-dangling-links.py` | reading every surface to validate 3,600+ `[[links]]` |
 | `extract-claims.py` | reading the whole corpus to compare numeric claims |
+| `extract-status-claims.py` | reading the whole corpus to compare medication and condition status |
+| `detect-list-records.py` | reading every concept to check its record is a table, not bullets |
 
 The split is not about capability. Extraction has no judgement to exercise, so a script
 does it better — deterministic, free, diffable between runs, and incapable of inventing
@@ -493,7 +584,7 @@ was missed.
 ### Backfilling translations (best practice)
 
 The patient is a native Traditional Chinese reader, so clinical vocabulary is
-glossed inline (`atherosclerosis (動脈粥狀硬化)`). The rules for *what* to translate
+glossed inline (`English term (中文)`). The rules for *what* to translate
 live in `CLAUDE.md` (single source of truth); this note covers *how to scope* a
 backfill pass over already-existing articles.
 
@@ -526,7 +617,7 @@ backfill pass over already-existing articles.
   `check-glossary-delta.py` on the edited files.
 - **Every clinical term is translated inline; glossary additions are selective.**
   These are two separate actions when the agent meets a new term. It is always
-  glossed inline (`atherosclerosis (動脈粥狀硬化)`). It is added to
+  glossed inline (`English term (中文)`). It is added to
   `memory/medical-term-translations.md` only when it is *standalone and reusable*
   (analyte/lab names, anatomy, pathology, procedures, enzymes, abbreviation full
   forms, ratio names) per the "What belongs in the glossary" criterion in
@@ -535,11 +626,12 @@ backfill pass over already-existing articles.
   review rather than guessing. This is *why* the checker is only a floor — the
   glossary deliberately does not contain every translatable phrase.
 - **Sub-batch large MOCs.** Files are translated one-by-one, and a single pass stays
-  reliable only up to ~8–12 files before the context window fills. The big MOCs
-  (`moc-cardiology` ~38, `moc-screening` ~29, `moc-metabolic` ~27, `moc-lipid` ~23,
-  `moc-imaging-finding` ~20) should be split into 3–4 passes of ~10 files, each with
-  its own `--git-diff` QA and commit so it is self-contained and resumable. MOCs with
-  ≤ ~10 members are fine to do whole in one pass.
+  reliable only up to ~8–12 files before the context window fills. Any MOC with more
+  than ~10 members should be split into passes of ~10 files, each with its own
+  `--git-diff` QA and commit so it is self-contained and resumable. MOCs at or below
+  that size are fine to do whole in one pass. Check a MOC's size with
+  `grep -c '^- \[\[' wiki/mocs/moc-{domain}.md` rather than relying on a figure
+  recorded here, which goes stale as the vault grows.
 - **Scoping a sub-batch — three ways, no need to hand-list paths.** The scope after
   `/translation-backfill` is free text:
   - explicit paths — `/translation-backfill wiki/concepts/a.md wiki/concepts/b.md …`

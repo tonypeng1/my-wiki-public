@@ -32,7 +32,7 @@ DEFAULT_PATHS = [
     ROOT / "wiki" / "summaries",
     ROOT / "wiki" / "mocs",
     ROOT / "wiki" / "queries",
-    ROOT / "wiki" / "slides",
+    ROOT / "wiki" / "deliverables",
     ROOT / "wiki" / "index.md",
     ROOT / "wiki" / "home.md",
 ]

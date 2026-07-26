@@ -1,6 +1,6 @@
 ---
 name: triage-queries
-description: Run this repository's query triage workflow to move misplaced query files into _handoff or _superseded after user confirmation. Use when the user asks for triage-queries, query triage, misplaced query cleanup, or superseded query review.
+description: Run this repository's query triage workflow to move misplaced query files into wiki/deliverables/ (handoffs) or _superseded/ after user confirmation. Use when the user asks for triage-queries, query triage, misplaced query cleanup, or superseded query review.
 ---
 
 # Triage Queries

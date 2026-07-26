@@ -18,7 +18,7 @@ The user has asked to end the current session. Follow these steps:
    Save destination rules:
    - If the consolidated content is a clean handoff document with no
      Key Points / Source Articles / Follow-up sections: save to
-     wiki/queries/_handoff/ and omit the `status:` field.
+     wiki/deliverables/ and omit the `status:` field.
    - Otherwise: save to wiki/queries/ root with `status: current`.
 
    Superseded check (run before saving):

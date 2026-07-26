@@ -25,16 +25,19 @@ have a cross-file contradiction.
 import re
 from pathlib import Path
 
-WIKI_ROOT = Path(__file__).parent.parent / "wiki"
-CONCEPTS_DIR = WIKI_ROOT / "concepts"
-
-FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
-FIELD_RE = re.compile(r"^(\w[\w-]*):\s*(.+)$", re.MULTILINE)
-
-# [[target]] or [[target|display]] — we want the target
-BACKLINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
-# A Sources-list entry is a bare bullet holding only a backlink
-SOURCES_ENTRY_RE = re.compile(r"^\s*-\s*\[\[[^\]]+\]\](?:\s*\([^)]*\))?\s*$")
+from _claims_common import (
+    CONCEPTS_DIR,
+    SOURCES_ENTRY_RE,
+    TABLE_ROW_RE,
+    TABLE_SEPARATOR_RE,
+    PROXIMITY_CHARS,
+    build_mention_map,
+    condense,
+    frontmatter_line_count,
+    mask_backlinks,
+    mentioned_concepts,
+    strip_frontmatter_block,
+)
 
 UNITS = (
     r"mg/dL|mmol/L|U/L|IU/L|mg|mL|dL|mmHg|kg|lbs|bpm|BPM|ms|mm|cm|%|IU|g"
@@ -52,101 +55,6 @@ CLAIM_RE = re.compile(
     re.VERBOSE,
 )
 
-TABLE_ROW_RE = re.compile(r"^\s*\|")
-TABLE_SEPARATOR_RE = re.compile(r"^\s*\|[\s|:-]+$")
-
-CJK_RE = re.compile(r"[一-鿿]")
-HAS_UPPER_RE = re.compile(r"[A-Z]")
-MAX_CLAIM_CHARS = 200
-MIN_ALIAS_LEN = 4
-# How near a numeric claim must sit to a concept mention to count as a claim
-# about that concept, rather than an unrelated number elsewhere on the line.
-PROXIMITY_CHARS = 120
-
-
-def parse_frontmatter(text: str) -> dict[str, str]:
-    m = FRONTMATTER_RE.match(text)
-    if not m:
-        return {}
-    return dict(FIELD_RE.findall(m.group(1)))
-
-
-def frontmatter_line_count(text: str) -> int:
-    """Number of lines occupied by the frontmatter block, for line offsets."""
-    m = FRONTMATTER_RE.match(text)
-    return text[: m.end()].count("\n") if m else 0
-
-
-def strip_frontmatter_block(text: str) -> str:
-    m = FRONTMATTER_RE.match(text)
-    return text[m.end():] if m else text
-
-
-def split_list_field(value: str) -> list[str]:
-    return [item.strip() for item in value.strip("[]").split(",") if item.strip()]
-
-
-def build_mention_map(files: list[Path]) -> dict[str, str]:
-    """Map title/alias -> concept stem.
-
-    Short Latin aliases match too much ordinary prose, so they are kept only
-    when they carry an uppercase letter (A1C, AFP, LDL, eGFR) and are then
-    matched case-sensitively. CJK is dense enough to keep at any length.
-
-    Aliases claimed by more than one concept are dropped: an ambiguous name
-    cannot serve as a join key, and guessing would manufacture false pairs.
-    """
-    claims: dict[str, set[str]] = {}
-    for md_file in files:
-        fm = parse_frontmatter(md_file.read_text(encoding="utf-8"))
-        names = [md_file.stem, fm.get("title", "")]
-        names.extend(split_list_field(fm.get("aliases", "")))
-        for name in names:
-            name = name.strip()
-            if not name:
-                continue
-            if (len(name) < MIN_ALIAS_LEN and not CJK_RE.search(name)
-                    and not HAS_UPPER_RE.search(name)):
-                continue
-            claims.setdefault(name, set()).add(md_file.stem)
-    return {name: next(iter(owners)) for name, owners in claims.items()
-            if len(owners) == 1}
-
-
-def mentioned_concepts(line: str, mention_map: dict[str, str],
-                       stems: set[str]) -> dict[str, list[int]]:
-    """Concepts this line mentions, mapped to where on the line they appear."""
-    found: dict[str, list[int]] = {}
-    for m in BACKLINK_RE.finditer(line):
-        target = m.group(1).strip()
-        if target in stems:
-            found.setdefault(target, []).append(m.start())
-
-    lowered = line.lower()
-    for name, stem in mention_map.items():
-        if CJK_RE.search(name):
-            spans = [m.start() for m in re.finditer(re.escape(name), line)]
-        elif len(name) < MIN_ALIAS_LEN:
-            # Abbreviation: case-sensitive, so "TG" does not match "tg" in prose
-            spans = [m.start() for m in
-                     re.finditer(rf"(?<!\w){re.escape(name)}(?!\w)", line)]
-        else:
-            spans = [m.start() for m in
-                     re.finditer(rf"(?<!\w){re.escape(name.lower())}(?!\w)", lowered)]
-        if spans:
-            found.setdefault(stem, []).extend(spans)
-    return found
-
-
-def mask_backlinks(line: str) -> str:
-    """Blank out backlink targets, preserving offsets.
-
-    Dates inside targets ([[lab-a1c-2025-10-10]]) are file references, not
-    claims. Padding keeps offsets aligned with the original text.
-    """
-    return BACKLINK_RE.sub(lambda m: " " * len(m.group(0)), line)
-
-
 def claim_positions(line: str) -> list[int]:
     """Offsets of numeric claims on the line."""
     return [m.start() for m in CLAIM_RE.finditer(mask_backlinks(line))]
@@ -162,13 +70,6 @@ def claim_values(line: str) -> list[str]:
     for m in CLAIM_RE.finditer(mask_backlinks(line)):
         seen.setdefault(" ".join(m.group(0).split()), None)
     return list(seen)
-
-
-def condense(line: str) -> str:
-    line = " ".join(line.split())
-    if len(line) > MAX_CLAIM_CHARS:
-        line = line[:MAX_CLAIM_CHARS].rstrip() + " …"
-    return line
 
 
 def collect_claims(files: list[Path], mention_map: dict[str, str],

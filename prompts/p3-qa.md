@@ -57,7 +57,7 @@ Follow these steps to answer it:
 
    Save destination rules:
    - If this is a clean handoff document with no Key Points / Source
-     Articles / Follow-up sections: save to wiki/queries/_handoff/
+     Articles / Follow-up sections: save to wiki/deliverables/
      and omit the `status:` field.
    - Otherwise: save to wiki/queries/ root with `status: current`.
 

@@ -1,10 +1,17 @@
 Perform a targeted contradiction check on the wiki.
 Run this occasionally — it is not part of the standard health check.
 
-Scope: numeric claims in wiki/concepts/ — specific values, dates,
-reference ranges, and test results. Prose/status contradictions
-("resolved" vs "active", conflicting causal claims, ranges stated in
-words) are NOT covered by this pass; say so when reporting.
+Scope: two passes over wiki/concepts/.
+- NUMERIC (steps 1-4): specific values, dates, reference ranges, test results.
+- STATUS (step 5): whether a medication is being taken and whether a condition
+  is active — "currently taking" vs "discontinued", "active" vs "in remission".
+
+Still NOT covered by either pass, and to be named when reporting: level and
+severity wording ("elevated" vs "normal", "mild" vs "severe"), which is
+legitimately different between two dated measurements rather than
+contradictory; presence/absence findings, which the status checker can detect
+but only at a false-positive rate too high to run by default; ranges stated in
+words; and conflicting causal claims.
 
 1. Run: python3 scripts/extract-claims.py
    The script groups every numeric/date claim in wiki/concepts/ by the
@@ -149,11 +156,47 @@ words) are NOT covered by this pass; say so when reporting.
    rest"). Apply exactly what I picked, leave the rest flagged, and say
    which ones are still open.
 
-5. Report. Include:
+5. STATUS CLAIMS
+   Run: python3 scripts/extract-status-claims.py
+   The script groups every state claim — medication ACTIVE vs STOPPED,
+   condition ACTIVE vs RESOLVED — by the concept it is about, and prints
+   only the groups whose claims disagree. Two tiers come out:
+
+   CONFLICT — an undated claim (which asserts the present) disagrees with
+   another undated claim, or with the newest dated one. This is the shape
+   status drift takes: one file was updated when the medication stopped and
+   another kept its old present tense.
+
+   REVIEW — opposing claims at different dates. Usually history rather than
+   contradiction; skim these, do not work them.
+
+   EVERY status finding is TIER B. There is no Tier A here, whatever the
+   output looks like:
+   - the numeric pass can auto-fix because a canonical table row PROVES the
+     correct value. No table records status, so nothing proves it
+   - "correcting" a state word means rewriting the sentence around it, which
+     is disqualifying under the Tier A rules in step 2 by definition
+   - SELF marks the concept's own file. It is the likeliest place for the
+     current truth and the right file to read first, but it is NOT authority
+   Flag each one with the step 4 option menu and let me choose.
+
+   Before flagging, open the file:line and read the whole sentence — the
+   script matches a cue phrase near a concept mention, so a line that names
+   two concepts can attribute a state to the wrong one. Discard the finding if
+   the state word does not actually take that concept as its subject.
+   Also discard general clinical knowledge ("TCAs are usually continued
+   indefinitely") — the pass wants claims about this patient.
+
+   If a status change is real and the wiki has not caught up, say which files
+   still carry the old state; that list is the fix, and it usually spans more
+   files than the one flagged.
+
+6. Report. Include:
    - TIER A: what was changed, as before → after with file:line
-   - TIER B: the findings and their option menus
+   - TIER B: the findings and their option menus, numeric and status together
    - if nothing was found, say so explicitly so I know the check ran
-   - coverage: how many blocks were anchored vs peer, and a reminder
-     that prose/status contradictions were not checked by this pass
+   - coverage: how many blocks were anchored vs peer, how many status groups
+     were CONFLICT vs REVIEW, and a reminder of what neither pass checks
+     (level/severity wording, presence, causal claims — see Scope above)
 
    A clean-looking report must not hide an incomplete check.

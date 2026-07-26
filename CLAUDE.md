@@ -1,3 +1,11 @@
+<!--
+Hand-maintained public copy of the private repo's CLAUDE.md. Conventions are
+identical; medication and condition examples are fictional substitutes for the
+private originals. Maintainers: when scripts/sync-to-public.sh reports that the
+private CLAUDE.md changed, port the convention hunks here by hand, keep every
+example generic, then rerun with --claude-md-reviewed.
+-->
+
 # Wiki Conventions
 
 ## Memory
@@ -12,9 +20,13 @@ When saving a new memory or updating an existing one, write to `memory/` — not
 - wiki/home.md         → vault entry point; links to all MOCs
 - wiki/mocs/           → one moc-{domain}.md per clinical domain; navigation layer for Obsidian
 - wiki/queries/     → saved Q&A outputs
-  - _handoff/       → clean versions intended to be given to someone (no wiki metadata sections)
   - _superseded/    → answers replaced by a newer, more complete query
-- wiki/slides/      → Marp slide decks
+- wiki/deliverables/ → outbound artifacts to hand to / present to someone: prose
+                       handoff docs and Marp slide decks (+ their rendered PDFs).
+                       Format is a per-file attribute, not a sub-folder: a file with
+                       `marp: true` frontmatter is a slide deck; otherwise it is a
+                       prose handoff. Handoff docs are date-prefixed (YYYY-MM-DD-{slug});
+                       decks are {topic}-{YYYY-MM-DD}.
 - wiki/maintenance/ → health check reports
 - wiki/sessions/    → transient session scratch pad (NOT wiki content; do not index)
   - current.md      → active session conversation (deleted when session closes)
@@ -72,7 +84,7 @@ their own translation rules, only point here.
 - Only inline `English (中文)` translations count toward the two. Obsidian
   `[[backlinks]]` are English and do not count; medication mentions follow the
   Medication naming rule below, not this counter.
-- Default rule for concepts, summaries, MOCs, slides, and archived sessions
+- Default rule for concepts, summaries, MOCs, deliverables, and archived sessions
   under `wiki/sessions/archive/`, and for `wiki/index.md`. Query files keep the
   more aggressive exception below.
 - `wiki/index.md` counting units: in the `## Compilation Summary` section the
@@ -113,6 +125,9 @@ their own translation rules, only point here.
   unless repeating the brand/Taiwan name materially improves clarity.
 - Keep `#` titles, frontmatter titles, filenames, and Obsidian backlinks in
   English only; do not add brand/Taiwan-name parentheticals there.
+- The Brand and Taiwan name come from the `brand` and `taiwan-brand-name` fields in
+  that medication's concept frontmatter (see Concept Article Format) — use them
+  verbatim so the same medication reads identically everywhere.
 - Examples: `amlodipine (Norvasc, 脈優)`, `atorvastatin (Lipitor, 立普妥)`,
   `alprazolam (Xanax, 贊安諾)`.
 
@@ -142,9 +157,49 @@ Two clarifications:
   per the Abbreviations rule above. Only identifiers with no standalone medical
   meaning are excluded — that is what "opaque identifier" means here.
 
-### Frontmatter aliases
-Add useful Traditional Chinese terms to `aliases` in concept frontmatter when they
-help searchability.
+### Frontmatter aliases and `cn-title`
+Two frontmatter layers make the vault navigable in Chinese **without renaming any
+file** — filenames, `title`, and `[[backlinks]]` stay English-canonical per "What
+NOT to translate" above.
+
+**`aliases`** — add useful Traditional Chinese terms when they help searchability,
+so the note is reachable by its Chinese name in Obsidian's Quick Switcher and
+global search. Every concept and MOC should carry at least one Chinese alias.
+
+**`cn-title`** — a display field in `English (中文)` form, read by the Front Matter
+Title Obsidian plugin to label the file tree, tabs, and graph. Required on every
+**concept** and **MOC** file (summaries and queries do not use it). Rules:
+- The English part is the concept's **common abbreviation** when it has one
+  (`GGT (γ-谷氨醯轉移酶)`, `COPD (慢性阻塞性肺病)`, `PSA (攝護腺特異抗原)`),
+  otherwise the plain name (`Gout (痛風)`, `Peptic Ulcer (消化性潰瘍)`).
+- MOCs keep their full title: `MOC — Cardiology (心臟科)`.
+- Medications answer **"what kind of drug is this?"**, never the brand — the brand
+  is already in `brand`/`taiwan-brand-name` and in `aliases`. In order of
+  preference:
+  1. the **Chinese generic name**, when one is in common Taiwan use:
+     `Aspirin (阿斯匹靈)`;
+  2. otherwise the **Chinese drug class**: `Atorvastatin (史他汀類藥物)`,
+     `Alprazolam (苯二氮平類)`, `Atenolol (β阻斷劑)`. Prefer the short form of a
+     class name over the precise one (`β阻斷劑`, not `心臟選擇性β阻斷劑`) — this is
+     a sidebar label, and the article body carries the precise wording;
+  3. **except** when the drug is taken for something its class name does not
+     suggest, where the label states the **purpose** instead:
+     `Amitriptyline (神經痛用藥)` — a TCA, but prescribed for post-herpetic
+     neuralgia at sub-antidepressant doses — and `Mirtazapine (助眠劑)`, an
+     antidepressant prescribed for sleep. A label that reads "antidepressant" for
+     a nerve-pain or sleep medication is worse than no label.
+- Because the brand is not in `cn-title`, the Chinese brand name **must** be in
+  `aliases` so the file is still findable by what is printed on the box.
+- Adding or fixing `aliases`/`cn-title` is search/display metadata, **not** a
+  medical-content change — it does not bump `updated`.
+
+New concept and MOC files created during ingest or by a maintenance pass must get
+both, or they show English-only in the sidebar.
+
+Obsidian rewrites the frontmatter of any note it has open into block-style YAML and
+can clobber CLI edits with its cached copy. The repo convention is inline flow style
+(`aliases: [x, y]`); when bulk-editing frontmatter, keep the affected notes closed in
+Obsidian or commit promptly so a clobber is recoverable.
 
 ### The shared glossary
 Use `memory/medical-term-translations.md` as the shared glossary during ingest,
@@ -167,7 +222,8 @@ Each wiki/concepts/{name}.md:
 ---
 title: {Concept Name}
 tags: [tag1, tag2]
-aliases: [3–5 abbreviations, alternate spellings, lay terms]
+aliases: [3–5 abbreviations, alternate spellings, lay terms, + the Traditional Chinese name]
+cn-title: {English} ({中文})
 updated: {date}
 ---
 
@@ -179,6 +235,23 @@ updated: {date}
 ## Key Details
 Main substance of the article.
 
+**Patient test-data values MUST live in a Markdown table, never a bulleted list
+— even a single value goes in a one-row table.** Give each measurement one row
+(date, lab, value, flag, source backlink); that table is the concept's
+*canonical record*. This holds whether the concept has fourteen draws or one:
+the contradiction check (`scripts/extract-claims.py`) recognizes a concept's own
+table rows as the authority and compares prose restatements elsewhere against
+them — a value written as a bullet does **not** anchor (it is skipped as
+authority and its row gets misattributed as a restatement of a neighboring
+concept), and a one-row table also appends cleanly when the test is repeated.
+Follow the `[[hemoglobin-a1c]]` / `[[lipid-panel]]` table shape.
+
+The rule covers **measured patient result values** (a lab/imaging number with a
+unit). It does *not* pull in reference ranges or interpretation thresholds
+(general knowledge), medication doses, qualitative findings with no number, or
+dated *events* (a medication's prescribe/discontinue dates, a diagnosis
+timeline) — those stay prose; they carry no canonical value to anchor.
+
 ## Connections
 - Related to [[concept-a]] because...
 - Contrasts with [[concept-b]] in that...
@@ -188,6 +261,22 @@ Main substance of the article.
 
 ## Open Questions
 Questions worth exploring further.
+
+### Medication concepts
+A concept tagged `medication` carries two extra frontmatter fields, after `updated`:
+
+```
+brand: {brand name as prescribed}          # e.g. Norvasc
+taiwan-brand-name: {full Taiwan product name, incl. dosage-form suffix}  # e.g. 脈優錠
+```
+
+They are the **source for the `generic (Brand, Taiwan name)` format** in body prose
+(see Medication naming above) — copy them verbatim rather than rewording, so the
+same medication reads identically everywhere: the two fields above give
+`amlodipine (Norvasc, 脈優錠)`. `brand` records the name as actually prescribed,
+which is not always a tidy originator brand (`amlodipine besylate`, `BZD Xanax`) —
+keep it as prescribed rather than "correcting" it. `cn-title` may use a trimmed
+form of `taiwan-brand-name`; see Frontmatter aliases and `cn-title` above.
 
 ## Summary File Format
 Each wiki/summaries/{name}.md:
@@ -215,8 +304,8 @@ Other wiki articles this connects to.
 ## Query File Format
 Each query file is named `{YYYY-MM-DD}-{slugified-question}.md`, date-prefixed like
 the files in wiki/sessions/archive/. The date is the `date:` value below — the day
-the answer was written. The date prefix applies in the `_handoff/` and `_superseded/`
-subfolders too.
+the answer was written. The date prefix applies in the `_superseded/` subfolder, and
+to handoff documents in `wiki/deliverables/`, too.
 
 Each wiki/queries/{YYYY-MM-DD}-{slugified-question}.md:
 
@@ -294,6 +383,8 @@ Each wiki/mocs/moc-{domain}.md:
 title: MOC — {Domain Title}
 type: moc
 tags: [{domain}]
+aliases: [{中文 domain name}]
+cn-title: MOC — {Domain Title} ({中文})
 updated: {date}
 ---
 
@@ -319,7 +410,8 @@ When adding a new entry, place it under the section matching the article's **pri
 Each entry in wiki/index.md:
 
 ## {filename}.md
-- **Type:** concept | summary | query | slide | maintenance
+- **Type:** concept | summary | query | slide | handoff | maintenance
+  (slide and handoff files live in wiki/deliverables/)
 - **Tags:** tag1, tag2
 - **Summary:** One sentence description.
 - **Related:** [[article-a]], [[article-b]]

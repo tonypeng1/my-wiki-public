@@ -12,12 +12,15 @@ run it as a standalone session, not as part of an automated pipeline.
      newer file (by `date:`) already in wiki/queries/ root
      (flag the older file as a candidate for _superseded/)
 
-3. For each flagged file, state which sub-folder it likely belongs in
-   (_handoff/ or _superseded/) and why, then ask me to confirm before
-   moving anything.
+3. For each flagged file, state where it likely belongs and why, then
+   ask me to confirm before moving anything:
+   - a clean handoff / presentation document → wiki/deliverables/
+   - an answer superseded by a newer file → wiki/queries/_superseded/
+   (A file whose name contains "handoff" but is a genuine Q&A — e.g. a
+   methodology note — stays in wiki/queries/ root.)
 
 4. After I confirm:
-   - Move the file to the appropriate sub-folder
+   - Move the file to its destination
    - Strip the `status:` field from the moved file's frontmatter
 
 5. Report a summary of all files moved.

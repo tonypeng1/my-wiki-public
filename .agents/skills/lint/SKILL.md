@@ -1,6 +1,6 @@
 ---
 name: lint
-description: Run this repository's full quarterly wiki health-check workflow. Use when the user asks for lint, full health check, quarterly check, tag canonicalization, backlink checks, MOC freshness, or maintenance report generation.
+description: Run this repository's full quarterly wiki health-check workflow. Use when the user asks for lint, full health check, quarterly check, tag canonicalization, backlink checks, dangling wikilink validation, MOC freshness, or maintenance report generation.
 ---
 
 # Lint

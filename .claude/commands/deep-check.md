@@ -1,1 +1,0 @@
-Read and execute prompts/p4c-deep-check.md

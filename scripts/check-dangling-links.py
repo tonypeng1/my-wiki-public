@@ -4,12 +4,17 @@ Flag dangling [[wikilinks]] — links whose target basename has no matching .md
 file anywhere under wiki/.
 
 Obsidian resolves [[name]] by basename across the whole vault, so a concept,
-summary, MOC, or query file are ALL valid link targets. That is why the general
-missing-concept detector (scripts/detect-missing-thin.py), which only knows
-wiki/concepts/ and wiki/summaries/, cannot be used for link validation: it
-reports every [[moc-*]] and [[<query-file>]] link as "missing". This checker
-resolves against every .md under wiki/, so those legitimate links pass and only
-genuinely unresolvable targets are flagged.
+summary, MOC, or query file are ALL valid link targets. This checker resolves
+against every .md under wiki/, so those legitimate links pass and only genuinely
+unresolvable targets are flagged.
+
+This is the repo's ONLY wikilink resolver. scripts/detect-thin.py used to carry
+a second one that knew only wiki/concepts/ and wiki/summaries/, and reported
+every [[moc-*]] and query-file link as "missing"; it was removed rather than
+fixed, because a corrected version would have been a strict subset of this
+checker. A flagged target is therefore both a link to repair and — when the
+target names a genuine concept the wiki has not written yet — an article worth
+creating, which is how p4c-coverage-check.md sources its missing-article list.
 
 Usage:
   python3 scripts/check-dangling-links.py [PATH ...] [--git-diff]
