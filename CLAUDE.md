@@ -1,9 +1,20 @@
 <!--
 Hand-maintained public copy of the private repo's CLAUDE.md. Conventions are
-identical; medication and condition examples are fictional substitutes for the
-private originals. Maintainers: when scripts/sync-to-public.sh reports that the
-private CLAUDE.md changed, port the convention hunks here by hand, keep every
-example generic, then rerun with --claude-md-reviewed.
+identical; every patient-specific example is a fictional substitute for the
+private original — medications, conditions, and the facility and physician
+rosters in "Provenance fields" alike. The fictional rosters keep each role of
+the real ones (ordering clinic, reference lab, hospital, imaging centre, sleep
+lab, and Taiwan sites with Chinese names) so the rules still have something to
+bite on.
+
+Those two tables are not illustration only: scripts/_provenance_vocab.py parses
+them at run time, so THIS file is what the provenance checkers validate against
+in this repo. Keep the `slug | Facility` and `slug | Physician` header rows and
+the backticked slug in each first cell, or those checks stop working here.
+
+Maintainers: when scripts/sync-to-public.sh reports that the private CLAUDE.md
+changed, port the convention hunks here by hand, keep every example generic,
+then rerun with --claude-md-reviewed.
 -->
 
 # Wiki Conventions
@@ -142,10 +153,23 @@ their own translation rules, only point here.
 ### What NOT to translate
 Leave in English:
 - filenames, article titles, and Obsidian backlinks
-- physician names and institution names
+- physician names
+- the **values** of the `facility` and `physician` frontmatter fields — they are
+  machine-matched slugs, not prose (see Provenance fields under Summary File
+  Format)
 - units, and **opaque lab/order identifiers that carry no medical meaning of
   their own** — numeric or catalog codes, LOINC codes, accession numbers, MRN,
   panel item numbers.
+
+**Institution names** are an exception rather than a blanket "leave in English".
+A facility that operates under a Chinese name is *named* in Chinese, so writing
+it English-only is a mistranslation, not a neutral choice. In body prose give a
+Taiwan facility on first mention per section as `English (中文)` —
+`Mingde Memorial Hospital (台北明德)`, `He-An General Hospital (和安醫院)`,
+`Xinyuan Clinic (新苑診所)` — taking both halves verbatim from the facility
+vocabulary table so the same site reads identically everywhere. A US facility
+has no Chinese name and stays English-only (`Riverside Family Medicine`); do not
+invent a Chinese rendering for one.
 
 Two clarifications:
 - Medication brand names are still not translated as ordinary clinical terms,
@@ -246,11 +270,20 @@ authority and its row gets misattributed as a restatement of a neighboring
 concept), and a one-row table also appends cleanly when the test is repeated.
 Follow the `[[hemoglobin-a1c]]` / `[[lipid-panel]]` table shape.
 
-The rule covers **measured patient result values** (a lab/imaging number with a
-unit). It does *not* pull in reference ranges or interpretation thresholds
-(general knowledge), medication doses, qualitative findings with no number, or
-dated *events* (a medication's prescribe/discontinue dates, a diagnosis
-timeline) — those stay prose; they carry no canonical value to anchor.
+The rule covers **every lab/imaging result value reported for the patient**. A
+unit is **not** a prerequisite: dimensionless results — ratios, indices, scores
+— are canonical values too, and a ratio quoted from a report belongs in a
+one-row table exactly like a value in mg/dL. What makes a number canonical is
+that the source document reports it, not that it carries a unit.
+
+It does *not* pull in reference ranges or interpretation thresholds (general
+knowledge), medication doses, qualitative findings with no number, or dated
+*events* (a medication's prescribe/discontinue dates, a diagnosis timeline) —
+those stay prose; they carry no canonical value to anchor. Nor does it cover
+figures **derived in the wiki** rather than reported by the lab: a ratio you
+computed yourself from two reported values is not a result, and putting it in
+the table would let a wiki-side calculation anchor as authority. Keep derived
+figures in prose, labelled as derived.
 
 ## Connections
 - Related to [[concept-a]] because...
@@ -285,6 +318,9 @@ Each wiki/summaries/{name}.md:
 source: {original filename in raw/}
 date-added: {date}
 tags: [tag1, tag2]
+facility: {slug}        # provenance field — see below
+physician: {slug}       # provenance field — see below
+result-status: normal | mixed | abnormal   # provenance field — see below
 ---
 
 # Summary: {Document Title}
@@ -300,6 +336,197 @@ Specific facts, figures, or arguments worth preserving.
 
 ## Backlinks
 Other wiki articles this connects to.
+
+### Provenance fields
+`facility`, `physician`, and `result-status` record **who produced this document
+and how it read** — a different axis from `tags`, which record what the document
+is *about*. Keeping the axes apart is the whole point of these fields: provenance
+was previously encoded as tags (a slug per clinic, a slug per physician, plus
+`abnormal-result`), which polluted the closed clinical vocabulary and, because
+every facility clears the 3-article threshold, would have mechanically demanded
+a MOC for a clinic. Never reintroduce a provenance value as a tag.
+
+**Summaries only.** A summary describes one document from one site on one date,
+so it has a single provenance. A concept spans many draws across years and
+therefore has none — provenance lives per-row in the concept's canonical table
+(the `Lab` column and the ordering physician in `Notes`), not in its frontmatter.
+
+All three fields are **optional and omitted rather than guessed**. A source
+document that does not name its performing site gets no `facility` line; do not
+infer one from the ordering clinic. `/lint` reports what is missing.
+
+That rule binds **inference**, not knowledge. Provenance has three sources, and
+only the third is forbidden: **the document** (the normal case, and the only one
+an agent may act on alone), **the maintainer** (who knows things the paperwork
+omits — record what they tell you), and **inference** (never — not from the
+ordering clinic, not from a filename, not from a same-day sibling without a
+shared printed identifier).
+
+**Never write provenance into `raw/` on your own initiative.** Both the backfill
+procedure and `/lint` read `raw/` as evidence of what a document actually said,
+so a `Facility:` line added there would later read back as document-supplied.
+Rule 1 (never modify `raw/`) exists for this. The one exception is adding a
+`NOTE — PROVENANCE` header to a file the patient wrote themselves, at their
+explicit request.
+
+**Treat no file in `raw/` as a byte-for-byte export.** Source documents arrive in
+many shapes — portal pages, PDFs, paper reports, photos of a printout — and are
+converted to one plain-text file per document, so the content is faithful but the
+shape is not the original's. Some files have no upstream artifact at all: a record
+with no export option, typed out by hand. Keep a note in `raw/` recording which
+files came from which process, and read it before treating any field there as
+machine-generated.
+
+The failure mode to watch is **promoting a human's informal phrasing into a
+structured fact**. A hand-written medication list may open `Exported from …
+Portal on <date>` simply because that is how its author chose to head the file;
+nothing was exported, and the date means "recorded". Ingest reading such a
+heading literally is how a *manufactured* date enters the vault and propagates
+to every file that cites it. When a date in `raw/` is load-bearing, check it
+against a second field in the same document before building on it.
+
+**`facility` — the site that PRODUCED the document**: for a study, the site that
+performed it, not the one that ordered it; for a prescription export, the site
+that prescribed. When a clinic draws a specimen and an outside reference lab
+runs it, the lab is the facility and the ordering clinician is the `physician`;
+that pairing is what makes `facility: metro-labs` + `physician: dr-alvarez`
+readable as "Dr. Alvarez ordered it, Metro Labs ran it". An export that names no
+institution at all — a patient-portal medication list — still gets no field.
+Values:
+
+| slug | Facility | 中文 | Also written |
+|---|---|---|---|
+| `riverside` | Riverside Family Medicine | — | Riverside |
+| `metro-labs` | Metro Reference Laboratories | — | Metro Labs, Metro Reference |
+| `lakeview` | Lakeview Regional Medical Center | — | Lakeview |
+| `northgate-imaging` | Northgate Diagnostic Imaging | — | Northgate |
+| `harbor-sleep` | Harbor Sleep Center | — | Harbor Sleep |
+| `mingde` | Mingde Memorial Hospital, Taipei | 台北明德 | Mingde, 明德 |
+| `hean` | He-An General Hospital, Taipei | 和安醫院 | He-An, 和安 |
+| `xinyuan` | Xinyuan Clinic | 新苑診所 | Xinyuan, 新苑 |
+
+**`Also written`** lists the forms a concept table's `Lab` cell may use for
+that site. It is not decoration: `scripts/extract-provenance-claims.py` reads
+this column to recognize a facility in prose, so a site missing from it makes
+every row naming it read as an unknown clinic. The `Physician` table needs no
+such column — name forms are derived from the name itself.
+
+Taiwan source documents distinguish **`Requesting Institution`** from
+**`Performing Institution`** on the same report, and NHI-uploaded studies often
+carry both. Take `facility` from the performing line. Two narrow cases let a
+document that does not name its own performing site still get one — both
+require printed evidence, not a plausible story:
+
+- **A shared encounter identifier.** A one-day health checkup (一日健診) may
+  produce four documents of which only the sonography names the hospital, while
+  all four print the same checkup number — in the same date-plus-sequence form,
+  spaced on some reports and not on others — and the same MRN. That identifier
+  is a join, not an inference, so all four take the hospital's slug. A same-day,
+  same-patient coincidence with no shared identifier is **not** sufficient.
+- **A modality that can only have been performed at the requesting site.** An
+  overnight in-lab study is the clear case: a polysomnography naming only
+  `Requesting Institution: 台北和安醫院` still takes `facility: hean`, because a
+  night in a sleep lab is not something the ordering hospital sends out. Do not
+  stretch this to specimens — a clinic that requests a blood panel very often
+  does send it out, which is exactly what the performing-site rule exists to
+  capture.
+
+Outside those two, a requesting-only line is the ordering site — omit the field.
+
+**`physician` — the clinician responsible for the document.** Normally one
+value. When a document names more than one clinician for the *same* item,
+prefer in this order:
+
+1. the **ordering / requesting / attending** clinician — this is the usual case,
+   and it is what makes the pair `facility: metro-labs` + `physician: dr-alvarez`
+   read as "Dr. Alvarez ordered it, Metro Labs ran it";
+2. failing that, the **interpreting** physician or radiologist — the read is the
+   document, so on a report that names no orderer the interpreter is the
+   responsible clinician;
+3. on a Taiwan report listing a resident and a visiting staff
+   (`R Chang Yu-Chen / VS Yeh Cheng-Han`), the **VS** is the responsible one.
+
+That precedence settles *one* item with several clinicians attached. A document
+covering **several items with a different author each** is a different case, and
+the precedence does not apply — there is no single responsible clinician to
+pick. Write a flow-style list instead, in the order the document presents them:
+
+```
+physician: [dr-su-yi-fan, dr-ko-ming-hui]
+```
+
+A prescription export is the typical case: one specialist prescribed the
+amlodipine and another the alprazolam, days apart for unrelated problems. Use a
+list only when the document really has multiple authors — do not list a resident
+alongside their visiting staff, or an interpreter alongside the orderer, since
+the precedence above already answers those. Consumers must accept both a bare
+slug and a list.
+
+A document that genuinely names nobody gets no field. Establish that by reading
+the source, not by reasoning from what the document lacks: a Holter report may
+end with its interpretation and signature fields blank yet still name
+`Physician: Dr. 蘇怡帆 (cardiologist)` in the demographics block on page 1. A
+missing *interpretation* says nothing about whether an *ordering* clinician is
+recorded, and the label is often the bare word `Physician:` with no qualifier.
+
+| slug | Physician |
+|---|---|
+| `dr-alvarez` | Dr. Maria Alvarez |
+| `dr-boone` | Dr. Gregory Boone |
+| `dr-okafor` | Dr. Ngozi Okafor |
+| `dr-whitfield` | Dr. Susan Whitfield |
+| `dr-reyes` | Dr. Daniel Reyes |
+| `dr-lu-wei-ting` | Dr. 呂偉庭 (Lu, Wei-Ting) |
+| `dr-su-yi-fan` | Dr. 蘇怡帆 |
+| `dr-ko-ming-hui` | Dr. 柯明慧 |
+| `dr-yeh-cheng-han` | Dr. Yeh Cheng-Han |
+
+Record each name exactly as its source document gives it — one report prints the
+romanization alongside the characters, another gives characters only, and a third
+names its visiting staff in romanization only. Do not supply the missing half
+from inference: a guessed set of characters is a different person's name.
+
+A Taiwan physician recorded under a Chinese name gets a romanized slug and keeps
+the Chinese name in the table. The slug is an identifier, not a display name —
+body prose still writes the name as the source document gives it.
+
+**`result-status` — how the document read as a whole**, judged from what it
+reports rather than from clinical severity:
+
+| value | Meaning |
+|---|---|
+| `normal` | every reported value in range, or a qualitative study read as negative / no significant findings |
+| `mixed` | a multi-analyte panel with some values flagged and some not |
+| `abnormal` | a single abnormal finding, or a dominant one |
+| *(omitted)* | the document reports no test result at all — a medication list, a prescription export |
+
+`mixed` is the honest state for most panels and carries the most weight: a CBC
+flagging WBC while every red-cell index is normal is a different document from a
+lipid panel with all five values elevated. Judge the **document**, not the
+number: a screening score of 0 is `abnormal` when the radiologist also reports an
+unquantifiable finding alongside it, and `normal` when they do not.
+
+### Adding a new facility or physician
+Both vocabularies are closed, like the canonical tags. Before adding a value,
+check whether an existing one covers it — a clinic's slug covers its satellite
+sites, and a hospital's imaging department is the hospital. A new value is
+justified when a source document names a site or clinician not already in the
+table. Add the row here, with the Chinese name if the facility has one,
+**before** using the slug in any file.
+
+The two tables above are **executable**. `scripts/_provenance_vocab.py` parses
+them at run time and both provenance checkers read them from there, so adding
+the row here is the entire edit — there is no second copy in `scripts/` to keep
+in step, and a value used before it is listed fails the check rather than
+passing silently.
+
+The loader matches each table by its header row (`slug | Facility`,
+`slug | Physician`), not by this section's title, so the prose around them can
+be rewritten freely — but keep those two header cells intact, and keep one
+row per site or clinician with the slug in backticks in the first cell.
+This indirection also keeps a real vault's clinics and clinicians out of any
+repository the scripts are published to: `scripts/` is shareable and CLAUDE.md
+is where the roster lives (see the header comment in `_provenance_vocab.py`).
 
 ## Query File Format
 Each query file is named `{YYYY-MM-DD}-{slugified-question}.md`, date-prefixed like
@@ -332,7 +559,7 @@ Full, thorough answer.
 
 ## Canonical Tags
 
-Use only these tags in concept and summary frontmatter. 24 canonical tags total.
+Use only these tags in concept and summary frontmatter. 25 canonical tags total.
 
 ### Clinical domains
 `biomarker` · `cardiology` · `hematology` · `hepatic` · `metabolic` · `glycemic` · `lipid` · `genitourinary` · `immunology` · `gastrointestinal` · `dermatology` · `musculoskeletal` · `sleep-medicine` · `sexual-health` · `neurology` · `respiratory`
@@ -341,7 +568,7 @@ Use only these tags in concept and summary frontmatter. 24 canonical tags total.
 `screening` · `imaging-finding` · `clinical-finding` · `medication` · `procedure`
 
 ### Imaging modalities (summaries only, kept alongside `imaging-finding`)
-`ultrasound` · `mri` · `ct`
+`ultrasound` · `mri` · `ct` · `x-ray`
 
 ### Synonym → canonical mapping
 | Non-canonical | Use instead |
@@ -358,7 +585,7 @@ Use only these tags in concept and summary frontmatter. 24 canonical tags total.
 | cancer-screening | screening |
 | clinical-category, clinical-diagnosis, risk-state, risk-marker, benign | clinical-finding |
 | statin, antihyperglycemic | medication |
-| imaging, ultrasound, mri, ct (on concepts) | imaging-finding |
+| imaging (anywhere); ultrasound, mri, ct, x-ray (on concepts) | imaging-finding |
 
 ### Adding a new canonical tag
 Before creating a new tag, check whether an existing canonical tag covers it.
@@ -415,6 +642,28 @@ Each entry in wiki/index.md:
 - **Tags:** tag1, tag2
 - **Summary:** One sentence description.
 - **Related:** [[article-a]], [[article-b]]
+
+### The Compilation Summary block
+
+`wiki/index.md` opens with a `## Compilation Summary` section that is **owned by
+the ingest workflow** (`prompts/p1-ingest.md` step 7b) — no other workflow writes
+it. It is append-only: the first ingest into an empty vault writes one paragraph,
+and each ingest afterwards appends **one new paragraph** opening with its bold
+date (`**2026-07-27:**`, disambiguated as `**2026-07-27 (second ingest):**` when
+that date is already used). 4–6 sentences: what was ingested, the headline
+finding, the concepts and MOCs touched, and the resulting counts.
+
+**Every** paragraph carries a bold date, the first one included — an undated
+paragraph cannot be sorted or audited. The section runs **oldest-first**, which
+is what makes "append at the end" equivalent to date order; never reverse it.
+`scripts/check-compilation-summary.py` audits the block against the ingest
+history recorded in git and is part of `/lint`.
+
+Never rewrite, re-scope, or delete an existing paragraph, and never append
+sentences onto the end of one. Two consumers depend on one-ingest-one-paragraph:
+`p3-qa.md` reads this block a whole paragraph at a time, and the paragraph is
+the translation counting unit here (see the `wiki/index.md` counting-units rule
+above).
 
 ## Home Page Format
 wiki/home.md has two sections:
