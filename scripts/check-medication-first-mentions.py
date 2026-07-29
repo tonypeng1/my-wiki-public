@@ -390,6 +390,13 @@ def main() -> None:
         print(f"{rel_path}:{line_no}  expected: {expected_text}")
         print(f"  {snippet}")
 
+    # Trailing total — see the note in check-bilingual-terms.py. Keep it last.
+    print()
+    print(
+        f"TOTAL: {len(findings)} flagged line(s) across "
+        f"{len({f for f, _, _, _ in findings})} file(s)."
+    )
+
 
 if __name__ == "__main__":
     main()

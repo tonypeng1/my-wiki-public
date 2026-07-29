@@ -19,6 +19,12 @@ then rerun with --claude-md-reviewed.
 
 # Wiki Conventions
 
+## Response Style
+- Be concise.
+- Answer first, explain only if requested.
+- Do not narrate your reasoning or actions.
+- Provide only enough detail to complete the task.
+
 ## Memory
 All persistent memory lives in `memory/` at the project root. At the start of every conversation,
 read `memory/MEMORY.md` to load the index, then read individual files as needed.
@@ -43,7 +49,13 @@ When saving a new memory or updating an existing one, write to `memory/` — not
   - current.md      → active session conversation (deleted when session closes)
   - log.md          → compact session history, one entry per turn; read at the start
                       of each turn to restore context (deleted when session closes)
-  - archive/        → closed sessions saved as YYYY-MM-DD-{topic-slug}.md (+ -log.md) for reference
+  - archive/        → closed sessions saved as YYYY-MM-DD-{topic-slug}-session.md
+                      (+ -session-log.md) for reference. The `-session` suffix is
+                      required: the query file for the same session is built from the
+                      same topic string and the same date, so without it the two
+                      basenames collide — and Obsidian resolves [[name]] by basename
+                      across the whole vault, which makes every link to that name
+                      ambiguous.
 - wiki/index.md     → master index of all wiki content
 - wiki/processed.log → list of already-processed raw/ files
 
@@ -530,8 +542,9 @@ is where the roster lives (see the header comment in `_provenance_vocab.py`).
 
 ## Query File Format
 Each query file is named `{YYYY-MM-DD}-{slugified-question}.md`, date-prefixed like
-the files in wiki/sessions/archive/. The date is the `date:` value below — the day
-the answer was written. The date prefix applies in the `_superseded/` subfolder, and
+the files in wiki/sessions/archive/ — which share the date prefix but add a
+`-session` suffix, precisely so the two never collide on basename. The date is the
+`date:` value below — the day the answer was written. The date prefix applies in the `_superseded/` subfolder, and
 to handoff documents in `wiki/deliverables/`, too.
 
 Each wiki/queries/{YYYY-MM-DD}-{slugified-question}.md:
@@ -596,12 +609,33 @@ A new tag is justified only if:
 Add the new tag to this list before using it in any file.
 
 ### Cross-cutting tags — no dedicated MOC
-These tags are valid on concept and summary files but intentionally have no MOC file.
-Do NOT create a MOC for them even if 3+ articles share the tag.
+These tags are valid on concept and/or summary files but intentionally have no MOC
+file. Do NOT create a MOC for them even if 3+ articles share the tag.
 
 | Tag | Reason |
 |---|---|
 | `biomarker` | Spans all clinical domains; every domain MOC covers its own biomarkers |
+| `ultrasound` | Modality, not a domain — see below |
+| `mri` | Modality, not a domain — see below |
+| `ct` | Modality, not a domain — see below |
+| `x-ray` | Modality, not a domain — see below |
+
+The four imaging modalities are one exemption, not four. They record **how a
+study was performed**, which is a different axis from what an article is about —
+the same distinction the `facility`/`physician` fields draw against `tags`. A
+`moc-ultrasound` would list an abdominal study and a carotid study side by side
+because they share a transducer, which is not a reason to read them together.
+
+Their findings are already indexed twice: by subject in the domain MOC
+(`moc-hepatic`, `moc-cardiology`, …) and by modality in `moc-imaging-finding`,
+which is the imaging cross-index. Note also that these four are **summaries
+only** (see Canonical Tags above) — a modality MOC could never list a concept.
+
+Once a vault holds more than a handful of studies all four clear the 3-article
+threshold, so without these rows `/lint` step 6b would demand four MOCs on
+every run. That is the same mechanical trap the provenance fields were created to
+avoid: a value that is not a clinical domain earning a domain's navigation
+layer purely by counting.
 
 ## MOC File Format
 Each wiki/mocs/moc-{domain}.md:

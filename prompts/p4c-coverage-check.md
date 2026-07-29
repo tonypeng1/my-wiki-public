@@ -113,7 +113,7 @@ the reason these steps live together rather than firing on every ingest.
    Step 1 creates and expands concept articles, step 2 writes Connections
    prose, and step 3 edits MOC files, wiki/home.md, and wiki/index.md. That is
    new clinical prose, so it carries the same three risks ingest does, and
-   p2-incremental-ingest.md step 7 runs the same three checkers on it. Run
+   p1-ingest.md step 8 runs the same three checkers on it. Run
    these LAST, after every edit above is written, so the diff they inspect is
    complete. All three take `--git-diff` with no path arguments: that covers
    the main content locations (concepts, summaries, MOCs, wiki/index.md,

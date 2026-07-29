@@ -702,6 +702,17 @@ def main() -> None:
         print(f"{rel_path}:{line_no}  {term_list}")
         print(f"  {snippet}")
 
+    # Trailing total. The findings above end on a raw snippet row, so a reader
+    # who pipes this through `tail` cannot tell a truncated list from a short
+    # one. Repeating the count last means the number survives truncation and
+    # stops matching the visible rows, which is the signal that the read was
+    # partial. Keep this the final line.
+    print()
+    print(
+        f"TOTAL: {len(findings)} flagged line(s) across "
+        f"{len({f for f, _, _, _ in findings})} file(s)."
+    )
+
 
 if __name__ == "__main__":
     main()

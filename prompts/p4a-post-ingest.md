@@ -1,4 +1,4 @@
-Run this immediately after p2-incremental-ingest.md to keep tags,
+Run this immediately after p1-ingest.md to keep tags,
 backlinks, and MOCs consistent with newly added content.
 
 Every step here is either script-driven or bounded to what this ingest
@@ -9,12 +9,30 @@ them across several steps. Do not do that work here: its cost does not shrink
 when the ingest is small, so running it per-ingest pays full price for a
 one-document addition.
 
-1. TAG CANONICALIZATION
-   Run: python3 scripts/canonicalize-tags.py
-   The script replaces all non-canonical tags with their canonical
-   equivalents across wiki/concepts/ and wiki/summaries/, handles the
-   imaging-modality special rule for summaries, and prints every file
-   changed with a before→after diff. Report its output.
+1. CLOSED VOCABULARIES — tags and provenance fields
+   a) Run: python3 scripts/canonicalize-tags.py
+   The script does two separate things across wiki/concepts/ and
+   wiki/summaries/. It REWRITES tags that have a known synonym mapping
+   (printing every file changed with a before→after diff), and handles the
+   imaging-modality special rule for summaries. It only REPORTS tags that
+   are outside the canonical set with no known mapping — those are never
+   auto-changed, and the script exits 1 when any exist.
+   Report its output. If it lists unknown tags, do not silently strip them:
+   each one is either a real domain in the wrong vocabulary (map it), or
+   metadata that belongs in a frontmatter field, or junk. Surface the list
+   and ask before editing.
+
+   b) Run: python3 scripts/check-provenance-fields.py
+   Validates `facility`, `physician`, and `result-status` on summaries against
+   the closed vocabularies in CLAUDE.md ("Provenance fields"). Ingest is what
+   writes these fields, so a bad value is caught here the same day, for the
+   same reason as step 2 — and an UNKNOWN VALUE is most often this ingest
+   inventing a slug for a site that needed a CLAUDE.md row first.
+   Surface every failure and ask before editing; the fix differs by kind (add
+   the vocabulary row in both CLAUDE.md and the script, versus correct a typo
+   in the file), and only the maintainer can tell which applies.
+   MISSING is informational. Do not backfill a field by inferring it — only
+   from the raw/ source naming it.
 
 2. CANONICAL RECORD FORMAT
    Run: python3 scripts/detect-list-records.py
@@ -29,11 +47,14 @@ one-document addition.
    table — one row per draw (date, lab, value, flag, source backlink) — per the
    Key Details rule in CLAUDE.md, preserving every value, flag, backlink, and
    Traditional Chinese gloss; do NOT change any data. For PARTIALLY TABULAR,
-   fold the stray bullets into the existing table. Leave dated *events*
-   (medication start/stop dates, diagnosis timelines) as prose — the checker
-   already excludes them. The checker only catches *date-led* series; a single
-   result value or one whose date sits in a header line is not auto-flagged —
-   apply the same one-row-table rule from CLAUDE.md when you notice one.
+   fold the stray bullets into the existing table. For SINGLE VALUE AS BULLET,
+   convert the one value to a one-row table; read that tier as a candidate list
+   rather than a finding, and skip an entry whose number turns out not to be a
+   reported result. Leave dated *events* (medication start/stop dates,
+   diagnosis timelines) as prose — the checker already excludes them. The
+   checker only catches *date-led* values; one whose date sits in a header line
+   is not auto-flagged — apply the same one-row-table rule from CLAUDE.md when
+   you notice one.
    The scan is repo-wide, not limited to this ingest. If it flags a file this
    ingest did not touch, convert it anyway — it is the same fix /lint would
    make — and say in the report which conversions were pre-existing.
@@ -139,7 +160,7 @@ one-document addition.
 7. BILINGUAL, GLOSSARY, AND MEDICATION QA
    Step 4 writes Connections prose into concepts, step 5 writes MOC entries and
    can create a whole MOC, and step 6 repoints links. All of that is new prose
-   written *after* p2-incremental-ingest.md step 7 ran these same three checkers
+   written *after* p1-ingest.md step 8 ran these same three checkers
    on what the ingest itself wrote — so it is the one slice of authored content
    no checker has seen. It is a small slice, which is the point: bounded to a
    diff it costs almost nothing, and left unchecked it waits up to a month for
@@ -193,5 +214,5 @@ one-document addition.
    mentions only what changed is silent about them. Then list the files changed,
    since nothing here is committed and this report is what I review before
    committing.
-   When this runs as the tail of /ingest-increm, fold it into that run's
+   When this runs as the tail of /ingest, fold it into that run's
    report as its own section rather than writing a second report.

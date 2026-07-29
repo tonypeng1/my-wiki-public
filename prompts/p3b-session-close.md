@@ -1,4 +1,13 @@
-The user has asked to end the current session. Follow these steps:
+The user has asked to end the current session.
+
+This is the only publisher in the Q&A pipeline. Every question asked through
+p3-qa.md is a session turn, so this workflow closes both a one-off question — a
+session with a single turn — and a long multi-turn conversation. Nothing below
+special-cases the turn count: at one turn, "compile all turns" in step 3 is
+simply that turn's answer, and the file produced is the standalone answer to
+that question, carrying the same translation checker gate as any other close.
+
+Follow these steps:
 
 1. Check whether wiki/sessions/current.md exists.
    - If it does NOT exist: stop immediately and tell the user there is
@@ -64,15 +73,31 @@ The user has asked to end the current session. Follow these steps:
 
 5. Archive both session files.
 
-   Build {slug} = {session-start date}-{topic-slug}, where topic-slug is
-   the session topic derived in step 3, lowercased and hyphenated and
-   trimmed to ~5 words (e.g. 2026-05-21-liver-health-qa).
+   Build {slug} = {session-start date}-{topic-slug}-session, where
+   topic-slug is the session topic derived in step 3, lowercased and
+   hyphenated and trimmed to ~5 words
+   (e.g. 2026-05-21-liver-health-qa-session).
+
+   The `-session` suffix is load-bearing, not decoration. Step 4 names the
+   query file from the SAME step-3 topic with the SAME date prefix, so
+   without it the two filenames are two independent sluggings of one string
+   and collide whenever the abbreviations happen to match — which is how
+   2026-07-12-fungus-ball-facial-pain-meds.md came to exist in both
+   wiki/queries/ and wiki/sessions/archive/. Obsidian resolves [[name]] by
+   basename across the whole vault, so such a pair makes every link to that
+   name ambiguous. Never drop the suffix, and never "tidy" it out of an
+   existing archive filename.
 
    wiki/sessions/current.md → wiki/sessions/archive/{slug}.md
    wiki/sessions/log.md     → wiki/sessions/archive/{slug}-log.md
 
-   If {slug}.md already exists, append a counter suffix to both:
-   {slug}-2.md and {slug}-2-log.md, etc.
+   Before saving, check the basename against the WHOLE vault, not just
+   wiki/sessions/archive/ — a per-directory check cannot see the collision
+   that matters:
+     find wiki -name '{slug}.md'
+   If anything comes back, append a counter after the suffix, to both files:
+   {slug}-2.md and {slug}-2-log.md, etc. (so
+   2026-05-21-liver-health-qa-session-2.md).
 
    Before saving each, edit the frontmatter:
    - remove the `status:` line — presence in the archive folder is
@@ -93,7 +118,7 @@ The user has asked to end the current session. Follow these steps:
    - both archived session files from step 5 (`{slug}.md` and
      `{slug}-log.md`) — apply the default per-section two-per-term rule.
    Reuse glossary wording, and use the `generic (Brand, Taiwan name)`
-   medication first-mention format. Because p3a already translated the
+   medication first-mention format. Because p3-qa.md already translated the
    answer prose as it was written, this is mostly verification and
    patching gaps, not a full rewrite.
 

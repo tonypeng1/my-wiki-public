@@ -42,15 +42,25 @@ from _claims_common import (
 UNITS = (
     r"mg/dL|mmol/L|U/L|IU/L|mg|mL|dL|mmHg|kg|lbs|bpm|BPM|ms|mm|cm|%|IU|g"
 )
+# Dimensionless results carry no unit but are canonical values all the same
+# (see the Key Details rule in CLAUDE.md). Kept in step with the SCORE_WORDS
+# list in scripts/detect-list-records.py — that script decides whether such a
+# value is written as a table, this one reads it once it is.
+SCORE_WORDS = r"ratio|score|index|AHI|RDI|ODI|BMI|PLMI"
 # What counts as a numeric claim in prose
 CLAIM_RE = re.compile(
     r"""
-      \d+\.\d+                      # decimal value: 28.4, 5.2
+      \d+\.\d+                      # decimal value: 28.4, 6.42
     | \d{4}-\d{2}-\d{2}             # ISO date
-    | \d+\s*(?:""" + UNITS + r""")\b   # value with unit
+    | \d+\s*(?:""" + UNITS + r""")(?![A-Za-z0-9])  # value with unit; lookahead
+                                    # not \b — `%` is non-word, \b after it
+                                    # never matches, so "60%" would be missed
     | \d+\s*[–—-]\s*\d+             # range: 100–125
     | \d+\s*(?:→|->)\s*\d+          # series: 110 → 92
     | \b\d{2,3}\s*(?:H|L|HIGH|LOW)\b   # flagged integer: 261 H
+    | \b(?i:""" + SCORE_WORDS + r""")(?:\s*\([^)]*\)){0,2}(?:\s+of)?\s*[:=]?\s*[-−+]?\d+(?:\.\d+)?
+                                    # dimensionless result: PLMI = 0,
+                                    # Agatston score 407, AHI (呼吸中止低通氣指數) 7
     """,
     re.VERBOSE,
 )

@@ -31,6 +31,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Blood pressure / BP: 血壓
 - Calcium deposits: 鈣化沉積
 - Calcification: 鈣化
+- Calcium focus: 鈣化灶
 - Carotid artery: 頸動脈
 - Carotid atheroma: 頸動脈粥狀斑塊
 - Carotid bifurcation: 頸動脈分叉處
@@ -43,6 +44,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Coronary artery calcium / CAC: 冠狀動脈鈣化
 - Coronary artery calcium scoring / CAC scoring: 冠狀動脈鈣化評分
 - Coronary artery calcium score / CAC score: 冠狀動脈鈣化分數
+- Coronary artery calcium score CT / CAC score CT: 冠狀動脈鈣化分數電腦斷層
 - Coronary arterial wall: 冠狀動脈壁
 - Duplex ultrasound: 雙功能超音波
 - Dyspnea: 呼吸困難
@@ -73,7 +75,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Chest pain: 胸痛
 - Chest pressure: 胸悶
 - Chest X-ray: 胸部X光
-- Chlamydia: 披衣菌感染
+- Chlamydia: 披衣菌
+- Chlamydial infection: 披衣菌感染
 - Cardioselective beta blocker: 心臟選擇性β阻斷劑
 - Chronic heart failure: 慢性心臟衰竭
 - Conduction block: 傳導阻滯
@@ -124,7 +127,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Nocturnal bradycardia: 夜間心搏過緩
 - Palpitations: 心悸
 - Pleural space / pleural spaces: 胸膜腔
-- Plaque: 斑塊
+- Plaque / plaques: 斑塊
 - Pressure overload: 壓力負荷過重
 - Premature ventricular contraction / PVC: 心室早期收縮
 - Pulmonary vasculature: 肺血管
@@ -181,6 +184,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Cytochrome P450 3A4 / CYP3A4: 細胞色素 P450 3A4
 - Abdominal cramping: 腹部絞痛
 - Abdominal ultrasound: 腹部超音波
+- Abdominal X-ray: 腹部X光
+- Abdomen/pelvis CT: 腹部／骨盆電腦斷層
 - Acetaminophen: 乙醯胺酚
 - Albumin: 白蛋白
 - Albumin-to-globulin ratio / A/G ratio: 白蛋白/球蛋白比值
@@ -227,6 +232,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Central adiposity: 中心性肥胖
 - Chloride / Cl: 氯
 - Cholestasis: 膽汁鬱積
+- Cholesterol: 膽固醇
 - Cholesterol biosynthesis: 膽固醇生合成
 - Cholesterol fraction / cholesterol fractions: 膽固醇分率
 - Cirrhosis: 肝硬化
@@ -257,6 +263,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Extended-release / ER (no-match): 緩釋型
 - Fall prevention: 預防跌倒
 - Fasting blood test: 空腹抽血檢查
+- Fasting comprehensive metabolic panel / fasting CMP: 空腹完整代謝功能套組
 - Fasting glucose: 空腹血糖
 - Fasting hyperglycemia: 空腹高血糖
 - Fasting plasma glucose: 空腹血漿葡萄糖
@@ -290,9 +297,10 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Gold standard: 黃金標準
 - Gonorrhea: 淋病
 - Gut microbiome: 腸道微生物相
-- HDL cholesterol / HDL-C: 高密度脂蛋白膽固醇
-- HDL particle: 高密度脂蛋白顆粒
+- HDL cholesterol / HDL-C / HDL: 高密度脂蛋白膽固醇
+- HDL particle / HDL particles: 高密度脂蛋白顆粒
 - Hemangioma: 血管瘤
+- Hepatic hemangioma: 肝血管瘤
 - Hemoglobin: 血紅素
 - Hemoglobin A1C / HbA1c / A1C: 糖化血色素
 - Hemoglobinopathy: 血紅素病
@@ -307,6 +315,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hepatic release: 肝臟釋放
 - Hepatic segment (S1–S8): 肝段
 - Hepatic steatosis: 肝脂肪變性
+- Steatosis: 脂肪變性
 - Hepatic vein / hepatic veins: 肝靜脈
 - Hepatobiliary ultrasound: 肝膽超音波
 - Hepatocellular adenoma: 肝細胞腺瘤
@@ -350,6 +359,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Lipoprotein: 脂蛋白
 - Lipoprotein sub-fraction: 脂蛋白分率
 - Left hepatic lobe: 肝左葉
+- Liver: 肝臟
 - Liver and biliary enzyme: 肝膽酵素
 - Liver enzyme: 肝臟酵素
 - Liver function: 肝功能
@@ -369,7 +379,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Metabolic improvement: 代謝改善
 - Metabolic nadir: 代謝低點
 - Metabolic panel: 代謝功能套組
-- Metabolic sympathetic tone: 代謝性相關交感神經張力
+- Metabolic sympathetic tone: 代謝相關交感神經張力
 - Metabolic syndrome: 代謝症候群
 - Metabolism: 代謝
 - Metastasis / metastases: 轉移 / 轉移灶
@@ -398,6 +408,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Pancreatic steatosis: 胰臟脂肪變性
 - Pancreatitis: 胰臟炎
 - Patent: 通暢
+- Peripheral tissue / peripheral tissues: 周邊組織
 - Peripheral insulin sensitivity: 周邊胰島素敏感性
 - Pharmacological intervention: 藥物介入
 - Pleural effusion: 胸腔積液
@@ -410,6 +421,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Pregnancy: 懷孕
 - Primary biliary cholangitis: 原發性膽汁性膽管炎
 - Protective cholesterol fraction: 保護性膽固醇分率
+- Protective: 具保護性
 - Protective range / protective band: 保護性範圍 / 保護區間
 - Pulmonary nodule: 肺結節
 - Random glucose: 隨機血糖
@@ -422,6 +434,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Reference range: 參考範圍
 - Regression: 消退
 - Remnant lipoprotein: 殘餘脂蛋白
+- Renal: 腎臟
 - Renal impairment: 腎功能不全
 - Retinopathy: 視網膜病變
 - Rhabdomyolysis: 橫紋肌溶解
@@ -655,6 +668,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Red cell distribution width / RDW: 紅血球體積分布寬度
 - Red-cell maturation: 紅血球成熟
 - Reflex culture: 反射性尿液培養
+- Reflex quantitative: 反射性定量
+- Analyte / analytes: 分析項目
 - Reflex RPR: 反射性 RPR
 - Relative neutrophilia: 相對性嗜中性球偏高
 - Routine blood draw: 常規抽血
@@ -1030,7 +1045,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Disc narrowing / disc space narrowing: 椎間盤狹窄
 - Disc repositioning surgery: 關節盤復位手術
 - Dry mouth: 口乾
-- Dysesthesia: 不悅異常感
+- Dysesthesia: 令人不悅的異常感覺
 - Dynamic study: 動態檢查
 - ENT / otolaryngology: 耳鼻喉科
 - Extracranial: 顱外
@@ -1120,7 +1135,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Oral appliance / oral appliances: 口腔裝置
 - Opioid / opioids: 鴉片類藥物
 - Orbit / orbits: 眼眶
-- Orthostasis: 姿勢性反應
+- Orthostasis: 直立姿勢
 - Orthostatic hypotension: 姿勢性低血壓
 - Osteopenia: 骨質缺乏
 - Osteophyte / osteophytes / bone spur / bone spurs: 骨刺
@@ -1134,7 +1149,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Perforating artery / small perforating arteries: 小穿通動脈
 - Peripheral neuropathy: 周邊神經病變
 - Pharmacological treatment: 藥物治療
-- Physical dependence: 身體依賴
+- Physical dependence: 生理依賴
 - Physical therapy: 物理治療
 - Plain radiography: X光攝影
 - Plasma concentration: 血漿濃度
@@ -1204,12 +1219,39 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 
 ## Dermatology
 
+- Acanthosis: 棘層增生
+- Basal cell carcinoma: 基底細胞癌
+- Benign: 良性
 - Benign finding: 良性發現
+- Clinical appearance: 臨床外觀
+- Clinical history: 病史
 - Clinical significance: 臨床重要性
+- Cryotherapy: 冷凍治療
+- Cytologic atypia: 細胞學異型性
+- Electrodessication: 電乾燥法
+- Epidermal keratinocyte / epidermal keratinocytes: 表皮角質形成細胞
+- Excision / excised: 切除
+- Facial lesion: 臉部病灶
+- Fibrotic papillary dermis: 真皮乳頭層纖維化
+- General surgery: 一般外科
+- Hematologic: 血液學相關
+- Hepatic: 肝臟相關
+- Malignant potential: 惡性潛能
+- Melanoma: 黑色素瘤
+- Multifocal: 多發性
+- Palm / palms: 手掌
+- Pathologically confirmed: 經病理證實
+- Precancerous: 癌前病變
+- Prevalence: 盛行率
+- Proliferation: 增生
+- Pseudohorn cyst / pseudohorn cysts: 偽角質囊腫
 - Seborrheic keratosis: 脂漏性角化症
+- Skin cancer: 皮膚癌
 - Shave biopsy: 刮除式活體組織檢查
 - Skin: 皮膚
-- Skin growth: 皮膚增生物
+- Skin growth / skin growths: 皮膚增生物
+- Sole / soles: 足底
+- Treatment: 治療
 
 ## Pharmacology and Medication Management
 
@@ -1219,6 +1261,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Dose escalation: 劑量增加
 - Dose reduction: 減量
 - Fixed daily dose: 固定每日劑量
+- Fish oil: 魚油
 - Gastric emptying: 胃排空
 - Hybrid regimen: 混合療程
 - Immediate-release: 速放型
@@ -1236,4 +1279,4 @@ Add uncertain or source-specific translation questions here instead of guessing.
 
 - EBV-IgA (Epstein–Barr virus IgA, nasopharyngeal-carcinoma screening marker): proposed EB 病毒 IgA 抗體 — confirm Taiwan clinical wording before promoting to a glossary entry. Left in English inline in `moc-screening.md` for now.
 - CA19-9 (cancer antigen 19-9, pancreatic/GI tumor marker): commonly kept as the English code in Taiwan reports; proposed 醣類抗原 19-9 — confirm before promoting. Left in English inline in `moc-screening.md` for now.
-- General health panel (broad adult screening bundle, e.g. CPL-9329): proposed 健康檢查套組 (composed from confirmed 健康檢查 + 套組) — confirm preferred Taiwan wording (vs. 一般健康檢查/健檢套組) before promoting. Added only as a search `aliases` entry on `general-health-panel.md` for now, not used in inline prose.
+- General health panel (broad adult screening bundle ordered under a single lab panel code): proposed 健康檢查套組 (composed from confirmed 健康檢查 + 套組) — confirm preferred Taiwan wording (vs. 一般健康檢查/健檢套組) before promoting. Added only as a search `aliases` entry on `general-health-panel.md` for now, not used in inline prose.

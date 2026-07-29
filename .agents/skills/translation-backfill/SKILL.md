@@ -10,6 +10,9 @@ Run the repository workflow defined in `prompts/translation-backfill.md`.
 Before acting, read `AGENTS.md`, `CLAUDE.md`, `memory/MEMORY.md`, any relevant
 memory files it references, and `prompts/translation-backfill.md` in full.
 
+Use the user's requested scope as the prompt's scope argument. If no scope was
+provided, choose the next reasonable backfill batch yourself.
+
 Then execute the prompt instructions exactly. Preserve Obsidian-style
 `[[backlinks]]`, English filenames and titles, canonical tags, and the
 repo's Taiwan Traditional Chinese glossary conventions.

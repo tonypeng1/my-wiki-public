@@ -42,12 +42,14 @@ checks in order:
    table — one row per draw (date, lab, value, flag, source backlink) — per the
    Key Details rule in CLAUDE.md, preserving every value, flag, backlink, and
    Traditional Chinese gloss; do NOT change any data. For PARTIALLY TABULAR,
-   fold the stray bullets into the existing table. Leave dated *events*
-   (medication start/stop dates, diagnosis timelines) as prose — the checker
-   already excludes them. The checker only catches *date-led* series; a single
-   result value or one whose date sits in a header line is not auto-flagged —
-   apply the same one-row-table rule from CLAUDE.md when you notice one. List
-   each conversion in the health check report.
+   fold the stray bullets into the existing table. For SINGLE VALUE AS BULLET,
+   convert the one value to a one-row table; read that tier as a candidate list
+   rather than a finding, and skip an entry whose number turns out not to be a
+   reported result. Leave dated *events* (medication start/stop dates,
+   diagnosis timelines) as prose — the checker already excludes them. The
+   checker only catches *date-led* values; one whose date sits in a header line
+   is not auto-flagged — apply the same one-row-table rule from CLAUDE.md when
+   you notice one. List each conversion in the health check report.
 
 3. MISSING BACKLINKS
    Run: python3 scripts/connections-index.py
@@ -84,13 +86,47 @@ checks in order:
    `aliases`/`cn-title` are search/display metadata — do NOT bump `updated` for them.
    List any medication field gaps in the health check report.
 
-5. TAG CANONICALIZATION
-   Run: python3 scripts/canonicalize-tags.py
-   The script replaces all non-canonical tags with their canonical
-   equivalents across wiki/concepts/ and wiki/summaries/, handles the
-   imaging-modality special rule for summaries, and prints every file
-   changed with a before→after diff. Include its output verbatim in
-   the health check report. No file reads are needed for this step.
+5. CLOSED VOCABULARIES — tags and provenance fields
+   Two closed vocabularies live in frontmatter and drift the same way, so
+   check them together.
+
+   a) Run: python3 scripts/canonicalize-tags.py
+   The script does two separate things across wiki/concepts/ and
+   wiki/summaries/. It REWRITES tags that have a known synonym mapping
+   (printing every file changed with a before→after diff), and handles the
+   imaging-modality special rule for summaries. It only REPORTS tags that
+   are outside the canonical set with no known mapping — those are never
+   auto-changed, and the script exits 1 when any exist.
+   Report unknown tags as a finding rather than fixing them inline: each is
+   either a real domain in the wrong vocabulary, metadata belonging in a
+   frontmatter field, or junk, and that call needs the maintainer.
+   No file reads are needed for this sub-step.
+
+   b) Run: python3 scripts/check-provenance-fields.py
+   Validates `facility`, `physician`, and `result-status` on summaries
+   against the closed vocabularies in CLAUDE.md ("Provenance fields").
+   Three failures, all reported and none auto-fixed, all needing the
+   maintainer for the same reason unknown tags do:
+   - UNKNOWN VALUE — a new site or clinician never added to CLAUDE.md, or a
+     typo'd slug that will silently never match. Read the summary and the
+     raw/ source to tell which before touching anything: a real new
+     facility gets a row in the CLAUDE.md table, which is the only edit
+     needed (the script reads that table at run time and holds no copy of
+     it); a typo gets corrected in the file.
+   - WRONG FILE TYPE — a provenance field on a concept. Concepts span many
+     draws and carry provenance per-row in their canonical table instead.
+   - PROVENANCE AS TAG — the regression these fields exist to prevent.
+     Provenance was tags before — a clinic slug, a physician slug,
+     `abnormal-result` — which polluted the clinical vocabulary and, since
+     every facility clears the 3-article threshold, would have demanded a
+     MOC for a clinic. Move the value to its field; do not just delete the
+     tag.
+   MISSING is informational, not a failure — the fields are omitted rather
+   than guessed. Do NOT backfill one by inferring it from a filename or a
+   neighbouring summary; only from the raw/ source naming it. Report the
+   count, and name any file whose source clearly does record a site that
+   the summary is missing.
+   Include both scripts' output verbatim in the health check report.
 
 6. MOC FRESHNESS
    Run: python3 scripts/tag-index.py
@@ -150,7 +186,7 @@ checks in order:
 
 9. Write a health check report to wiki/maintenance/health-check-{today's date}.md
    with sections: wiki state summary · missing concepts created · thin articles expanded
-   · list-format records converted · backlinks added · dangling links fixed · missing frontmatter fields added (aliases, cn-title, medication brand fields) · misplaced queries moved · recommended new articles.
+   · list-format records converted · backlinks added · dangling links fixed · compilation summary gaps backfilled · missing frontmatter fields added (aliases, cn-title, medication brand fields) · closed-vocabulary findings (unknown tags, provenance field violations, provenance gaps) · misplaced queries moved · recommended new articles.
 
 10. Using the in-memory wiki/index.md (already updated with any new MOC
     entries in step 6), append the health check report entry and write
@@ -177,17 +213,54 @@ checks in order:
     Rerun until no dangling links remain. Add a one-line result (links
     fixed, or "clean") to the health check report from step 9.
 
-12. BILINGUAL, GLOSSARY, AND MEDICATION QA
+12. COMPILATION SUMMARY AUDIT
+    The `## Compilation Summary` block at the top of wiki/index.md is owned by
+    the ingest workflow (p1-ingest.md step 7b): one dated paragraph per ingest,
+    appended at the end, never rewritten. It drifts silently — nothing fails
+    when an ingest forgets its paragraph — and p3-qa.md reads this block for
+    chronology and discovery-sequence questions, so a gap quietly degrades
+    those answers. Run:
+    `python3 scripts/check-compilation-summary.py`
+    It cross-references the block against the ingest history in git (the
+    commits that added files to wiki/processed.log) and reports four kinds:
+    - MISSING — an ingest with no paragraph near its date. Reconstruct it from
+      the commit and the summary articles that commit created, and head it
+      `**{date} (backfilled {today}):**` so it does not pose as
+      contemporaneous. Take the counts from git (`git ls-tree` at that commit),
+      never invent them.
+    - ORDER — paragraphs out of ascending order. The section runs oldest-first
+      so that "append at the end" stays equivalent to date order; re-sort it,
+      and never reverse the section to fix this.
+    - FOREIGN — session Q&A content. No other workflow may write here, and a
+      query already gets its own wiki/index.md entry. Before removing any,
+      confirm its content is recorded elsewhere (query file, archive, or
+      concept article) so nothing is lost.
+    - UNDATED — a paragraph with no bold date header; give it one.
+    INFO lines are not findings: one commit can bundle several ingest runs, and
+    a run is often committed the following day.
+    Any paragraph written or repaired here is new clinical prose — it must go
+    through the translation QA in the next step like everything else.
+    Add a one-line result (paragraphs backfilled, or "clean") to the health
+    check report from step 9.
+
+13. BILINGUAL, GLOSSARY, AND MEDICATION QA
     Every run of this workflow edits MOC files, wiki/home.md, and
     wiki/index.md, and step 2 may create or expand concept articles. That is
     new clinical prose, so it carries the same three risks ingest does, and
-    p2-incremental-ingest.md step 7 runs the same three checkers on it. Run
+    p1-ingest.md step 8 runs the same three checkers on it. Run
     these LAST, after every edit above is written — including the link
     repairs in step 11 — so the diff they inspect is complete. All three take
     `--git-diff` with no path arguments: that covers the main content
     locations (concepts, summaries, MOCs, wiki/index.md, wiki/home.md),
     bounds output to the lines this run changed, and scans any new/untracked
     file — such as an article created in step 2 — in full.
+
+    Read each checker's output in full; never pipe it through `head` or
+    `tail`. Findings run two lines each and a `tail` drops them off the TOP,
+    where nothing marks the loss, so a truncated read looks exactly like a
+    short clean one. Each checker closes with `TOTAL: N flagged line(s)` for
+    this reason: if N exceeds the rows you can see, the list is partial and
+    the check is not done.
 
     a) Run: python3 scripts/check-bilingual-terms.py --git-diff
        English clinical terms written without their Traditional Chinese

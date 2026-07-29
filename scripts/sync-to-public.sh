@@ -182,8 +182,9 @@ check_orphan_root_docs() {
 # ── privacy gate (fail-closed) ─────────────────────────────────────────────
 # Derives patient-identifying terms from the vault at run time — medication
 # generic names (basenames of medication-tagged concepts), their brand /
-# taiwan-brand-name field values, and the patient's Chinese name(s) from
-# memory/patient-name.md — then refuses to sync if any allowlisted file, or
+# taiwan-brand-name field values, the patient's Chinese name(s) from
+# memory/patient-name.md, and the facility / physician rosters out of the
+# CLAUDE.md provenance tables — then refuses to sync if any allowlisted file, or
 # either hand-maintained public file (CLAUDE.md, memory/MEMORY.md), contains
 # one. The list is derived rather than hardcoded for two reasons: a literal
 # list here would itself leak (this script ships to the public repo), and a
@@ -233,6 +234,48 @@ run_privacy_gate() {
     done < <(perl -CSD -ne 'print "$1\n" while /(\p{Han}{3,})/g' \
                "$SRC/memory/patient-name.md" | sort -u)
   fi
+
+  # Facility and physician rosters. They live only in CLAUDE.md, which never
+  # syncs, so that the two provenance checkers can ship without them — see
+  # scripts/_provenance_vocab.py. Deriving them here closes the loop: the
+  # loader stops a roster being written into a file that ships, and this stops
+  # one being pasted back.
+  #
+  # Both checkers did carry hardcoded rosters, Chinese names included, and this
+  # gate passed them on every run, because medications were the only thing it
+  # knew to look for. A denylist that covers one category of identifier reads
+  # as protection while providing none.
+  local kind term vocab_terms
+  if ! vocab_terms="$(python3 -c '
+import sys
+sys.path.insert(0, sys.argv[1] + "/scripts")
+import _provenance_vocab as v
+a, c = v.identifying_terms()
+for t in a: print("ascii\t" + t)
+for t in c: print("cjk\t" + t)
+' "$SRC" 2>&1)"; then
+    echo "=== PRIVACY GATE: SYNC BLOCKED ==="
+    echo "Could not derive the facility/physician denylist from CLAUDE.md:"
+    echo
+    printf '  %s\n' "$vocab_terms"
+    echo
+    echo "That list is what keeps the patient's clinics and clinicians out of the"
+    echo "public repo, so the sync stops rather than running without it. Repair the"
+    echo "provenance tables in CLAUDE.md — or scripts/_provenance_vocab.py — and"
+    echo "rerun. Do not work around this by skipping the derivation."
+    exit 1
+  fi
+
+  while IFS=$'\t' read -r kind term; do
+    [[ -n "$term" ]] || continue
+    if [[ "$kind" == "cjk" ]]; then
+      cjk_terms+=("$term")
+    elif [[ "$term" != *" "* ]] && grep -qixF "$term" /usr/share/dict/words 2>/dev/null; then
+      skipped+=("$term")
+    else
+      ascii_terms+=("$term")
+    fi
+  done <<< "$vocab_terms"
 
   if [[ ${#ascii_terms[@]} -eq 0 && ${#cjk_terms[@]} -eq 0 ]]; then
     echo "Privacy gate: no denylist derivable (no medication concepts found) — skipped."

@@ -1,10 +1,12 @@
 Perform a targeted contradiction check on the wiki.
 Run this occasionally — it is not part of the standard health check.
 
-Scope: two passes over wiki/concepts/.
+Scope: three passes over wiki/concepts/.
 - NUMERIC (steps 1-4): specific values, dates, reference ranges, test results.
 - STATUS (step 5): whether a medication is being taken and whether a condition
   is active — "currently taking" vs "discontinued", "active" vs "in remission".
+- PROVENANCE (step 6): where a study was performed and who ordered it, as
+  asserted by a concept table row versus the summary that row cites.
 
 Still NOT covered by either pass, and to be named when reporting: level and
 severity wording ("elevated" vs "normal", "mild" vs "severe"), which is
@@ -191,12 +193,57 @@ words; and conflicting causal claims.
    still carry the old state; that list is the fix, and it usually spans more
    files than the one flagged.
 
-6. Report. Include:
+6. PROVENANCE CLAIMS
+   Run: python3 scripts/extract-provenance-claims.py
+   A concept table row restates provenance its summary already records in
+   frontmatter — the `Lab` cell names the site, `Notes` often names the
+   ordering physician, and the row backlinks to the summary for that draw.
+   The script compares the two and prints three kinds.
+
+   EVERY provenance finding is TIER B. There is no Tier A here, for a reason
+   specific to this pass: the summary `facility`/`physician` fields were
+   migrated from a hand-written tag layer that was demonstrably lossy — one
+   clinic was never tagged at all, though five concept rows name it — so the
+   summary is NOT authority over the concept cell, and neither is the reverse.
+   Use the step 4 option menu for each.
+
+   MISMATCH — row and summary both state a value and they differ. Before
+   flagging one, rule out the benign case, which is the common one: `facility`
+   records the site that PERFORMED the study while a concept row may name the
+   ordering clinic. A clinic-vs-reference-lab disagreement on a specimen one
+   drew and the other ran is correct on both sides and is not a finding. Open
+   the summary and check which role each name is playing before writing it up.
+
+   UNRECORDED — the concept table asserts a site or clinician the cited
+   summary does not record. These are backfill leads, and they are the useful
+   half of this pass: the concept table is the only place the wiki still holds
+   that provenance. Do NOT copy the cell into the summary on the strength of
+   this output — the concept cell is hand-written too. Confirm against the
+   raw/ source, and only then set the field. Where a lead is marked
+   CONFLICTING, the concept rows disagree with each other, so at most one can
+   be right and the source has to settle it; report it rather than picking.
+
+   UNKNOWN — a Lab-column value outside the vocabulary in CLAUDE.md. Either a
+   real facility that was never added (add the row to the facility table in
+   CLAUDE.md) or a display form the script does not know (add it to that row's
+   `Also written` column). Both edits are in CLAUDE.md — the script reads the
+   table at run time and holds no copy. Never edit a concept table to suit the
+   checker.
+
+   A summary whose field is genuinely unknowable stays empty — omitted-not-
+   guessed is the rule (CLAUDE.md, Provenance fields), so an UNRECORDED lead
+   that the raw/ source does not confirm is closed by leaving it alone, not by
+   inferring a value.
+
+7. Report. Include:
    - TIER A: what was changed, as before → after with file:line
-   - TIER B: the findings and their option menus, numeric and status together
+   - TIER B: the findings and their option menus — numeric, status, and
+     provenance together
    - if nothing was found, say so explicitly so I know the check ran
    - coverage: how many blocks were anchored vs peer, how many status groups
-     were CONFLICT vs REVIEW, and a reminder of what neither pass checks
-     (level/severity wording, presence, causal claims — see Scope above)
+     were CONFLICT vs REVIEW, how many concept rows the provenance pass
+     compared and how many backfill leads it produced, and a reminder of what
+     no pass checks (level/severity wording, presence, causal claims — see
+     Scope above)
 
    A clean-looking report must not hide an incomplete check.

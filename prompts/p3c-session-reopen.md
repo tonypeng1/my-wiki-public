@@ -62,7 +62,7 @@ The user wants to reopen a previously closed session. Follow these steps:
    - Which archive files were restored (current.md + log.md)
    - The session-start date
    - How many prior turns are now in context
-   - That they can continue immediately using p3a-session-qa.md
+   - That they can continue immediately using p3-qa.md
 
    Remind them that when they close this session with
    p3b-session-close.md, the existing consolidated query file (if any)

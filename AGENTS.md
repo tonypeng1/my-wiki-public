@@ -10,12 +10,21 @@ project memory, write it under `memory/`, not under a tool-specific global
 memory directory.
 
 Use the prompt files in `prompts/` as reusable workflow instructions. Claude
-Code slash commands in `.claude/commands/` are wrappers around those prompts;
-Codex should read and execute the corresponding `prompts/*.md` file directly
-when the user asks for that workflow by name.
+Code slash commands in `.claude/commands/` are wrappers around those prompts and
+are not Codex's entry point.
 
-For the incremental ingest workflow, Codex can also use the repo skill
-`$ingest-increm`, defined in `.agents/skills/ingest-increm/`.
+Every workflow is packaged as a repo skill under `.agents/skills/`, named to
+match its Claude slash command: `$ingest`, `$post-ingest`, `$qa`,
+`$session-close`, `$session-reopen`, `$contradiction-check`, `$coverage-check`,
+`$triage-queries`, `$translation-backfill`, `$lint`, `$slides`, `$synthesis`,
+`$sync-to-public`, and `$commit-push-codex` (Codex's `/commit-push`, with a
+Codex co-author trailer).
+
+Prefer the skill over the prompt file. A skill can do more than read one
+prompt — `$ingest` chains `prompts/p4a-post-ingest.md` after
+`prompts/p1-ingest.md` whenever new files were added — so executing a
+`prompts/*.md` file directly may silently skip a required pass. Read a prompt
+directly only when the user names that file, or when no skill covers it.
 
 Never modify files in `raw/`. Keep generated wiki content under `wiki/`, keep
 automation under `scripts/`, and preserve Obsidian-style `[[backlinks]]`.
