@@ -1,16 +1,28 @@
 # 🩺 my-wiki
 
-An **AI-compiled personal health wiki** — raw lab results, imaging reports, and clinical notes go in; a cross-linked, bilingual (with 繁體中文) medical knowledge base comes out, compiled and maintained entirely by AI prompts.
+An **AI-compiled personal health wiki**: add raw lab results, imaging reports,
+and clinical notes, then use AI prompts to build and maintain a cross-linked,
+bilingual medical knowledge base with Traditional Chinese (繁體中文) glosses.
 
-The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17** clinical domains · 📄 **80** source documents · 💬 **19** saved Q&As · 🎞️ **9** slide decks · 🤝 **4** handoff docs · 🈶 bilingual (English · 繁體中文). The Obsidian graph view below shows the current state of the wiki. **A fresh clone starts empty and grows as you ingest your own documents.**
+The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17**
+clinical domains · 📄 **80** source documents · 💬 **19** saved Q&As · 🎞️ **9**
+slide decks · 🤝 **4** handoff docs · 🈶 bilingual (English · 繁體中文). The graph
+below shows that current vault. **A fresh clone starts empty and grows as you
+ingest your own documents.**
 
 <img src="docs/graph-view.png" alt="Obsidian graph view of the wiki" width="380">
 
-> ⚕️ **Scope: medical data only.** The tagging taxonomy, article formats, and MOC (Map of Content) structure are purpose-built for clinical domains. Non-medical documents (finance, recipes, general notes) can't be meaningfully tagged here — use a separate wiki for those.
+> ⚕️ **Scope: medical data only.** The tags, article formats, and MOC (Map of
+> Content) structure are designed for clinical domains. Keep finance, recipes,
+> and general notes in a separate wiki.
 
 ## 1. ✨ Overview
 
-Source documents in `raw/` — lab panels, imaging reports, clinical notes, medication records — are ingested and transformed into structured **concept articles**, **summaries**, **Q&A records**, and **deliverables** (physician handoffs and Marp slide decks), all cross-linked with Obsidian-style `[[backlinks]]` and glossed inline with Traditional Chinese for clinical vocabulary.
+Ingest turns source documents in `raw/` — lab panels, imaging reports, clinical
+notes, and medication records — into structured **summaries**, **concept
+articles**, **Q&A records**, and **deliverables** such as physician handoffs and
+Marp slide decks. The resulting notes use Obsidian-style `[[backlinks]]` and
+inline Traditional Chinese glosses for clinical vocabulary.
 
 ```mermaid
 flowchart LR
@@ -19,16 +31,23 @@ flowchart LR
     C --> O["🧭 navigation · 💬 queries · 🎞️ deliverables"]
 ```
 
-Two file types, two jobs: a **summary** answers *"what did this report say?"* (frozen at its date); a **concept** answers *"what do we know about this now?"* (cumulative across every document that touches the topic). The Deep Dive section at the end explains the machinery behind that split.
+The two central file types have distinct jobs:
+
+- A **summary** answers *"What did this report say?"* and remains frozen at its
+  date.
+- A **concept** answers *"What do we know about this now?"* and accumulates
+  information from every related document.
+
+The Deep Dive explains how the workflows maintain that split.
 
 ## 2. 📦 Prerequisites
 
 | Requirement | Needed for | Notes |
 |---|---|---|
-| **Claude Code** or **Codex** | every workflow | The prompts are the program; the agent executes them. |
-| **Python 3.9+** | `/ingest`, `/post-ingest`, `/session-close`, `/contradiction-check`, `/coverage-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers are standard-library only — no `pip install` step. 3.9 is the floor (built-in generic annotations). |
-| **Node.js** | `/slides` only | Decks render via `npx --yes @marp-team/marp-cli@latest`. Without Node, every other workflow still works. |
-| **Obsidian** | reading the vault | Recommended reading UI — graph view, `[[backlinks]]`, and search. No *authoring* workflow depends on it, but it's how the wiki is meant to be read. |
+| **Claude Code** or **Codex** | every workflow | Prompts define the work; the agent runs them. |
+| **Python 3.9+** | `/ingest`, `/post-ingest`, `/session-close`, `/contradiction-check`, `/coverage-check`, `/lint`, `/translation-backfill` | The `scripts/` checkers use only the standard library, so no `pip install` is needed. Python 3.9 is the minimum because of built-in generic annotations. |
+| **Node.js** | `/slides` only | Decks render through `npx --yes @marp-team/marp-cli@latest`. All other workflows work without it. |
+| **Obsidian** | reading the vault | Recommended for graph view, `[[backlinks]]`, and search. It is not needed to author content, but it is the intended reading interface. |
 
 The remaining workflows (`/qa`, `/session-reopen`, `/triage-queries`, `/synthesis`) need only the agent.
 
@@ -43,54 +62,70 @@ empty output is the success case.
 
 ## 3. 🚀 Getting Started
 
-Using **Claude Code** (for Codex, see the Running in Codex section below):
+Using **Claude Code** (see [Running in Codex](#63-running-in-codex) for Codex):
 
 1. Open a terminal in this directory and start Claude Code:
    ```
    claude
    ```
 2. Drop source documents into `raw/`.
-3. Run `/ingest`. It processes every file in `raw/` that isn't already listed in `wiki/processed.log` — the same command for your first run and every one after it.
-4. `/ingest` chains `/post-ingest` automatically whenever new files were added — tags, record format, frontmatter, backlinks, and MOC updates are handled with no separate step. Run `/post-ingest` on its own only to re-check after manual edits.
-5. Run `/qa your question` to ask the wiki anything. Every question is a turn in a session, and the session starts automatically on the first one. Keep asking follow-ups with `/qa your next question`; each turn appends a compact summary to `wiki/sessions/log.md` (read for context on the next turn) and the full answer to `wiki/sessions/current.md`.
-6. When done, run `/session-close` — it consolidates the turns into one file (`wiki/queries/`, or `wiki/deliverables/` when the result reads as a clean handoff document), archives both session files to `wiki/sessions/archive/`, and deletes the working copies. **Nothing is published until you run `/session-close`.**
+3. Run `/ingest`. It processes every file in `raw/` absent from
+   `wiki/processed.log`; the same command handles the first run and every later
+   run.
+4. When new files are added, `/ingest` automatically runs `/post-ingest` to
+   update tags, record format, frontmatter, backlinks, and MOCs. Run
+   `/post-ingest` alone only after manual edits.
+5. Ask questions with `/qa your question`. The first question starts a session;
+   follow up with `/qa your next question`. Each turn saves the full answer in
+   `wiki/sessions/current.md` and a compact, next-turn context summary in
+   `wiki/sessions/log.md`.
+6. Finish with `/session-close`. It consolidates the session into `wiki/queries/`
+   (or `wiki/deliverables/` for a clean handoff document), archives the session
+   files, and removes the working copies. **Nothing is published until you run
+   `/session-close`.**
 
 ## 4. 🔄 Ongoing Maintenance & Extras
 
-The periodic commands beyond your first run:
+After the first ingest, use these commands as needed:
 
-1. Run `/coverage-check` monthly to find what the vault is missing — thin or missing articles, concept pairs that should link but don't, MOC and `home.md` drift, and new articles worth writing.
-2. Run `/contradiction-check` occasionally to catch claims that drifted out of sync — first numeric ones (values, dates, counts, ranges), then medication and condition status ("currently taking" vs. "discontinued", "active" vs. "resolved"). It applies the unambiguous numeric corrections itself and hands you a menu of options for everything else; status findings are never auto-fixed. This is one of the few commands that **edits files on its own**, so it leaves uncommitted changes behind — read them before committing.
-3. Run `/triage-queries` as needed to move misplaced files out of `wiki/queries/` root.
-4. Run `/lint` quarterly for a full health check with a written maintenance report.
-5. Use `/slides` to generate a Marp presentation on any topic covered in the wiki.
+1. Run `/coverage-check` monthly to find thin or missing articles, missing
+   concept links, MOC or `home.md` drift, and candidates for new articles.
+2. Run `/contradiction-check` occasionally to find numeric drift (values, dates,
+   counts, and ranges) and inconsistent medication or condition status. It
+   automatically applies only unambiguous numeric fixes; all other findings are
+   presented as choices, and status findings are never auto-fixed. This command
+   can edit files, so review its uncommitted changes before committing.
+3. Run `/triage-queries` when needed to relocate misplaced files from the
+   `wiki/queries/` root.
+4. Run `/lint` quarterly for a full health check and written maintenance report.
+5. Use `/slides` to create a Marp presentation from any wiki topic.
 
 ## 5. 🧭 Workflows
 
-The complete slash-command reference — 14 workflows. They run in either **Claude Code** or **Codex** (see the Running in Codex section below); you can switch between them. In Claude Code, type `/` followed by the command name, e.g. `/ingest`.
+These 14 workflows run in **Claude Code** or **Codex**; you can switch between
+them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 
 | Prompt | Slash Command | Purpose |
 |--------|---------------|---------|
-| `p1-ingest.md` | `/ingest` | Process the files in `raw/` that aren't yet in `wiki/processed.log` — the only ingest workflow, covering both the first run on an empty vault and every run after it; chains `/post-ingest` automatically when new files were added |
-| `p3-qa.md` | `/qa` | Ask the wiki a question — auto-starts a session if none is active, and every follow-up has the full prior conversation in context. Publishes nothing itself; `/session-close` does that |
-| `p3b-session-close.md` | `/session-close` | End the session — consolidates the turns into one file in `wiki/queries/` (or `wiki/deliverables/` when the result is a clean handoff document), archives both session files, and cleans up |
-| `p3c-session-reopen.md` | `/session-reopen` | Restore a closed session from archive back to `current.md` to continue it |
-| `p4a-post-ingest.md` | `/post-ingest` | Housekeeping bounded to what the ingest just changed — tags, record format, frontmatter, Connections, MOC + `home.md` updates, then translation QA on its own diff. Runs automatically at the tail of `/ingest`; run it standalone only after manual edits (details in the Deep Dive section) |
-| `p4b-contradiction-check.md` | `/contradiction-check` | Compare numeric claims, then medication/condition status, across `wiki/concepts/`. **Edits files:** unambiguous numeric staleness is corrected automatically; everything else is flagged with a menu of options (see the Deep Dive section) |
-| `p4c-coverage-check.md` | `/coverage-check` | Monthly repo-wide content pass — thin or missing articles, missing backlinks, MOC + `home.md` reconciliation, new article candidates, and closing translation QA over what it wrote |
-| `p4d-triage-queries.md` | `/triage-queries` | Interactive triage of misplaced files in `wiki/queries/` root |
-| `translation-backfill.md` | `/translation-backfill` | Repair missing Traditional Chinese (繁體中文) translations in existing content (scoping principles in the Deep Dive section) |
-| `p4-lint.md` | `/lint` | Full quarterly health check — every check in the maintenance matrix (see the Deep Dive section) except the contradiction check, plus a written report to `wiki/maintenance/` |
-| `p5-slides.md` | `/slides` | Generate a Marp slide deck (+ rendered PDF) on a topic, saved to `wiki/deliverables/` |
-| `p6-weekly-synthesis.md` | `/synthesis` | Summarize what was added to the wiki this week |
-| `.claude/commands/commit-push.md` | `/commit-push` | Propose a commit message for approval, then commit and push to `origin main` |
-| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy the public files (prompts, commands, Codex skills, `scripts/`, the shared glossary, templates) to the companion public repo behind a fail-closed privacy gate; never copies `raw/`, wiki content, or private memory. Not needed if you cloned this repo |
+| `p1-ingest.md` | `/ingest` | Process every unlogged file in `raw/`; works for the first run and later additions, and automatically chains `/post-ingest` when it adds files. |
+| `p3-qa.md` | `/qa` | Ask a wiki question. Starts a session when needed and preserves prior turns for follow-ups; only `/session-close` publishes the result. |
+| `p3b-session-close.md` | `/session-close` | Consolidate and publish a session to `wiki/queries/` or, for a clean handoff, `wiki/deliverables/`; archive and remove the working session files. |
+| `p3c-session-reopen.md` | `/session-reopen` | Restore an archived session to `current.md` and continue it. |
+| `p4a-post-ingest.md` | `/post-ingest` | Check only what the latest ingest changed: tags, record format, frontmatter, connections, MOCs, `home.md`, and translation quality. Runs automatically after `/ingest`; use alone after manual edits. |
+| `p4b-contradiction-check.md` | `/contradiction-check` | Compare numeric claims and medication or condition status across `wiki/concepts/`. **Edits files:** automatically corrects only unambiguous numeric drift and presents choices for everything else. |
+| `p4c-coverage-check.md` | `/coverage-check` | Monthly repository-wide pass for thin or missing articles, missing backlinks, MOC and `home.md` reconciliation, new article candidates, and translation QA on its changes. |
+| `p4d-triage-queries.md` | `/triage-queries` | Interactively relocate misplaced files from the `wiki/queries/` root. |
+| `translation-backfill.md` | `/translation-backfill` | Repair missing Traditional Chinese (繁體中文) translations in existing content. |
+| `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, plus a report in `wiki/maintenance/`. |
+| `p5-slides.md` | `/slides` | Create a Marp slide deck and rendered PDF in `wiki/deliverables/`. |
+| `p6-weekly-synthesis.md` | `/synthesis` | Summarize the wiki additions from the current week. |
+| `.claude/commands/commit-push.md` | `/commit-push` | Propose a commit message for approval, then commit and push to `origin main`. |
+| `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public prompts, commands, Codex skills, scripts, glossary, and templates to the companion repository through a fail-closed privacy gate. It never copies `raw/`, wiki content, or private memory. |
 
 ## 6. 🔧 Optional Setup
 
-Three paths that apply only if they are your situation: starting a vault from
-scratch instead of cloning this one, reading it on a phone, or running Codex
-instead of Claude Code. Skip whatever doesn't apply.
+Use these instructions only when they fit your setup: initializing a new vault,
+reading on a phone, or using Codex instead of Claude Code.
 
 ### 6.1 Git Setup
 
@@ -102,9 +137,13 @@ To put this folder under version control:
    git add .
    git commit -m "Initial commit"
    ```
-2. Two config files are worth creating before that first commit:
-   - **`.gitignore`** — this repo's covers OS, Python, and Obsidian cruft (`.DS_Store`, `__pycache__/`, `.obsidian/`).
-   - **`.gitattributes`** with `* text=auto eol=lf` — normalizes line endings so files aren't flagged "modified" just because two platforms disagree on LF vs. CRLF, the common cause of stalled pulls on a mobile Obsidian Git client (see the Mobile Access section below). This repo's also marks binary assets — images, PDFs, zips — as `binary` so they're never EOL-converted.
+2. Before the first commit, add two configuration files:
+   - **`.gitignore`** — excludes OS, Python, and Obsidian clutter such as
+     `.DS_Store`, `__pycache__/`, and `.obsidian/`.
+   - **`.gitattributes`** with `* text=auto eol=lf` — normalizes line endings so
+     LF/CRLF differences do not flag files as modified or stall pulls in a
+     mobile Obsidian Git client. Mark images, PDFs, and ZIPs as `binary` so Git
+     never converts their line endings.
 3. To back it up to a remote, create a new repository on GitHub, then:
    ```
    git remote add origin https://github.com/<your-username>/<your-repo>.git
@@ -114,44 +153,43 @@ To put this folder under version control:
 
 ### 6.2 Mobile Access
 
-You can read the vault on a phone or tablet by pairing **Obsidian** with the
-**Obsidian Git** community plugin, treating the device as a **read-only mirror**
-of your GitHub repo — it pulls updates down but never pushes local churn back up.
+Pair **Obsidian** with the **Obsidian Git** community plugin to use a phone or
+tablet as a **read-only mirror** of your GitHub repository. The device pulls
+updates but never pushes local edits or churn back.
 
 **Setup:**
 
-1. Install the Obsidian mobile app and clone **your own** repo into a vault. You'll
-   need a GitHub Personal Access Token with read access — create your own; never
-   reuse someone else's.
-2. In the Obsidian Git plugin settings, configure the device as a pure consumer:
-   - **Pull on startup: ON** — refreshes the vault each time you open the app.
-   - **Merge strategy on conflicts: "Their changes"** — GitHub always wins.
-   - **Push on commit-and-sync: OFF** — the phone never pushes its edits or churn.
-3. Open the app — it pulls the latest on launch. (Background pulls don't run while
-   the screen is locked, which is fine: opening the app is the sync trigger.)
+1. Install Obsidian Mobile and clone **your own** repository into a vault. Use a
+   GitHub Personal Access Token with read access that you created yourself.
+2. In Obsidian Git, configure the device as a consumer:
+   - **Pull on startup: ON** — refreshes the vault whenever the app opens.
+   - **Merge strategy on conflicts: "Their changes"** — GitHub wins conflicts.
+   - **Push on commit-and-sync: OFF** — the device never pushes changes.
+3. Open the app to pull the latest version. Background pulls pause while the
+   screen is locked, so opening the app is the refresh trigger.
 
-**Why `.gitattributes` matters here.** Without line-ending normalization, mobile and
-desktop disagree on LF vs. CRLF, which silently marks files "modified" and **blocks
-pulls** — while the plugin still reports "up to date." The repo's `.gitattributes`
-(`* text=auto eol=lf`, see the Git Setup section above) prevents this at the source.
+**Why `.gitattributes` matters.** Without line-ending normalization, mobile and
+desktop clients can disagree on LF versus CRLF. Files then appear modified and
+**block pulls** even while the plugin reports "up to date." The
+`* text=auto eol=lf` rule prevents that mismatch.
 
-**If a pull ever stalls** (stale files despite an "up to date" message): run
-**Obsidian Git → "Discard all local changes" → Pull**. A read-only mirror holds
-nothing worth keeping, so discarding is always safe.
+**If a pull stalls** — for example, files are stale despite an "up to date"
+message — run **Obsidian Git → "Discard all local changes" → Pull**. This is
+safe because a read-only mirror has no local work to keep.
 
-> ⚠️ Obsidian's mobile git support is community-maintained and considered
-> experimental. The read-only-mirror pattern above keeps it low-risk; if the clone
-> ever breaks, delete the vault and re-clone — nothing is lost.
+> ⚠️ Obsidian's mobile Git support is community-maintained and experimental. A
+> read-only mirror keeps it low risk: if the clone breaks, delete the vault and
+> clone it again.
 
 ### 6.3 Running in Codex
 
-Codex can work in the same repository using `AGENTS.md`, which points it to the
-shared conventions in `CLAUDE.md`, shared memory in `memory/`, and workflow
-prompts in `prompts/`.
+Codex works in the same repository through `AGENTS.md`, which points it to the
+shared conventions in `CLAUDE.md`, memory in `memory/`, and workflow prompts in
+`prompts/`.
 
-Codex does not use the Claude Code slash-command wrappers in `.claude/commands/`
-directly. Instead, the same workflows are packaged as repo-scoped Codex skills
-under `.agents/skills/`, with names matching the Claude slash commands:
+Codex does not call the Claude Code wrappers in `.claude/commands/` directly.
+Instead, the same workflows are packaged as repository-scoped skills under
+`.agents/skills/`:
 
 | Claude Code | Codex |
 |-------------|-------|
@@ -173,17 +211,19 @@ under `.agents/skills/`, with names matching the Claude slash commands:
 `$commit-push-codex` mirrors `/commit-push` but uses a Codex-specific
 `Co-Authored-By: Codex <noreply@openai.com>` trailer.
 
-You can also ask Codex to read and execute a prompt file directly
-(`Read and execute prompts/p3-qa.md`), but prefer the skill. Every prompt-executing
-skill first loads `AGENTS.md`, `CLAUDE.md`, and `memory/MEMORY.md`; some do more
-than read one prompt (`$ingest` chains the housekeeping pass, `$sync-to-public` runs
-a script and no prompt at all). Executing the prompt alone silently skips those steps.
+You can ask Codex to execute a prompt directly — for example, `Read and execute
+prompts/p3-qa.md` — but use the matching skill when available. Prompt-executing
+skills first load `AGENTS.md`, `CLAUDE.md`, and `memory/MEMORY.md`; some add
+steps beyond their prompt, such as `$ingest` chaining housekeeping and
+`$sync-to-public` running only a script. Running the prompt alone would skip
+those steps.
 
-All durable project changes should stay in the shared repo paths (`wiki/`,
-`prompts/`, `scripts/`, `memory/`) so switching between Claude Code and Codex
-keeps changes synchronized through git.
+Keep lasting project changes in the shared `wiki/`, `prompts/`, `scripts/`, and
+`memory/` paths so Claude Code and Codex stay synchronized through git.
 
 ## 7. 📂 Directory Structure
+
+Repository layout:
 
 ```
 raw/              → source documents (never modify these)
@@ -224,9 +264,15 @@ AGENTS.md         → Codex entry point that delegates to CLAUDE.md and prompts/
 
 ## 8. 🔖 Tagging System
 
-All concept and summary files use a **closed set of 25 canonical tags**. New tags require explicit justification (no existing tag fits, 2+ articles would use it). `scripts/canonicalize-tags.py` enforces the set: it rewrites known synonyms and reports anything outside the list, exiting non-zero so `/lint` and `/post-ingest` fail on it.
+Concept and summary files use a **closed vocabulary of 25 canonical tags**. Add
+a new tag only when no existing tag fits and at least two articles would use it.
+`scripts/canonicalize-tags.py` rewrites known synonyms, reports unsupported tags,
+and exits non-zero so `/lint` and `/post-ingest` fail.
 
-**Clinical domain tags** — a MOC (`wiki/mocs/moc-{tag}.md`) is created once **3+ articles** share the tag. `biomarker` is the deliberate exception — it spans every domain, so it has no dedicated MOC. Tags still below the 3-article threshold have no MOC yet and are tracked in `home.md`'s "Tags Without a MOC" table:
+**Clinical domain tags** earn a MOC (`wiki/mocs/moc-{tag}.md`) when **three or
+more articles** share the tag. `biomarker` is the deliberate exception: it spans
+all domains and therefore has no MOC. Tags below the threshold appear in the
+`home.md` **Tags Without a MOC** table:
 
 | Group | Tags |
 |---|---|
@@ -238,38 +284,57 @@ All concept and summary files use a **closed set of 25 canonical tags**. New tag
 | Integumentary & sleep | `dermatology`, `sleep-medicine` |
 | Sexual health | `sexual-health` |
 
-**Cross-cutting tags** — span multiple domains but still earn a MOC at the same 3+ threshold (all five currently have one):
+**Cross-cutting tags** span multiple domains but use the same three-article MOC
+threshold (all five currently have one):
 `screening` · `imaging-finding` · `clinical-finding` · `medication` · `procedure`
 
 **Imaging modality tags** (summaries only, used alongside `imaging-finding`):
 `ultrasound` · `mri` · `ct` · `x-ray`
 
-Non-canonical synonyms (e.g. `cardiovascular`, `lab-test`, `renal`) are mapped to their canonical equivalents in `CLAUDE.md` and must never appear in frontmatter.
+Non-canonical synonyms such as `cardiovascular`, `lab-test`, and `renal` map to
+canonical tags in `CLAUDE.md` and must never appear in frontmatter.
 
-### 8.1 Provenance is not a tag
+### Provenance is not a tag
 
-Tags answer *what is this about*. **Who produced the document** is a different axis, and summaries carry it in three dedicated frontmatter fields instead: `facility` (the site that produced it — performed the study, or wrote the prescription), `physician` (the responsible clinician, or a list when one document genuinely has several authors), and `result-status` (`normal` · `mixed` · `abnormal`).
+Tags answer *what is this about?* Provenance answers *who produced the document?*
+Summaries keep provenance in dedicated frontmatter fields:
 
-This split is load-bearing. Provenance used to be tags — a slug per clinic, a slug per physician, plus `abnormal-result` — which put clinic names inside a closed *clinical* vocabulary and, because every facility clears the 3-article threshold, would have mechanically demanded a MOC for a laboratory. `scripts/check-provenance-fields.py` validates the values and fails if a provenance value reappears in a `tags:` list.
+- `facility`
+- `physician`
+- `result-status` (`normal` · `mixed` · `abnormal`)
 
-Both vocabularies are closed, and both live **only** in `CLAUDE.md`. `scripts/_provenance_vocab.py` parses those tables at run time, so adding a site or a clinician is a one-line edit to the documentation rather than a matching edit in two scripts — and the checkers, which are published here, carry no roster of their own.
+Keeping provenance out of `tags:` prevents clinic names from polluting the
+clinical vocabulary or mechanically earning a laboratory its own MOC.
+`scripts/check-provenance-fields.py` validates the fields and fails if a
+provenance value appears as a tag.
 
-Concepts have no provenance fields: a concept spans many draws across years, so provenance lives per-row in its canonical table (the `Lab` column, and the ordering physician in `Notes`). That makes each row a restatement of its summary's frontmatter — see the contradiction check below.
+Both vocabularies are closed and defined only in `CLAUDE.md`.
+`scripts/_provenance_vocab.py` reads those tables at runtime, so adding a site or
+clinician requires one documentation edit rather than a checker update.
 
-### 8.2 What happens if a non-medical document is ingested?
-
-Non-medical documents (financial records, recipes, book notes, etc.) have no applicable canonical tags, so Claude would either silently misfit them into medical tags or invent new ones — both corrupting the taxonomy. The article would also lack the clinical context that makes concept articles and MOCs useful. The correct action is to reject non-medical files at ingest time and direct them to a separate wiki.
+Concepts have no provenance frontmatter because they span multiple draws over
+time. Instead, provenance lives in each canonical-table row, which restates the
+frontmatter of its linked summary; see the contradiction check below.
 
 ## 9. 📐 Conventions
 
-- All cross-references use Obsidian-style backlinks: `[[article-name]]` (filename without `.md`).
-- Every `[[link]]` must resolve to a real file; domain references point to the domain's MOC (`[[moc-<domain>]]`), never a bare `[[<domain>]]`.
-- Article formats (concept, summary, query, MOC) are defined in `CLAUDE.md` (auto-loaded by Claude Code; also human-readable).
-- Patient test-data values live in a Markdown table, never a bulleted list — even a single value gets a one-row table. That table is the concept's canonical record; the Deep Dive section below explains why the format matters.
-- Concept and MOC frontmatter carries Chinese `aliases` plus a `cn-title` display field (`cn-title: GGT (γ-谷氨醯轉移酶)`), so the vault is searchable and browsable in Chinese while filenames, `title`, and `[[backlinks]]` stay English. Medication labels answer *"what kind of drug is this?"* rather than naming the brand, which stays in `aliases` so the pill-box name still finds the file.
-- Chinese `aliases` work in Obsidian out of the box; rendering `cn-title` in the sidebar and tabs needs the **Front Matter Title** community plugin, installed per device (`.obsidian/` is not tracked, so it doesn't sync).
-- Never edit files in `raw/` — they are the source of truth.
-- `wiki/index.md` is the entry point for browsing all content.
+- Use Obsidian-style backlinks for all cross-references: `[[article-name]]`, the
+  filename without `.md`.
+- Every `[[link]]` must resolve. Link a domain to its MOC (`[[moc-<domain>]]`),
+  never a bare `[[<domain>]]`.
+- `CLAUDE.md` defines the concept, summary, query, and MOC formats. Claude Code
+  loads it automatically, and it is also human-readable.
+- Put each patient test result in a Markdown table, never a bulleted list; even
+  one result gets a one-row table. This is the concept's canonical record.
+- Concept and MOC frontmatter includes Chinese `aliases` and a `cn-title` display
+  value, such as `cn-title: GGT (γ-谷氨醯轉移酶)`. Filenames, `title`, and
+  `[[backlinks]]` remain English. Medication labels describe the medication type;
+  the brand stays in `aliases` so the pill-box name remains searchable.
+- Chinese `aliases` work in Obsidian without setup. Showing `cn-title` in the
+  sidebar and tabs requires the per-device **Front Matter Title** community
+  plugin because `.obsidian/` is not tracked.
+- Never edit `raw/`; it is the source of truth.
+- Start browsing the vault from `wiki/index.md`.
 
 ## 10. 🔬 Deep Dive: How It Works
 
@@ -327,50 +392,51 @@ still unpublished.
 
 ### 10.4 The canonical record and the contradiction check
 
-Patient test values in a concept live in a **Markdown table** — one row per
-measurement (date, lab, value, flag, source link), down to a one-row table for
-a single result. A unit is not a prerequisite: a dimensionless ratio or index
-the lab reported is as canonical as a value in mg/dL. Reference ranges, doses,
-qualitative findings, dated events, and figures derived in the wiki rather than
-reported by the lab stay prose; they carry no reported value to anchor.
+A concept's **canonical record** is its Markdown table of patient test results.
+Use one row per measurement (`date`, `lab`, `value`, `flag`, and source link),
+including a one-row table for a single result. A lab-reported ratio or index is
+canonical just like a value in mg/dL.
 
-The format is load-bearing. Other articles *restate* table values in prose
-("ferritin peaked at 310 in 2019"), and ingest appends to tables without
-revisiting those sentences — so contradictions here are almost never two tables
-disagreeing. They are **a table that moved and a sentence that didn't**. That
-shape is what makes checking tractable: each restatement is compared against
-its table, not every article against every other.
+Keep the following in prose rather than in the canonical table:
 
-`scripts/extract-claims.py` groups every numeric/date claim under the concept
-it is about and emits two kinds of block:
+- reference ranges and interpretation thresholds;
+- medication doses, qualitative findings, and dated events; and
+- values derived within the wiki rather than reported by the source.
 
-- **ANCHORED** — the concept has a canonical table; restatements are compared
-  against it.
-- **PEER** — no table, so claims judge each other; asserted values are sorted so
-  an outlier stands apart. A record mistakenly written as bullets lands here —
-  the silent downgrade `scripts/detect-list-records.py` exists to catch (it
-  runs in `/post-ingest` and again in `/lint`).
+This distinction is essential to the contradiction check. Other articles may
+restate a table value in prose — for example, "ferritin peaked at 310 in 2019".
+As ingest appends new table rows, those prose restatements can become stale. The
+usual contradiction is therefore **a table that changed while a sentence did
+not**, not two tables that disagree. Each restatement only needs comparison with
+its own concept table, rather than with every claim in the vault.
 
-The agent then tiers each finding:
+`scripts/extract-claims.py` groups numeric and date claims by concept and reports:
 
-- **Tier A** — anchored, unambiguous canonical value, purely mechanical
-  substitution: applied automatically.
-- **Tier B** — everything else: flagged with concrete options, each naming the
-  assumption being chosen; the run never picks one for you.
+- **ANCHORED** blocks when a canonical table exists, comparing restatements with
+  that table; or
+- **PEER** blocks when no table exists, comparing the claims with one another and
+  sorting them to expose an outlier.
 
-**Canonical table rows are never edited** — they are the ingest-fed record, and
-a table that itself looks wrong is a Tier B finding, not an edit. One quirk:
-script output truncates claims at ~200 characters, so confirm fixes past that
-point against the file, not the re-run.
+A value recorded as bullets instead of a table is silently treated as PEER, so
+`scripts/detect-list-records.py` identifies those formatting mistakes.
 
-A third pass, `scripts/extract-provenance-claims.py`, applies the same shape to
-provenance: a concept row's `Lab` cell and its `Dr. X` mention are restatements
-of the `facility`/`physician` fields on the summary that row backlinks to. Here
-**every finding is Tier B** — the summary fields were migrated from the old tag
-layer, which was demonstrably lossy (one clinic was never tagged at all, though
-five concept rows name it), so neither side is authority. Its most useful output is the
-opposite of a contradiction: rows naming a site the cited summary never
-recorded, which are backfill leads to confirm against `raw/`.
+Findings are handled by tier:
+
+- **Tier A:** an anchored, unambiguous, purely mechanical substitution. It can be
+  applied automatically.
+- **Tier B:** every other case. It is presented with concrete options, each making
+  its assumption explicit.
+
+Canonical table rows are never edited automatically. If the table itself appears
+wrong, the issue remains Tier B. Because script output truncates claims at about
+200 characters, verify any long proposed fix against the file itself.
+
+`scripts/extract-provenance-claims.py` uses the same model for provenance: a
+concept row's `Lab` cell restates the `facility` and `physician` fields in the
+summary it links to. All of these findings are **Tier B** because those fields
+were migrated from a lossy tag layer, so neither source is authoritative. Its
+most useful leads are rows that name a site absent from the cited summary; confirm
+those candidates against `raw/` before backfilling the provenance.
 
 ### 10.5 How the maintenance passes divide the work
 
@@ -395,58 +461,62 @@ recorded, which are backfill leads to confirm against `raw/`.
 
 ✅ = the full check · ◐ = bounded to what that run itself changed
 
-- Read the columns as cadence: `/post-ingest` runs as the tail of every
-  `/ingest`; `/coverage-check` monthly; `/contradiction-check`
-  occasionally; `/lint` quarterly.
-- ◐ marks each check's cheap, run-bounded form. The repo-wide sweeps cost
-  the same for one document as for twenty, so they run monthly in
-  `/coverage-check`, where one load of `connections-index.py` and
-  `tag-index.py` serves three steps.
-- Translation QA is ◐ in **every** column: `/post-ingest`, `/coverage-check`,
-  and `/lint` all invoke the three checkers as `--git-diff` with no path
-  arguments, so each sees only the lines that same run wrote. Nothing in this
-  table re-reads translations in files it did not touch —
-  `/translation-backfill` is the only workflow that does, and only within a
-  scope you hand it.
-- `/contradiction-check` sits outside `/lint` — running only `/lint` never
-  checks whether values agree across articles.
-- The Compilation Summary audit is the one check whose input is the **commit
-  log** rather than the working tree: `scripts/check-compilation-summary.py`
-  compares the block against the ingests recorded in git. That makes it a
-  history check, not a content check, which is why it is `/lint`-only and has
-  no ◐ run-bounded form.
-- `scripts/check-dangling-links.py` is the repo's only wikilink resolver; the
-  full sweeps in `/coverage-check` and `/lint` are the only passes that read
-  the links in `index.md`, `summaries/`, `mocs/`, `queries/`, and `home.md`.
-- Frontmatter completeness lives in `/post-ingest` because ingest is what
-  creates files — and a medication concept missing `brand`/`taiwan-brand-name`
-  silently disables first-mention enforcement for that drug repo-wide while
-  still reporting clean.
+Use the columns as a schedule:
+
+- `/post-ingest` runs at the end of every `/ingest`.
+- `/coverage-check` runs monthly.
+- `/contradiction-check` runs occasionally.
+- `/lint` runs quarterly.
+
+A ◐ check is limited to the lines written during that run, so its cost grows
+with the diff. A ✅ check sweeps the entire vault, costing roughly the same after
+one changed document as after twenty; batching those sweeps into monthly
+`/coverage-check` avoids repeatedly reading untouched files.
+
+Important boundaries:
+
+- Translation QA is ◐ in every applicable workflow. `/post-ingest`,
+  `/coverage-check`, and `/lint` run all three checkers as `--git-diff` without
+  path arguments, so each checks only the lines it wrote. Only
+  `/translation-backfill` revisits existing translations, and only within the
+  scope provided.
+- `/contradiction-check` is separate from `/lint`; running `/lint` alone does
+  not test whether claims agree across articles.
+- `scripts/check-compilation-summary.py` is a history check, not a content
+  check: it compares the Compilation Summary with ingests recorded in the git
+  commit log. For that reason it is `/lint`-only and has no ◐ form.
+- `scripts/check-dangling-links.py` is the only wikilink resolver. The full
+  `/coverage-check` and `/lint` sweeps are the only runs that check links in
+  `index.md`, `summaries/`, `mocs/`, `queries/`, and `home.md`.
+- Frontmatter completeness belongs in `/post-ingest` because ingest creates the
+  files. A medication concept missing `brand` or `taiwan-brand-name` can disable
+  first-mention enforcement for that drug across the repository without causing
+  a visible failure.
 
 ### 10.6 The status pass, and why it never auto-fixes
 
-When a medication stops or a condition remits, prose keeps asserting the old
-world — a "currently taking" outlives the dated "discontinued" on the drug's
-own page. `scripts/extract-status-claims.py` is the numeric pipeline with the
-predicate swapped: it finds **state words** near concept mentions and emits
-groups holding opposing states. Because an undated claim asserts *now*:
+Status claims can drift when a medication is stopped or a condition remits, while
+older prose still says "currently taking" or otherwise describes the earlier
+state. `scripts/extract-status-claims.py` finds state words near concept mentions
+and groups claims that oppose one another.
 
-- **CONFLICT** — an undated claim against another undated one, or against the
-  newest dated one. That is drift.
-- **REVIEW** — opposing claims at different dates. That is history, not a
-  contradiction.
+- An undated claim means *now*. It conflicts with another undated claim or with
+  the newest dated claim, so the result is **CONFLICT**.
+- Opposing claims at different dates are **REVIEW** items: they may describe
+  history rather than a true contradiction.
 
-Nothing auto-fixes, by construction: no table records status, so no state word
-can be computed correct. Two exclusions came out of testing on the real vault:
-level/severity wording (elevated, mild) legitimately differs between dated
-measurements, and presence findings (`--include-presence`, off by default)
-attached "ruled out" to whatever noun sat nearest — every hit was a false
-positive.
+Status findings never auto-fix. Unlike numeric values, status has no canonical
+table from which the correct wording can be computed. Real-vault testing also
+excludes level or severity language (such as "elevated" or "mild"), which can
+legitimately vary between dated measurements. Presence findings are available
+only with `--include-presence` and are off by default, because phrases such as
+"ruled out" attached to the nearest noun produced only false positives.
 
 ### 10.7 Why scripts find and the agent judges
 
-Maintenance prompts are script-first: a small standard-library pre-filter emits
-only what the decision needs, instead of the agent reading the corpus.
+Maintenance workflows are script-first: a small standard-library pre-filter
+returns only the information needed for a decision, rather than requiring the
+agent to read the full corpus.
 
 | Script | Replaces |
 |---|---|
@@ -459,36 +529,47 @@ only what the decision needs, instead of the agent reading the corpus.
 | `detect-list-records.py` | reading every concept to check its record is a table, not bullets |
 | `check-compilation-summary.py` | walking the git history by hand to find ingests missing their `index.md` paragraph |
 
-Extraction has no judgement to exercise, so a script does it better —
-deterministic, free, diffable, and incapable of inventing a lab value.
-Judgement (is this contradiction real, is this the right Taiwan wording) stays
-with the agent. The corollary: **the checkers are a floor, not a ceiling** — a
-clean run means nothing matched the patterns, not that nothing was missed.
+Scripts handle extraction because it requires no judgement: the results are
+deterministic, reviewable in git, and cannot invent a lab value. The agent makes
+the contextual decisions instead, such as whether a contradiction is genuine or
+whether a Taiwan translation is appropriate.
+
+The checkers are **a floor, not a ceiling**. A clean run means only that nothing
+matched their patterns; it does not prove that nothing was missed.
 
 ### 10.8 Backfilling translations
 
-*What* to translate is defined in `CLAUDE.md`; the step-by-step procedure lives
-in `prompts/translation-backfill.md`. The scoping principles:
+`CLAUDE.md` defines *what* to translate, and
+`prompts/translation-backfill.md` defines the procedure. Use these scoping
+principles:
 
-- **Batch by domain, not by file.** Pass a MOC as the scope — it is expanded as
-  a manifest of its member concepts and summaries, keeping sibling files
-  consistent and syncing `index.md` and the MOC prose in the same pass. Links
-  into *other* domains are not followed.
-- **Sub-batch large MOCs.** A pass stays reliable up to ~8–12 files; split
-  bigger MOCs into ~10-file passes, each with its own QA and commit.
-- **Warm domains first.** Start where the glossary already covers the
-  vocabulary — cleaner passes, fewer new guesses.
-- **Inline always, glossary selectively.** Every clinical term is glossed
-  inline; only standalone, reusable terms are added to the shared glossary.
-  That deliberate gap is *why* the checkers are only a floor.
+- **Batch by domain, not file.** Passing a MOC expands the scope to its member
+  concepts and summaries, keeping related notes, the MOC prose, and `index.md`
+  consistent. A `hepatic` pass stops at the hepatic domain; it does not follow a
+  lipid term into `moc-lipid`.
+- **Split large MOCs into sub-batches.** A reliable pass covers about 8–12 files.
+  Cardiology's 41 articles therefore take four separately checked and committed
+  passes, while respiratory's three fit in one.
+- **Start with warm domains.** Prefer domains whose vocabulary is already well
+  represented in the glossary, reducing new translation guesses.
+- **Translate inline; add to the glossary selectively.** Every clinical term is
+  glossed in place, but only standalone, reusable terms belong in the shared
+  glossary. For example, `AST (天門冬胺酸轉胺酶)` recurs across panels, whereas
+  wording unique to one report remains inline only.
 
-The scope is free text — explicit paths, a description, or "worst offenders
-first" — and the resolved file list is shown for approval before any edit.
+The checkers remain a floor, not a ceiling. `check-bilingual-terms.py` verifies
+only terms already in the glossary, while `extract-term-candidates.py` catches
+only pattern-shaped terms such as `CBT-I` or `Phrase (ACRONYM)`. A first-use term
+in ordinary prose can evade both checks and must be found by the agent.
+
+The scope may be explicit paths, a description, or a request such as "worst
+offenders first." The resolved file list is always shown for approval before any
+edits begin.
 
 ## 11. 💡 Inspiration
 
-The structure and ideas behind this project are inspired by [Andrej Karpathy's post on LLM Knowledge Bases](https://x.com/karpathy/status/2039805659525644595) (April 2026), in which he describes using LLMs to incrementally compile a personal wiki from raw source documents — with summaries, concept articles, backlinks, Q&A, Marp (Markdown Presentation Ecosystem) slides, and health-check linting — all maintained by the LLM and viewed in Obsidian.
+The project draws inspiration from [Andrej Karpathy's post on LLM Knowledge Bases](https://x.com/karpathy/status/2039805659525644595) (April 2026). It describes incrementally compiling a personal wiki from raw source documents with LLMs: summaries, concept articles, backlinks, Q&A, Marp (Markdown Presentation Ecosystem) slides, and health-check linting, all maintained by the LLM and read in Obsidian.
 
 ## 12. 📄 License
 
-MIT License
+Released under the MIT License.
