@@ -4,7 +4,7 @@ An **AI-compiled personal health wiki** — raw lab results, imaging reports, an
 
 The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17** clinical domains · 📄 **80** source documents · 💬 **19** saved Q&As · 🎞️ **9** slide decks · 🤝 **4** handoff docs · 🈶 bilingual (English · 繁體中文). The Obsidian graph view below shows the current state of the wiki. **A fresh clone starts empty and grows as you ingest your own documents.**
 
-![Obsidian graph view of the wiki|380](docs/graph-view.png)
+<img src="docs/graph-view.png" alt="Obsidian graph view of the wiki" width="380">
 
 > ⚕️ **Scope: medical data only.** The tagging taxonomy, article formats, and MOC (Map of Content) structure are purpose-built for clinical domains. Non-medical documents (finance, recipes, general notes) can't be meaningfully tagged here — use a separate wiki for those.
 
