@@ -348,6 +348,13 @@ and there is deliberately no rebuild command: concepts *integrate* new
 information rather than replace it, so re-walking them would duplicate rows in
 the canonical record tables, not refresh them.
 
+Files in `raw/` are upstream evidence, not necessarily byte-for-byte exports.
+They may be plain-text transcriptions or reformattings of portal pages, PDFs,
+paper reports, and photos; source facts are preserved while layout may be
+normalized for reliable review and ingestion. New documents do not need a rigid
+template: provide clear text or report images in `.png`, `.jpg`, or `.jpeg`
+format.
+
 Each document yields one frozen **summary**; the concepts inside it create or
 update **cumulative concept articles** — the split described in the Overview
 section. Every touched file gets an `index.md` entry, `[[backlinks]]`, and
