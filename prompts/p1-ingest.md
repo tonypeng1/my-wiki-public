@@ -214,3 +214,17 @@ is never processed again.
    Rewrite each real finding as `English (中文)`; if the finding is an
    institution, add its row to `memory/provenance-roster.md` instead, since
    roster names are suppressed by design.
+
+   Once all prose and translations are final, run two structural gates on the
+   same touched files:
+   - `python3 scripts/check-moc-key-relationships.py --git-diff PATH [PATH ...]`
+     verifies that every new or edited Key Relationships section is one
+     paragraph of 2-3 sentences and contains no open-question or document-
+     acquisition language. Patch every finding and rerun until clean.
+   - `python3 scripts/check-markdown-layout.py --git-diff PATH [PATH ...]`
+     verifies the Markdown source-layout rule in CLAUDE.md. Rejoin every
+     flagged paragraph or list item onto one physical source line and let
+     Obsidian soft-wrap it; rerun until clean. This check deliberately runs
+     after translation because inserted Chinese glosses were the source of
+     irregular manual wraps in earlier ingests.
+   Include both structural-gate outcomes in the step-8 report, even when clean.

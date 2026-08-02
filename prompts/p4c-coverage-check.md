@@ -109,13 +109,12 @@ the reason these steps live together rather than firing on every ingest.
    coverage. For each, explain why it would be valuable and which existing
    articles would link to it.
 
-5. BILINGUAL, GLOSSARY, AND MEDICATION QA
+5. CONTENT QA
    Step 1 creates and expands concept articles, step 2 writes Connections
    prose, and step 3 edits MOC files, wiki/home.md, and wiki/index.md. That is
-   new clinical prose, so it carries the same three risks ingest does, and
-   p1-ingest.md step 8 runs the same three checkers on it. Run
-   these LAST, after every edit above is written, so the diff they inspect is
-   complete. All three take `--git-diff` with no path arguments: that covers
+   new clinical prose, so it carries the same content risks ingest does. Run
+   these checks LAST, after every edit above is written, so the diff they inspect is
+   complete. They take `--git-diff` with no path arguments: that covers
    the main content locations (concepts, summaries, MOCs, wiki/index.md,
    wiki/home.md), bounds output to the lines this run changed, and scans any
    new/untracked file — such as an article created in step 1 — in full.
@@ -150,11 +149,24 @@ the reason these steps live together rather than firing on every ingest.
       is what guarantees that. Patch any flagged first mention and rerun until
       no unreviewed suspects remain.
 
+   d) Run: python3 scripts/check-moc-key-relationships.py --git-diff
+      Validate every MOC Key Relationships section this run created or edited:
+      one prose paragraph, 2-3 sentences, no open-question or document-
+      acquisition language. Also read the linked articles to verify source
+      grounding and preserved qualifications. Patch and rerun until clean.
+
+   e) Run: python3 scripts/check-markdown-layout.py --git-diff
+      Rejoin every flagged prose paragraph or list item onto one physical
+      source line and rely on Obsidian soft wrapping. Run it after the bilingual
+      checks so Chinese glosses cannot leave irregular manual wrapping. Patch
+      and rerun until clean.
+
 6. REPORT
    Cover, one line each: articles created and expanded (step 1), backlinks
    added (step 2), MOC entries added, counts corrected and MOCs created
-   (step 3), and the step 5 results — bilingual, glossary terms added, and
-   medication first mentions — one line each. Say "clean" or "none"
+   (step 3), and the step 5 results — bilingual, glossary terms added,
+   medication first mentions, MOC relationships, and Markdown layout — one
+   line each. Say "clean" or "none"
    where a step found nothing, so a step that ran and found nothing never
    looks like a step that was skipped. Then list the new article candidates
    from step 4.

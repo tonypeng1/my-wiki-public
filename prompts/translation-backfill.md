@@ -116,8 +116,20 @@ is `none`, the vault carries no glosses to repair — report that and stop.
    patient- or sentence-specific phrases inline only, and rerun until no
    unreviewed reusable candidates remain.
 
-10. Report:
+10. Run structural QA after all translations and mirror updates are final:
+   - `python3 scripts/check-moc-key-relationships.py --git-diff PATH [PATH ...]`
+     checks any relationship prose this batch edited for the one-paragraph,
+     2-3-sentence contract and misplaced open-question/action language. Patch
+     and rerun until clean.
+   - `python3 scripts/check-markdown-layout.py --git-diff PATH [PATH ...]`
+     flags paragraphs or list items that are manually hard-wrapped. Rejoin each
+     onto one physical source line and let Obsidian soft-wrap it. This must run
+     after gloss insertion so translations cannot lengthen only selected source
+     lines. Patch and rerun until clean.
+
+11. Report:
    - scope reviewed
    - files changed
    - glossary entries added
    - any deliberately deferred or ambiguous translation choices
+   - MOC relationship and Markdown layout check results

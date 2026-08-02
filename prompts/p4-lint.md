@@ -271,18 +271,17 @@ checks in order:
     Add a one-line result (paragraphs backfilled, or "clean") to the health
     check report from step 9.
 
-13. BILINGUAL, GLOSSARY, AND MEDICATION QA
+13. CONTENT QA
     Every run of this workflow edits MOC files, wiki/home.md, and
     wiki/index.md, and step 2 may create or expand concept articles. That is
-    new clinical prose, so it carries the same three risks ingest does, and
-    p1-ingest.md step 8 runs the same three checkers on it.
+    new clinical prose, so it carries the same content risks ingest does.
 
     Under `locale: none` the first two checkers skip themselves and say so;
     run them anyway rather than special-casing this step, and record the skip
     notice in the report. The medication checker still runs — it enforces
     `generic (Brand)` instead of the three-part form. Run
     these LAST, after every edit above is written — including the link
-    repairs in step 11 — so the diff they inspect is complete. All three take
+    repairs in step 11 — so the diff they inspect is complete. The checks take
     `--git-diff` with no path arguments: that covers the main content
     locations (concepts, summaries, MOCs, wiki/index.md, wiki/home.md),
     bounds output to the lines this run changed, and scans any new/untracked
@@ -335,6 +334,18 @@ checks in order:
        A gloss written with a comma or slash instead of parentheses is
        reported on purpose. Patch real misses and rerun.
 
-    Append a one-line result for each of a, b, c, and d (terms patched,
-    glossary entries added, first mentions fixed, unglossed Chinese resolved —
-    or "clean") to the health check report from step 9.
+    e) Run: python3 scripts/check-moc-key-relationships.py --git-diff
+       Validate every MOC Key Relationships section this run created or edited:
+       one prose paragraph, 2-3 sentences, no open-question or document-
+       acquisition language. Also read the linked articles to verify source
+       grounding and preserved qualifications. Patch and rerun until clean.
+
+    f) Run: python3 scripts/check-markdown-layout.py --git-diff
+       Rejoin every flagged prose paragraph or list item onto one physical
+       source line and rely on Obsidian soft wrapping. Run it after the
+       bilingual checks so Chinese glosses cannot leave irregular manual
+       wrapping. Patch and rerun until clean.
+
+    Append a one-line result for each of a-f (terms patched, glossary entries
+    added, first mentions fixed, unglossed Chinese resolved, MOC relationships,
+    Markdown layout — or "clean") to the health check report from step 9.

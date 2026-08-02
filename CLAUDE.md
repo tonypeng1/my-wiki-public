@@ -73,6 +73,20 @@ Article name should match the filename without the .md extension.
    (exception: query files under wiki/queries/ are prefixed with their date,
    e.g. 2026-05-21-slug.md — see the Query File Format section)
 
+### Markdown source layout
+
+In authored wiki content, keep each prose paragraph and each list item on one
+physical source line. Let Obsidian or the reader soft-wrap it for the available
+window width; do not insert manual line breaks at 80 characters or any other
+column target. Separate paragraphs with a blank line. This prevents a later
+translation pass from lengthening selected lines and leaving a paragraph with
+visibly irregular hard wraps.
+
+YAML frontmatter, Markdown tables, fenced code blocks, blockquotes, and nested
+list structure are exempt. The rule applies to the prose inside concepts,
+summaries, MOCs, queries, `wiki/index.md`, and `wiki/home.md`, including prose
+rewritten after Chinese glosses are inserted.
+
 ## Chinese Medical Terms
 
 Make medical prose easier to read by adding Chinese translations for medical
@@ -684,7 +698,18 @@ updated: {date}
 - [[summary-filename]] — one-sentence description
 
 ## Key Relationships
-2-3 sentences on how these concepts connect to each other.
+One paragraph of 2-3 sentences explaining how the listed concepts and source
+summaries connect to each other.
+
+Keep every relationship source-grounded in the linked articles and preserve
+their qualifications: a diagnosis stated on an order is not a confirmed
+finding, and two missing forms of evidence are not substitutes merely because
+both are absent. This section explains established connections only. Put open
+questions in the relevant concept article instead; do not include missing-
+document inventories, document-acquisition advice, follow-up recommendations,
+or other action items here. If the MOC was triggered by several articles
+derived from one source, state only the relationship that source supports and
+do not pad the section to make the domain appear broader.
 
 A new MOC is created when 3+ concepts or summaries share a canonical tag with no existing MOC.
 MOC files are never indexed in wiki/processed.log.

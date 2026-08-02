@@ -499,6 +499,8 @@ those candidates against `raw/` before backfilling the provenance.
 | Dangling backlink check | ◐ | — | ✅ | ✅ |
 | Missing backlinks | ◐ | — | ✅ | ✅ |
 | MOC freshness + `home.md` sync | ◐ | — | ✅ | ✅ |
+| MOC Key Relationships structure | ◐ | — | ◐ | ◐ |
+| Markdown source layout (no manual hard wraps) | ◐ | — | ◐ | ◐ |
 | Bilingual + glossary + medication-format QA | ◐ | — | ◐ | ◐ |
 | Missing / thin concepts | — | — | ✅ | ✅ |
 | New article candidates | — | — | ✅ | ✅ |
@@ -526,10 +528,13 @@ one changed document as after twenty; batching those sweeps into monthly
 Important boundaries:
 
 - Translation QA is ◐ in every applicable workflow. `/post-ingest`,
-  `/coverage-check`, and `/lint` run all three checkers as `--git-diff` without
+  `/coverage-check`, and `/lint` run their translation checkers as `--git-diff` without
   path arguments, so each checks only the lines it wrote. Only
   `/translation-backfill` revisits existing translations, and only within the
   scope provided.
+- MOC relationship and Markdown-layout checks are also diff-scoped. A new file
+  is checked in full; an existing file is checked only where the workflow wrote,
+  so the gate prevents new regressions without silently rewriting legacy prose.
 - `/contradiction-check` is separate from `/lint`; running `/lint` alone does
   not test whether claims agree across articles.
 - `scripts/check-compilation-summary.py` is a history check, not a content
@@ -580,6 +585,8 @@ agent to read the full corpus.
 | `check-compilation-summary.py` | walking the git history by hand to find ingests missing their `index.md` paragraph |
 | `check-locale-consistency.py` | noticing by eye that `wiki-config.yml` no longer matches the script the vault is written in |
 | `check-unglossed-chinese.py` | rereading Chinese-sourced articles to find terms that never made the crossing into English |
+| `check-moc-key-relationships.py` | manually counting paragraphs and sentences or spotting action items in edited MOC relationship prose |
+| `check-markdown-layout.py` | visually finding irregular manual line wraps introduced before translation was complete |
 
 Scripts handle extraction because it requires no judgement: the results are
 deterministic, reviewable in git, and cannot invent a lab value. The agent makes

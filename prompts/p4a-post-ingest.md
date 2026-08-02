@@ -165,23 +165,23 @@ one-document addition.
      `/coverage-check` create it (do NOT create a stub here).
    Rerun until no dangling links remain on changed lines.
 
-7. BILINGUAL, GLOSSARY, AND MEDICATION QA
+7. CONTENT QA
    Step 4 writes Connections prose into concepts, step 5 writes MOC entries and
    can create a whole MOC, and step 6 repoints links. All of that is new prose
-   written *after* p1-ingest.md step 8 ran these same three checkers
+   written *after* p1-ingest.md step 8 ran its content checks
    on what the ingest itself wrote — so it is the one slice of authored content
    no checker has seen. It is a small slice, which is the point: bounded to a
    diff it costs almost nothing, and left unchecked it waits up to a month for
    p4c-coverage-check.md.
 
    Run these LAST, after every edit above is written — including the step 6 link
-   repairs — so the diff they inspect is complete. All three take `--git-diff`
+   repairs — so the diff they inspect is complete. All checks take `--git-diff`
    with no path arguments: that covers the main content locations (concepts,
    summaries, MOCs, wiki/index.md, wiki/home.md, and for the medication checker
    also queries and deliverables), bounds output to the lines this run changed,
    and scans any new/untracked file — such as a MOC created in step 5 — in full.
    Do not pass explicit paths; the defaults are wider than any list worth
-   maintaining here. Run all three unconditionally rather than gating on whether
+   maintaining here. Run all checks unconditionally rather than gating on whether
    a given file changed: on a typical ingest they read a handful of lines, and a
    gate would make a skipped run and a clean run indistinguishable in step 8.
 
@@ -226,9 +226,24 @@ one-document addition.
       rather than rewording the prose. A gloss written with a comma or slash
       instead of parentheses is reported on purpose. Patch and rerun.
 
+   e) Run: python3 scripts/check-moc-key-relationships.py --git-diff
+      Checks a new MOC, or an existing MOC whose Key Relationships section this
+      run edited, against the CLAUDE.md contract: exactly one prose paragraph of
+      2-3 sentences, with no open-question or document-acquisition language.
+      The checker enforces structure and conservative action-language patterns;
+      you must still verify source grounding and qualifications by reading the
+      linked articles. Patch and rerun until clean.
+
+   f) Run: python3 scripts/check-markdown-layout.py --git-diff
+      Flags prose paragraphs or list items this run manually hard-wrapped.
+      Rejoin each block onto one physical source line and let Obsidian soft-wrap
+      it. Run this after every translation is final so inserted Chinese glosses
+      cannot leave an irregular source-line staircase. Patch and rerun until
+      clean.
+
 8. REPORT
-   Give one line per step 1-6 with its result, then one line each for 7a, 7b,
-   and 7c — including "clean" or "none" when a check found nothing. A step that
+   Give one line per step 1-6 with its result, then one line each for 7a-7f —
+   including "clean" or "none" when a check found nothing. A step that
    ran and found nothing and a step that was skipped must never look alike:
    most of these checks come back clean on a typical run, and a report that
    mentions only what changed is silent about them. Then list the files changed,
