@@ -335,9 +335,13 @@ clinical vocabulary or mechanically earning a laboratory its own MOC.
 `scripts/check-provenance-fields.py` validates the fields and fails if a
 provenance value appears as a tag.
 
-Both vocabularies are closed and defined only in `CLAUDE.md`.
-`scripts/_provenance_vocab.py` reads those tables at runtime, so adding a site or
-clinician requires one documentation edit rather than a checker update.
+Both vocabularies are closed. `CLAUDE.md` states how to *choose* a value; the
+values themselves live in `memory/provenance-roster.md`, which
+`scripts/_provenance_vocab.py` parses at runtime — so adding a site or clinician
+is one edit to that roster rather than a checker update. The roster is data
+about one patient's care, not convention, so it never ships: a fresh clone
+starts from `memory/provenance-roster.example.md`, both table headers with zero
+rows, which `scripts/new-vault.sh` copies into place.
 
 Concepts have no provenance frontmatter because they span multiple draws over
 time. Instead, provenance lives in each canonical-table row, which restates the
