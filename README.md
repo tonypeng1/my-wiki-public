@@ -89,7 +89,8 @@ syntax differs.
    in the vault. If you prefer manual setup, copy `wiki-config.example.yml` to
    `wiki-config.yml` and edit it before continuing.
 2. **Add source documents** to `raw/`. Keep the originals there; the workflows
-   never modify them.
+   never modify them. Because `raw/` is tracked, configure a private remote you
+   control before adding personal records; see [Git Setup](#61-git-setup).
 3. **Build the wiki** with `/ingest` in Claude Code or `$ingest` in Codex. It
    processes every file not already recorded in `wiki/processed.log`, so use the
    same workflow for the first import and later additions. When it adds files,
@@ -141,34 +142,53 @@ them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 | `.claude/commands/commit-push.md` | `/commit-push` | Propose a commit message for approval, then commit and push to `origin main`. |
 | `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public prompts, commands, Codex skills, scripts, glossary, and templates to the companion repository through a fail-closed privacy gate. It never copies `raw/`, wiki content, or private memory. |
 
-## 6. 🔧 Optional Setup
+## 6. 🔧 Additional Setup
 
-Use these instructions only when they fit your setup: initializing a new vault,
-reading on a phone, or using Codex instead of Claude Code.
+These instructions cover private version control, phone access, and using Codex
+instead of Claude Code. Complete Git Setup first if you plan to add personal
+records to `raw/`.
 
 ### 6.1 Git Setup
 
-To put this folder under version control:
+`raw/` is tracked. Before adding personal records, make sure `origin` is a
+**private** repository you control: `/commit-push` and `$commit-push-codex`
+stage relevant files and push to `origin main`.
 
-1. Initialize the repository and make the first commit:
+**Starting from a clone:** its `origin` points to this project. First create an
+empty private repository on GitHub (do not initialize it with a README, license,
+or `.gitignore`), then run:
+
+1. Keep this project as `upstream` and add your private repository as `origin`:
    ```
-   git init
-   git add .
-   git commit -m "Initial commit"
-   ```
-2. Before the first commit, add two configuration files:
-   - **`.gitignore`** — excludes OS, Python, and Obsidian clutter such as
-     `.DS_Store`, `__pycache__/`, and `.obsidian/`.
-   - **`.gitattributes`** with `* text=auto eol=lf` — normalizes line endings so
-     LF/CRLF differences do not flag files as modified or stall pulls in a
-     mobile Obsidian Git client. Mark images, PDFs, and ZIPs as `binary` so Git
-     never converts their line endings.
-3. To back it up to a remote, create a new repository on GitHub, then:
-   ```
+   git remote rename origin upstream
    git remote add origin https://github.com/<your-username>/<your-repo>.git
-   git branch -M main
+   ```
+2. Verify the remotes, then publish the existing `main` branch:
+   ```
+   git remote -v
    git push -u origin main
    ```
+
+Afterward, `origin` is your private vault and `upstream` remains available when
+you choose to bring in project updates. Leaving the GitHub repository empty
+avoids having to reconcile unrelated commit histories.
+
+`.gitignore` and `.gitattributes` are already included. They exclude OS, Python,
+and Obsidian clutter (`.DS_Store`, `__pycache__/`, `.obsidian/`) and store text
+with LF line endings — keep that setting, or two devices disagreeing on EOL will
+mark unchanged files as modified and stall pulls in a mobile Obsidian Git client.
+Images, PDFs, and ZIPs are marked `binary`, so Git leaves them unchanged.
+
+**Starting from a ZIP:** create the same empty private GitHub repository, then
+initialize the downloaded folder and publish it:
+```
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/<your-username>/<your-repo>.git
+git push -u origin main
+```
 
 ### 6.2 Mobile Access
 
