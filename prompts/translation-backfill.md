@@ -1,5 +1,8 @@
-Use this workflow when repairing missing Traditional Chinese medical-term
-translations in existing wiki content.
+Use this workflow when repairing missing Chinese medical-term translations in
+existing wiki content.
+
+This workflow exists only for Chinese locales. If `locale` in `wiki-config.yml`
+is `none`, the vault carries no glosses to repair — report that and stop.
 
 1. Determine the scope.
    Accepted scope forms:
@@ -27,7 +30,7 @@ translations in existing wiki content.
    - `AGENTS.md`
    - `CLAUDE.md`
    - `memory/MEMORY.md`
-   - `memory/medical-term-translations.md`
+   - the glossary named by `glossary:` in `wiki-config.yml`
 
 3. Assemble the candidate file set:
    - source files explicitly in scope
@@ -52,7 +55,7 @@ translations in existing wiki content.
 5. Edit the source files with a two-pass find that separates *noticing* every
    candidate term from *translating* it, so low-salience terms sitting next to
    already-translated ones are not lost to a single inline read. Apply the
-   Traditional Chinese Medical Terms policy in CLAUDE.md (single source of truth)
+   Chinese Medical Terms policy in CLAUDE.md (single source of truth)
    for what to translate, first-mention handling, abbreviations, exclusions, and
    glossary inclusion. For every summary or concept in scope:
 
@@ -75,7 +78,8 @@ translations in existing wiki content.
      unit);
    - third-or-later occurrence in the unit — leave as plain English/abbreviation;
    - intentional English — proper noun or opaque identifier; note why;
-   - unsure of Taiwan wording — leave English, add to the glossary Review Queue.
+   - unsure of the wording for this locale — leave English, add to the glossary
+     Review Queue.
    A `[[backlink]]` is English and never counts as an occurrence. An occurrence
    left without an outcome is unfinished work. Batch new glossary entries at the
    end of Pass B so they insert in alphabetical order before the QA steps.
@@ -100,15 +104,15 @@ translations in existing wiki content.
 
 8. Run diff-scoped medication-format QA on the edited files:
    - `python3 scripts/check-medication-first-mentions.py --git-diff PATH [PATH ...]`
-   Review each reported line, patch missing `generic (Brand, Taiwan name)`
+   Review each reported line, patch missing `generic (Brand, local name)`
    first-mention formatting, and rerun until the remaining hits are intentional
-   exceptions or medications that do not yet have a reliable brand/Taiwan-name
+   exceptions or medications that do not yet have a reliable brand/local-name
    mapping in the repo.
 
 9. Run a diff-scoped glossary-delta pass on the same edited files:
    - `python3 scripts/check-glossary-delta.py --git-diff PATH [PATH ...]`
    Review each reported inline `English (中文)` pair. Add reusable standalone
-   clinical terms to `memory/medical-term-translations.md`, leave one-off
+   clinical terms to the glossary configured in `wiki-config.yml`, leave one-off
    patient- or sentence-specific phrases inline only, and rerun until no
    unreviewed reusable candidates remain.
 

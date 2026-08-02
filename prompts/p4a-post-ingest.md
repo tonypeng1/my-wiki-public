@@ -24,7 +24,8 @@ one-document addition.
 
    b) Run: python3 scripts/check-provenance-fields.py
    Validates `facility`, `physician`, and `result-status` on summaries against
-   the closed vocabularies in CLAUDE.md ("Provenance fields"). Ingest is what
+   the closed vocabularies in `memory/provenance-roster.md`, per the rules
+   under "Provenance fields" in CLAUDE.md. Ingest is what
    writes these fields, so a bad value is caught here the same day, for the
    same reason as step 2 — and an UNKNOWN VALUE is most often this ingest
    inventing a slug for a site that needed a CLAUDE.md row first.
@@ -46,7 +47,7 @@ one-document addition.
    For each file under LIST-FORMAT RECORDS, read it and convert the series to a
    table — one row per draw (date, lab, value, flag, source backlink) — per the
    Key Details rule in CLAUDE.md, preserving every value, flag, backlink, and
-   Traditional Chinese gloss; do NOT change any data. For PARTIALLY TABULAR,
+   Chinese gloss; do NOT change any data. For PARTIALLY TABULAR,
    fold the stray bullets into the existing table. For SINGLE VALUE AS BULLET,
    convert the one value to a one-row table; read that tier as a candidate list
    rather than a finding, and skip an entry whose number turns out not to be a
@@ -64,7 +65,7 @@ one-document addition.
    Run: grep -rL 'aliases:' wiki/concepts/ wiki/mocs/
    Run: grep -rL 'cn-title:' wiki/concepts/ wiki/mocs/
    Run: grep -l '^tags:.*medication' wiki/concepts/*.md | xargs -I{} grep -L '^brand:' {}
-   Run: grep -l '^tags:.*medication' wiki/concepts/*.md | xargs -I{} grep -L '^taiwan-brand-name:' {}
+   Run: grep -l '^tags:.*medication' wiki/concepts/*.md | xargs -I{} grep -L '^local-brand-name:' {}
    The first two list concept and MOC files with no aliases / no cn-title;
    the last two list medication concepts missing a brand field.
 
@@ -76,14 +77,21 @@ one-document addition.
    enforcement for that drug repo-wide and the checker still reports clean.
    A gap that switches off a checker must not wait for the monthly pass.
 
+   Under `locale: none` the Chinese layer does not exist: skip the `cn-title:`
+   grep, and drop the Chinese-name requirement from `aliases`. Still run the
+   `aliases:` grep — English abbreviations, alternate spellings, and lay terms
+   are what make a note findable in any locale. `local-brand-name` is likewise
+   not required. See the Chinese Medical Terms section in CLAUDE.md.
+
    Read only the files returned, then fill what is missing:
    - concept `aliases` — 3-5 common abbreviations, alternate spellings, and lay
-     terms, including at least one Traditional Chinese name. On a medication the
-     Chinese brand name must be among them, since it is not in `cn-title`.
+     terms, including at least one Chinese name in the vault's locale. On a
+     medication the Chinese brand name must be among them, since it is not in
+     `cn-title`.
    - MOC `aliases` — the Chinese domain name (e.g. `aliases: [血脂]`).
    - `cn-title` — `English (中文)` on a concept, `MOC — {Domain} ({中文})` on a MOC.
-   - `brand` / `taiwan-brand-name` — take them from the article body or the source
-     summary; never guess a Taiwan product name. If neither records it, report the
+   - `brand` / `local-brand-name` — take them from the article body or the source
+     summary; never guess a local product name. If neither records it, report the
      gap instead of inventing a value.
    All per CLAUDE.md ("Frontmatter aliases and `cn-title`", "Medication concepts").
    `aliases`/`cn-title` are search/display metadata — do NOT bump `updated` for them.
@@ -178,9 +186,9 @@ one-document addition.
    gate would make a skipped run and a clean run indistinguishable in step 8.
 
    a) Run: python3 scripts/check-bilingual-terms.py --git-diff
-      English clinical terms written without their Traditional Chinese
-      translation, per the Traditional Chinese Medical Terms policy in
-      CLAUDE.md. Treat the output as a heuristic suspect list — some suspects
+      English clinical terms written without their Chinese translation, per
+      the Chinese Medical Terms policy in CLAUDE.md. Under `locale: none`
+      the checker skips itself and reports that instead. Treat the output as a heuristic suspect list — some suspects
       are known false positives (see
       memory/reference-bilingual-checker-behavior.md for the recurring
       patterns). Patch real misses in the files this workflow touched, editing
@@ -189,19 +197,19 @@ one-document addition.
 
    b) Run: python3 scripts/check-glossary-delta.py --git-diff
       Inline `English (中文)` pairs this pass wrote that are not yet in
-      memory/medical-term-translations.md. Review each and follow the "What
+      the glossary configured in wiki-config.yml. Review each and follow the "What
       belongs in the glossary" rule in CLAUDE.md: add standalone, reusable
       clinical vocabulary; leave one-off phrases inline only; add a term you are
       unsure of for later review rather than guessing. A Connections sentence or
       a MOC description is exactly where a fresh translation gets coined, and if
-      it never reaches the glossary the next ingest invents a second Taiwan
+      it never reaches the glossary the next ingest invents a second
       wording for it. Rerun until no unreviewed reusable candidates remain.
 
    c) Run: python3 scripts/check-medication-first-mentions.py --git-diff
-      The repo-wide `generic (Brand, Taiwan name)` format (Medication naming in
+      The repo-wide `generic (Brand, local name)` format (Medication naming in
       CLAUDE.md) on first mention in each `###` section. A Connections bullet
       naming a drug is a first mention like any other. Note the checker silently
-      SKIPS any medication concept missing `brand` or `taiwan-brand-name`, so a
+      SKIPS any medication concept missing `brand` or `local-brand-name`, so a
       clean result here does not prove those fields exist — step 3 above is what
       guarantees that, which is why it runs first. Patch any flagged first
       mention and rerun until no unreviewed suspects remain.

@@ -11,7 +11,8 @@ recursively for .md files. If no path is given, the script scans the main
 wiki content locations.
 
 Output is intended as a suspect list for human or LLM review. The checker only
-knows terms already present in memory/medical-term-translations.md. Exit code is
+knows terms already present in the glossary configured in wiki-config.yml.
+Exit code is
 always 0.
 
 Enforcement model (mirrors the Traditional Chinese Medical Terms policy in
@@ -46,10 +47,13 @@ from __future__ import annotations
 import argparse
 import re
 import subprocess
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+import _vault_config  # noqa: E402
+
 ROOT = Path(__file__).parent.parent
-DEFAULT_GLOSSARY = ROOT / "memory" / "medical-term-translations.md"
 DEFAULT_PATHS = [
     ROOT / "wiki" / "concepts",
     ROOT / "wiki" / "summaries",
@@ -648,8 +652,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--glossary",
-        default=str(DEFAULT_GLOSSARY),
-        help="Path to the bilingual glossary file.",
+        default=None,
+        help="Path to the bilingual glossary file. Defaults to the glossary in\n             wiki-config.yml; passing it explicitly overrides the config, including\n             under locale 'none'.",
     )
     parser.add_argument(
         "--git-diff",
@@ -658,7 +662,13 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    glossary_path = Path(args.glossary)
+    if args.glossary:
+        glossary_path = Path(args.glossary)
+    elif _vault_config.skip_if_monolingual("check-bilingual-terms"):
+        return
+    else:
+        glossary_path = _vault_config.require_glossary()
+
     scan_paths = [Path(p).resolve() for p in args.paths] if args.paths else DEFAULT_PATHS
     markdown_files = iter_markdown_files(scan_paths)
     entries = load_glossary(glossary_path)

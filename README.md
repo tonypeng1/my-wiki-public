@@ -1,8 +1,9 @@
 # 🩺 my-wiki
 
 An **AI-compiled personal health wiki**: add raw lab results, imaging reports,
-and clinical notes, then use AI prompts to build and maintain a cross-linked,
-bilingual medical knowledge base with Traditional Chinese (繁體中文) glosses.
+and clinical notes, then use AI prompts to build and maintain a cross-linked
+medical knowledge base — optionally bilingual, with inline Chinese glosses in
+Traditional (繁體中文) or Simplified (简体中文) Chinese, or English-only.
 
 The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17**
 clinical domains · 📄 **80** source documents · 💬 **19** saved Q&As · 🎞️ **9**
@@ -21,8 +22,9 @@ ingest your own documents.**
 Ingest turns source documents in `raw/` — lab panels, imaging reports, clinical
 notes, and medication records — into structured **summaries**, **concept
 articles**, **Q&A records**, and **deliverables** such as physician handoffs and
-Marp slide decks. The resulting notes use Obsidian-style `[[backlinks]]` and
-inline Traditional Chinese glosses for clinical vocabulary.
+Marp slide decks. The resulting notes use Obsidian-style `[[backlinks]]` and,
+when a Chinese locale is configured, inline Chinese glosses for clinical
+vocabulary.
 
 ```mermaid
 flowchart LR
@@ -68,18 +70,43 @@ Using **Claude Code** (see [Running in Codex](#63-running-in-codex) for Codex):
    ```
    claude
    ```
-2. Drop source documents into `raw/`.
-3. Run `/ingest`. It processes every file in `raw/` absent from
+2. Set the vault locale **before the first `/ingest`**:
+
+   ```
+   bash scripts/new-vault.sh zh-TW
+   ```
+
+   | `locale` | Result |
+   |---|---|
+   | `zh-TW` | Prose carries Traditional Chinese glosses (Taiwan wording). |
+   | `zh-CN` | Prose carries Simplified Chinese glosses (Mainland wording). |
+   | `none` | English-only. No glosses; the glossary checkers skip themselves. |
+
+   The script writes `wiki-config.yml`, points it at the matching glossary, and
+   verifies the result. Both glossaries ship with the repo, carrying the same
+   ~1230 terms in their own locale's wording — the two locales differ in
+   vocabulary, not just characters, which is why each has its own file. Set
+   `region:` afterwards to your default care market.
+
+   To do it by hand instead, copy `wiki-config.example.yml` to
+   `wiki-config.yml` and edit it.
+
+   Set this first: `/ingest` writes summaries, concepts, MOCs and the index in
+   one pass, and switching locale later does **not** convert prose that is
+   already written. `/ingest` and `/lint` both stop rather than guess if the
+   config is missing or disagrees with the vault's existing prose.
+3. Drop source documents into `raw/`.
+4. Run `/ingest`. It processes every file in `raw/` absent from
    `wiki/processed.log`; the same command handles the first run and every later
    run.
-4. When new files are added, `/ingest` automatically runs `/post-ingest` to
+5. When new files are added, `/ingest` automatically runs `/post-ingest` to
    update tags, record format, frontmatter, backlinks, and MOCs. Run
    `/post-ingest` alone only after manual edits.
-5. Ask questions with `/qa your question`. The first question starts a session;
+6. Ask questions with `/qa your question`. The first question starts a session;
    follow up with `/qa your next question`. Each turn saves the full answer in
    `wiki/sessions/current.md` and a compact, next-turn context summary in
    `wiki/sessions/log.md`.
-6. Finish with `/session-close`. It consolidates the session into `wiki/queries/`
+7. Finish with `/session-close`. It consolidates the session into `wiki/queries/`
    (or `wiki/deliverables/` for a clean handoff document), archives the session
    files, and removes the working copies. **Nothing is published until you run
    `/session-close`.**
@@ -115,7 +142,7 @@ them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 | `p4b-contradiction-check.md` | `/contradiction-check` | Compare numeric claims and medication or condition status across `wiki/concepts/`. **Edits files:** automatically corrects only unambiguous numeric drift and presents choices for everything else. |
 | `p4c-coverage-check.md` | `/coverage-check` | Monthly repository-wide pass for thin or missing articles, missing backlinks, MOC and `home.md` reconciliation, new article candidates, and translation QA on its changes. |
 | `p4d-triage-queries.md` | `/triage-queries` | Interactively relocate misplaced files from the `wiki/queries/` root. |
-| `translation-backfill.md` | `/translation-backfill` | Repair missing Traditional Chinese (繁體中文) translations in existing content. |
+| `translation-backfill.md` | `/translation-backfill` | Repair missing Chinese translations in existing content (Chinese locales only). |
 | `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, plus a report in `wiki/maintenance/`. |
 | `p5-slides.md` | `/slides` | Create a Marp slide deck and rendered PDF in `wiki/deliverables/`. |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize the wiki additions from the current week. |
@@ -496,7 +523,7 @@ Important boundaries:
   `/coverage-check` and `/lint` sweeps are the only runs that check links in
   `index.md`, `summaries/`, `mocs/`, `queries/`, and `home.md`.
 - Frontmatter completeness belongs in `/post-ingest` because ingest creates the
-  files. A medication concept missing `brand` or `taiwan-brand-name` can disable
+  files. A medication concept missing `brand` or `local-brand-name` can disable
   first-mention enforcement for that drug across the repository without causing
   a visible failure.
 
@@ -535,11 +562,12 @@ agent to read the full corpus.
 | `extract-status-claims.py` | reading the whole corpus to compare medication and condition status |
 | `detect-list-records.py` | reading every concept to check its record is a table, not bullets |
 | `check-compilation-summary.py` | walking the git history by hand to find ingests missing their `index.md` paragraph |
+| `check-locale-consistency.py` | noticing by eye that `wiki-config.yml` no longer matches the script the vault is written in |
 
 Scripts handle extraction because it requires no judgement: the results are
 deterministic, reviewable in git, and cannot invent a lab value. The agent makes
 the contextual decisions instead, such as whether a contradiction is genuine or
-whether a Taiwan translation is appropriate.
+whether a translation is appropriate for the vault's locale.
 
 The checkers are **a floor, not a ceiling**. A clean run means only that nothing
 matched their patterns; it does not prove that nothing was missed.

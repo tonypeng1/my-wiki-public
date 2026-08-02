@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 """
-Load the closed provenance vocabularies out of CLAUDE.md.
+Load the closed provenance vocabularies out of memory/provenance-roster.md.
 
-`facility` and `physician` are closed vocabularies whose tables live in
-CLAUDE.md ("Provenance fields" under Summary File Format). Both provenance
-checkers read those tables at run time instead of keeping a copy.
+`facility` and `physician` are closed vocabularies whose tables live in that
+roster. Both provenance checkers read them at run time instead of keeping a
+copy.
 
 That is a privacy constraint, not tidiness. `scripts/` ships to the public
-repo and CLAUDE.md deliberately does not — the public copy is hand-maintained
-with fictional examples — so a roster spelled out here would publish the
-patient's clinics and clinicians. run_privacy_gate() in sync-to-public.sh
-already derives its denylist for the identical reason: never write the real
-values into a file that ships.
+repo and the roster deliberately does not — a fresh clone gets
+`provenance-roster.example.md`, which is empty — so a roster spelled out here
+would publish the patient's clinics and clinicians. run_privacy_gate() in
+sync-to-public.sh already derives its denylist for the identical reason: never
+write the real values into a file that ships.
+
+The roster used to live in CLAUDE.md, for that same privacy reason. It moved
+because it is *data about one patient's care*, not convention: keeping it in
+the conventions file forced the public repo to hand-maintain a cast of
+invented hospitals so its checkers would run, and made every added clinic
+dirty CLAUDE.md and drag a conventions review through the sync flow.
 
 It also closes a drift seam. Both checkers used to say "CLAUDE.md is the
 source of truth — add a value there first, then here", which is a rule someone
@@ -25,7 +31,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-CLAUDE_MD = Path(__file__).parent.parent / "CLAUDE.md"
+ROSTER = Path(__file__).parent.parent / "memory" / "provenance-roster.md"
 
 RESULT_STATUSES: frozenset[str] = frozenset({"normal", "mixed", "abnormal"})
 
@@ -47,7 +53,7 @@ _NOT_A_NAME = frozenset({"dr", "prof", "md", "do", "vs"})
 
 
 class VocabularyError(RuntimeError):
-    """CLAUDE.md is missing, or a provenance table is not where it should be.
+    """The roster is missing, or a provenance table is not where it should be.
 
     Raised rather than falling back to an empty vocabulary: an empty one does
     not fail safe. It would make every recorded value read as UNKNOWN, and
@@ -83,10 +89,12 @@ def _tables(text: str):
 @lru_cache(maxsize=None)
 def _document() -> str:
     try:
-        return CLAUDE_MD.read_text(encoding="utf-8")
+        return ROSTER.read_text(encoding="utf-8")
     except OSError as exc:
         raise VocabularyError(
-            f"cannot read the provenance vocabularies: {CLAUDE_MD} ({exc})"
+            f"cannot read the provenance vocabularies: {ROSTER} ({exc}). "
+            f"Every vault needs one; copy memory/provenance-roster.example.md "
+            f"to {ROSTER.name}, or run scripts/new-vault.sh."
         ) from exc
 
 
@@ -103,9 +111,10 @@ def _table(kind: str) -> tuple[list[str], tuple[tuple[str, ...], ...]]:
                 and header[1].lower() == kind):
             return header, tuple(tuple(r) for r in rows)
     raise VocabularyError(
-        f"no `slug | {kind.title()}` table found in {CLAUDE_MD}. The provenance "
-        f"vocabularies live under 'Provenance fields' in Summary File Format; "
-        f"restore the table there rather than hardcoding values in scripts/."
+        f"no `slug | {kind.title()}` table found in {ROSTER}. The loader matches "
+        f"that header row, not a heading; restore the table there — with its "
+        f"header intact, even if it has no rows yet — rather than hardcoding "
+        f"values in scripts/."
     )
 
 
@@ -119,10 +128,9 @@ def _rows(kind: str) -> list[tuple[str, str]]:
         m = _SLUG_CELL_RE.match(row[0])
         if m:
             out.append((m.group(1), row[1] if len(row) > 1 else ""))
-    if not out:
-        raise VocabularyError(
-            f"the `slug | {kind.title()}` table in {CLAUDE_MD} has no rows."
-        )
+    # An empty table is valid: a vault that has ingested nothing has no
+    # clinics yet, and the header alone is enough to prove the roster is set
+    # up rather than missing. _table() above already rejects an absent table.
     return out
 
 
@@ -147,7 +155,7 @@ def facility_forms() -> dict[str, list[str]]:
     lowered = [h.lower() for h in header]
     if "also written" not in lowered:
         raise VocabularyError(
-            f"the facility table in {CLAUDE_MD} has no `Also written` column. "
+            f"the facility table in {ROSTER} has no `Also written` column. "
             f"It carries the display forms concept tables use; without it every "
             f"Lab cell reads as an unknown facility."
         )
@@ -189,8 +197,8 @@ def identifying_terms() -> tuple[list[str], list[str]]:
 
     Consumed by run_privacy_gate() in sync-to-public.sh, which refuses to
     publish any file containing one. This is the second half of keeping the
-    rosters out of `scripts/`: reading the tables from CLAUDE.md stops them
-    being written there, and this stops them being pasted back.
+    rosters out of `scripts/`: reading the tables from the roster file stops
+    them being written there, and this stops them being pasted back.
 
     That pairing is not theoretical. Both provenance checkers carried hardcoded
     rosters — including the Chinese hospital and physician names — through four

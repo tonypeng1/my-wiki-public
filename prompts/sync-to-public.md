@@ -20,8 +20,19 @@ Workflow definitions:
 
 Automation the prompts depend on:
 - scripts/            (all .sh and .py files)
-- memory/medical-term-translations.md — shared glossary; check-bilingual-terms.py,
-  check-glossary-delta.py and extract-term-candidates.py all default to this path
+- wiki-config.example.yml — the locale config TEMPLATE, never this vault's live
+  wiki-config.yml. Shipping the real one would hand every clone `locale: zh-TW`
+  pre-set and silently defeat the p1-ingest step 0 gate; a clone with no config
+  trips that gate instead, which is the point.
+- memory/medical-term-translations-*.md — EVERY glossary, not just the one this
+  vault is configured for, so a clone can become any supported locale. Shipping
+  only the configured one left the public repo with no Simplified glossary at
+  all.
+- memory/provenance-roster.example.md — the provenance roster TEMPLATE (both
+  table headers, zero rows). The filled-in memory/provenance-roster.md is the
+  patient's real clinics and clinicians and never ships.
+
+  Those are the only memory/ files that ship.
 - .claude/settings.json — permission allowlist for those scripts
   (.claude/settings.local.json is machine-local and never synced)
 
@@ -39,8 +50,9 @@ Conventions and entry points:
   template), sessions/, maintenance/, index.md, processed.log. The public repo keeps
   empty .gitkeep placeholders for these directories; the script must never overwrite
   them with real content.
-- memory/ — everything except the glossary above (MEMORY.md and all personal,
-  project, and feedback memories stay private). The public repo keeps its own
+- memory/ — everything except the glossaries and the roster template above
+  (MEMORY.md, memory/provenance-roster.md, and all personal, project, and
+  feedback memories stay private). The public repo keeps its own
   hand-written `memory/MEMORY.md` starter index; the script must never overwrite
   it with this repo's private one.
 - CLAUDE.md — the private copy documents conventions with the patient's real
@@ -52,7 +64,7 @@ Conventions and entry points:
 
 Before copying anything, the script derives a denylist from the vault itself —
 medication generic names (basenames of medication-tagged concepts), their
-`brand`/`taiwan-brand-name` field values, and the patient's Chinese name from
+`brand`/`local-brand-name` field values, and the patient's Chinese name from
 memory/patient-name.md — and scans every file it could ship, plus the two
 hand-maintained public files (CLAUDE.md, memory/MEMORY.md). Any hit blocks the
 entire sync with the file, line, and matched term.

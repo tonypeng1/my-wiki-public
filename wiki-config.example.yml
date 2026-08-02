@@ -1,0 +1,51 @@
+# Vault configuration TEMPLATE.
+#
+# Copy this file to `wiki-config.yml` and edit it, or run:
+#
+#     bash scripts/new-vault.sh zh-TW      # or zh-CN, or none
+#
+# Do this BEFORE the first `/ingest`. That workflow writes summaries, concepts,
+# MOCs and wiki/index.md in a single pass, and switching locale afterwards does
+# NOT convert prose that is already written — it only changes what gets written
+# next. `/ingest` and `/lint` both stop on a missing or inconsistent config
+# rather than guessing (see scripts/check-locale-consistency.py).
+#
+# ─── locale ────────────────────────────────────────────────────────────────
+#
+#   zh-TW   Prose carries inline `English (中文)` glosses in Traditional
+#           Chinese, using Taiwan clinical wording.
+#
+#   zh-CN   The same, in Simplified Chinese with Mainland clinical wording.
+#           The two are not the same text in different characters — they differ
+#           in vocabulary (三酸甘油脂 vs 甘油三酯, 中風 vs 脑卒中), which is why
+#           each locale has its own glossary.
+#
+#   none    English-only vault. No glosses are written, `cn-title` and Chinese
+#           aliases do not apply, and the glossary checkers skip themselves
+#           instead of flagging every article. Everything else — ingest,
+#           concepts, canonical value tables, provenance, contradiction and
+#           coverage checks, deliverables — is unaffected; none of it depends
+#           on the prose language.
+#
+# ─── glossary ──────────────────────────────────────────────────────────────
+#
+# Required for zh-TW and zh-CN; must be REMOVED for `none`. Both shipped
+# glossaries carry the same ~1230 terms in their own locale's wording:
+#
+#   memory/medical-term-translations-zh-tw.md
+#   memory/medical-term-translations-zh-cn.md
+#
+# ─── region ────────────────────────────────────────────────────────────────
+#
+# The default care market — where prescriptions are filled and most studies
+# performed. Documentation only; no checker enforces it.
+#
+# region is NOT the same axis as locale. A vault can read one locale while
+# drawing care from facilities in more than one market, which is why a facility
+# with no Chinese name stays English-only. The `local-brand-name` medication
+# field is relative to region, not locale: it records the product name as
+# dispensed, in the market where it was dispensed.
+
+locale: zh-TW
+glossary: memory/medical-term-translations-zh-tw.md
+region: Taiwan

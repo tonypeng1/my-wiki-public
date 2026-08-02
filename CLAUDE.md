@@ -73,10 +73,29 @@ Article name should match the filename without the .md extension.
    (exception: query files under wiki/queries/ are prefixed with their date,
    e.g. 2026-05-21-slug.md — see the Query File Format section)
 
-## Traditional Chinese Medical Terms
+## Chinese Medical Terms
 
-The patient is a native Traditional Chinese reader from Taiwan. Make medical prose
-easier to read by adding Traditional Chinese translations for medical terms.
+Make medical prose easier to read by adding Chinese translations for medical
+terms, so a reader who is not a native English speaker can follow their own
+clinical record.
+
+**This whole section applies only when `locale` in `wiki-config.yml` is a Chinese
+locale.** The locale decides which Chinese, and whether there is any at all:
+
+| `locale` | Effect |
+|---|---|
+| `zh-TW` | Gloss in Traditional Chinese, Taiwan clinical wording. |
+| `zh-CN` | Gloss in Simplified Chinese, Mainland clinical wording. |
+| `none` | English-only vault. **Skip this section entirely** — write no glosses, and treat `cn-title` and Chinese `aliases` as not applicable. |
+
+Under `none` nothing else changes: ingest, concepts, canonical value tables,
+provenance, contradiction and coverage checks, and deliverables are all
+language-independent, and the three glossary checkers skip themselves rather
+than flagging every article (see `scripts/_vault_config.py`).
+
+The examples throughout this section are written in Traditional Chinese. In a
+`zh-CN` vault read them as illustrating the *rule*, not the wording — the
+configured glossary supplies the wording.
 
 **This section is the single source of truth for translation practice.** The
 ingest, backfill, query, and slide workflows all follow it — they must not restate
@@ -132,32 +151,35 @@ their own translation rules, only point here.
 - In query files, keep abbreviations especially visible in skim-heavy recap
   sections, for example `AHI (呼吸中止低通氣指數)`, `PSG (多項睡眠生理檢查)`,
   `RLS (不寧腿症候群)`.
-- Format: English term, then the Traditional Chinese in parentheses:
+- Format: English term, then the Chinese in parentheses:
   `Carotid intima-media thickness (IMT) (頸動脈內膜中層厚度)`.
 
 ### Medication naming
 - This is a **repo-wide** rule for medication mentions in body content.
 - On the **first mention of a medication in each `###` section**, write it as
-  `generic (Brand, Taiwan name)`.
+  `generic (Brand, local name)`.
 - If a file has no `###` headings in the relevant area, fall back to the first
   mention within the enclosing `##` section.
 - Apply the same format on the **first mention inside tables, Key Points,
   follow-up bullets, and other skim-heavy recap blocks**, even if the medication
   already appeared earlier in the file.
 - Later mentions within the same `###` section can use the generic name alone
-  unless repeating the brand/Taiwan name materially improves clarity.
+  unless repeating the brand/local name materially improves clarity.
 - Keep `#` titles, frontmatter titles, filenames, and Obsidian backlinks in
-  English only; do not add brand/Taiwan-name parentheticals there.
-- The Brand and Taiwan name come from the `brand` and `taiwan-brand-name` fields in
+  English only; do not add brand/local-name parentheticals there.
+- The Brand and local name come from the `brand` and `local-brand-name` fields in
   that medication's concept frontmatter (see Concept Article Format) — use them
   verbatim so the same medication reads identically everywhere.
-- Examples: `amlodipine (Norvasc, 脈優)`, `atorvastatin (Lipitor, 立普妥)`,
-  `alprazolam (Xanax, 贊安諾)`.
+- Examples (a vault whose `region` is Taiwan): `amlodipine (Norvasc, 脈優)`,
+  `atorvastatin (Lipitor, 立普妥)`, `alprazolam (Xanax, 贊安諾)`.
+- Under `locale: none` there is no local-market Chinese name to carry, so the
+  format drops to `generic (Brand)` — `amlodipine (Norvasc)` — and
+  `local-brand-name` is not required on the concept.
 
 ### Abbreviations
 - A term and its abbreviation are the **same term**. Whether an article uses only
   the abbreviation (e.g. `AST`), only the full name, or both, the first mention
-  gets a Traditional Chinese translation.
+  gets a Chinese translation.
 - Keep the abbreviation in English and put the Chinese after the full term:
   `aspartate aminotransferase (AST) (天門冬胺酸轉胺酶)`. If only the abbreviation
   appears, attach the Chinese to it: `AST (天門冬胺酸轉胺酶)`.
@@ -175,18 +197,24 @@ Leave in English:
 
 **Institution names** are an exception rather than a blanket "leave in English".
 A facility that operates under a Chinese name is *named* in Chinese, so writing
-it English-only is a mistranslation, not a neutral choice. In body prose give a
-Taiwan facility on first mention per section as `English (中文)` —
+it English-only is a mistranslation, not a neutral choice. In body prose give
+such a facility on first mention per section as `English (中文)` —
 `Mingde Memorial Hospital (台北明德)`, `He-An General Hospital (和安醫院)`,
 `Xinyuan Clinic (新苑診所)` — taking both halves verbatim from the facility
-vocabulary table so the same site reads identically everywhere. A US facility
-has no Chinese name and stays English-only (`Riverside Family Medicine`); do not
-invent a Chinese rendering for one.
+vocabulary table so the same site reads identically everywhere. A facility with
+no Chinese name stays English-only (`Riverside Family Medicine`); do not invent a
+Chinese rendering for one.
+
+This turns on the **facility**, not on the vault's locale: whether a site has a
+Chinese name is a fact about the site. Do not restate a Taiwan hospital's name in
+Simplified characters in a `zh-CN` vault, or a Mainland hospital's in Traditional
+in a `zh-TW` one — the printed name is the name. Under `locale: none` this
+exception does not apply at all, and every facility stays English-only.
 
 Two clarifications:
 - Medication brand names are still not translated as ordinary clinical terms,
   but in body prose they are intentionally included in the medication format
-  `generic (Brand, Taiwan name)` per the Medication naming rule above.
+  `generic (Brand, local name)` per the Medication naming rule above.
 - Exception: translate anyway when the source document itself supplies the
   Chinese wording.
 - An abbreviation that *denotes a medical concept* (AST, GGT, eGFR) IS translated
@@ -198,21 +226,23 @@ Two frontmatter layers make the vault navigable in Chinese **without renaming an
 file** — filenames, `title`, and `[[backlinks]]` stay English-canonical per "What
 NOT to translate" above.
 
-**`aliases`** — add useful Traditional Chinese terms when they help searchability,
+**`aliases`** — add useful Chinese terms, in the vault's locale, when they help searchability,
 so the note is reachable by its Chinese name in Obsidian's Quick Switcher and
 global search. Every concept and MOC should carry at least one Chinese alias.
 
 **`cn-title`** — a display field in `English (中文)` form, read by the Front Matter
 Title Obsidian plugin to label the file tree, tabs, and graph. Required on every
-**concept** and **MOC** file (summaries and queries do not use it). Rules:
+**concept** and **MOC** file (summaries and queries do not use it) in a Chinese
+locale; under `locale: none` the field carries nothing and is omitted. Rules:
 - The English part is the concept's **common abbreviation** when it has one
   (`GGT (γ-谷氨醯轉移酶)`, `COPD (慢性阻塞性肺病)`, `PSA (攝護腺特異抗原)`),
   otherwise the plain name (`Gout (痛風)`, `Peptic Ulcer (消化性潰瘍)`).
 - MOCs keep their full title: `MOC — Cardiology (心臟科)`.
 - Medications answer **"what kind of drug is this?"**, never the brand — the brand
-  is already in `brand`/`taiwan-brand-name` and in `aliases`. In order of
+  is already in `brand`/`local-brand-name` and in `aliases`. In order of
   preference:
-  1. the **Chinese generic name**, when one is in common Taiwan use:
+  1. the **Chinese generic name**, when one is in common use in the vault's
+     locale:
      `Aspirin (阿斯匹靈)`;
   2. otherwise the **Chinese drug class**: `Atorvastatin (史他汀類藥物)`,
      `Alprazolam (苯二氮平類)`, `Atenolol (β阻斷劑)`. Prefer the short form of a
@@ -229,8 +259,8 @@ Title Obsidian plugin to label the file tree, tabs, and graph. Required on every
 - Adding or fixing `aliases`/`cn-title` is search/display metadata, **not** a
   medical-content change — it does not bump `updated`.
 
-New concept and MOC files created during ingest or by a maintenance pass must get
-both, or they show English-only in the sidebar.
+In a Chinese locale, new concept and MOC files created during ingest or by a
+maintenance pass must get both, or they show English-only in the sidebar.
 
 Obsidian rewrites the frontmatter of any note it has open into block-style YAML and
 can clobber CLI edits with its cached copy. The repo convention is inline flow style
@@ -238,10 +268,17 @@ can clobber CLI edits with its cached copy. The repo convention is inline flow s
 Obsidian or commit promptly so a clobber is recoverable.
 
 ### The shared glossary
-Use `memory/medical-term-translations.md` as the shared glossary during ingest,
-article updates, query answers, and slide creation. Reuse existing entries and
-prefer Taiwan Traditional Chinese clinical wording. If unsure of the correct
-Taiwan wording, add the term to the glossary for later review instead of guessing.
+Use the glossary named by `glossary:` in `wiki-config.yml` as the shared glossary
+during ingest, article updates, query answers, and slide creation. Never hardcode
+a glossary path: `zh-TW` and `zh-CN` vaults point at different files, and under
+`locale: none` there is no glossary at all.
+
+Reuse existing entries and prefer the clinical wording of the vault's locale —
+Taiwan wording under `zh-TW`, Mainland wording under `zh-CN`. The two differ in
+vocabulary, not just characters (`三酸甘油脂` vs `甘油三酯`, `中風` vs `脑卒中`,
+`嗜中性球` vs `中性粒细胞`), so converting characters is not translating. If
+unsure of the correct wording for the locale, add the term to that glossary's
+Review Queue instead of guessing.
 
 **What belongs in the glossary** — standalone, reusable clinical vocabulary you
 would expect in more than one article (analyte and lab names, anatomy, pathology
@@ -258,7 +295,7 @@ Each wiki/concepts/{name}.md:
 ---
 title: {Concept Name}
 tags: [tag1, tag2]
-aliases: [3–5 abbreviations, alternate spellings, lay terms, + the Traditional Chinese name]
+aliases: [3–5 abbreviations, alternate spellings, lay terms, + the Chinese name]
 cn-title: {English} ({中文})
 updated: {date}
 ---
@@ -312,16 +349,25 @@ A concept tagged `medication` carries two extra frontmatter fields, after `updat
 
 ```
 brand: {brand name as prescribed}          # e.g. Norvasc
-taiwan-brand-name: {full Taiwan product name, incl. dosage-form suffix}  # e.g. 脈優錠
+local-brand-name: {full local product name, incl. dosage-form suffix}  # e.g. 脈優錠
 ```
 
-They are the **source for the `generic (Brand, Taiwan name)` format** in body prose
+They are the **source for the `generic (Brand, local name)` format** in body prose
 (see Medication naming above) — copy them verbatim rather than rewording, so the
 same medication reads identically everywhere: the two fields above give
 `amlodipine (Norvasc, 脈優錠)`. `brand` records the name as actually prescribed,
 which is not always a tidy originator brand (`amlodipine besylate`, `BZD Xanax`) —
 keep it as prescribed rather than "correcting" it. `cn-title` may use a trimmed
-form of `taiwan-brand-name`; see Frontmatter aliases and `cn-title` above.
+form of `local-brand-name`; see Frontmatter aliases and `cn-title` above.
+
+**`local-brand-name` is relative to `region` in wiki-config.yml, not to
+`locale`.** It records the product name as dispensed, *in the market where it was
+dispensed* — what is printed on the box the patient actually receives. The two
+are different axes: a vault can read one locale while drawing care from
+facilities in more than one market. A patient who reads Simplified Chinese but
+fills prescriptions in Taipei still gets the Taiwan product name on the box, so
+the field follows the pharmacy, not the reader. Under `locale: none` omit the
+field entirely; a local-market brand is already what `brand` records.
 
 ## Summary File Format
 Each wiki/summaries/{name}.md:
@@ -406,22 +452,8 @@ readable as "Dr. Alvarez ordered it, Metro Labs ran it". An export that names no
 institution at all — a patient-portal medication list — still gets no field.
 Values:
 
-| slug | Facility | 中文 | Also written |
-|---|---|---|---|
-| `riverside` | Riverside Family Medicine | — | Riverside |
-| `metro-labs` | Metro Reference Laboratories | — | Metro Labs, Metro Reference |
-| `lakeview` | Lakeview Regional Medical Center | — | Lakeview |
-| `northgate-imaging` | Northgate Diagnostic Imaging | — | Northgate |
-| `harbor-sleep` | Harbor Sleep Center | — | Harbor Sleep |
-| `mingde` | Mingde Memorial Hospital, Taipei | 台北明德 | Mingde, 明德 |
-| `hean` | He-An General Hospital, Taipei | 和安醫院 | He-An, 和安 |
-| `xinyuan` | Xinyuan Clinic | 新苑診所 | Xinyuan, 新苑 |
-
-**`Also written`** lists the forms a concept table's `Lab` cell may use for
-that site. It is not decoration: `scripts/extract-provenance-claims.py` reads
-this column to recognize a facility in prose, so a site missing from it makes
-every row naming it read as an unknown clinic. The `Physician` table needs no
-such column — name forms are derived from the name itself.
+The values themselves live in `memory/provenance-roster.md` — see "The roster
+lives outside this file" below.
 
 Taiwan source documents distinguish **`Requesting Institution`** from
 **`Performing Institution`** on the same report, and NHI-uploaded studies often
@@ -481,18 +513,6 @@ end with its interpretation and signature fields blank yet still name
 missing *interpretation* says nothing about whether an *ordering* clinician is
 recorded, and the label is often the bare word `Physician:` with no qualifier.
 
-| slug | Physician |
-|---|---|
-| `dr-alvarez` | Dr. Maria Alvarez |
-| `dr-boone` | Dr. Gregory Boone |
-| `dr-okafor` | Dr. Ngozi Okafor |
-| `dr-whitfield` | Dr. Susan Whitfield |
-| `dr-reyes` | Dr. Daniel Reyes |
-| `dr-lu-wei-ting` | Dr. 呂偉庭 (Lu, Wei-Ting) |
-| `dr-su-yi-fan` | Dr. 蘇怡帆 |
-| `dr-ko-ming-hui` | Dr. 柯明慧 |
-| `dr-yeh-cheng-han` | Dr. Yeh Cheng-Han |
-
 Record each name exactly as its source document gives it — one report prints the
 romanization alongside the characters, another gives characters only, and a third
 names its visiting staff in romanization only. Do not supply the missing half
@@ -523,22 +543,28 @@ Both vocabularies are closed, like the canonical tags. Before adding a value,
 check whether an existing one covers it — a clinic's slug covers its satellite
 sites, and a hospital's imaging department is the hospital. A new value is
 justified when a source document names a site or clinician not already in the
-table. Add the row here, with the Chinese name if the facility has one,
-**before** using the slug in any file.
+roster. Add the row to `memory/provenance-roster.md`, with the Chinese name if
+the facility has one, **before** using the slug in any file.
 
-The two tables above are **executable**. `scripts/_provenance_vocab.py` parses
-them at run time and both provenance checkers read them from there, so adding
-the row here is the entire edit — there is no second copy in `scripts/` to keep
-in step, and a value used before it is listed fails the check rather than
-passing silently.
+### The roster lives outside this file
+Both tables are **executable**: `scripts/_provenance_vocab.py` parses
+`memory/provenance-roster.md` at run time and both provenance checkers read
+them from there, so adding the row to the roster is the entire edit — there is
+no second copy in `scripts/` to keep in step, and a value used before it is
+listed fails the check rather than passing silently. The loader matches each
+table by its header row (`slug | Facility`, `slug | Physician`), so the prose
+around them can be rewritten freely; the roster documents that contract.
 
-The loader matches each table by its header row (`slug | Facility`,
-`slug | Physician`), not by this section's title, so the prose around them can
-be rewritten freely — but keep those two header cells intact, and keep one
-row per site or clinician with the slug in backticks in the first cell.
-This indirection also keeps a real vault's clinics and clinicians out of any
-repository the scripts are published to: `scripts/` is shareable and CLAUDE.md
-is where the roster lives (see the header comment in `_provenance_vocab.py`).
+The roster is separate from this file because it is **data about one patient's
+care, not convention**. This file states how to *choose* a `facility` or
+`physician` value; the roster records which values a given vault actually has.
+Keeping them together meant a shared conventions file had to carry somebody's
+clinic list, and made adding one clinic dirty CLAUDE.md.
+
+A filled-in `memory/provenance-roster.md` stays out of any repository the
+scripts are published to — `scripts/` is shareable and the roster is not. A
+fresh clone starts from `memory/provenance-roster.example.md`, which has both
+headers and no rows.
 
 ## Query File Format
 Each query file is named `{YYYY-MM-DD}-{slugified-question}.md`, date-prefixed like

@@ -9,10 +9,12 @@ from `tags`, which record what it is about:
   physician      the ordering or interpreting clinician
   result-status  normal | mixed | abnormal
 
-The vocabularies are read from the tables in CLAUDE.md ("Provenance fields"
-under Summary File Format) at run time — see _provenance_vocab.py. That
-document is the source of truth in the literal sense: adding a row there is
-the whole edit, and this file holds no copy to fall out of step with it.
+The vocabularies are read from the tables in memory/provenance-roster.md at
+run time — see _provenance_vocab.py. That file is the source of truth in the
+literal sense: adding a row there is the whole edit, and this file holds no
+copy to fall out of step with it. The rules for CHOOSING a value stay in
+CLAUDE.md under "Provenance fields"; the roster records which values this
+vault has.
 
 Four checks. The first three FAIL (exit 1); the fourth is informational.
 
@@ -148,7 +150,7 @@ def main() -> int:
     if unknown:
         failed = True
         print(f"UNKNOWN VALUE: {len(unknown)} field(s) outside the closed vocabulary.")
-        print("Add the value to the tables in CLAUDE.md, or fix the slug.\n")
+        print("Add the value to memory/provenance-roster.md, or fix the slug.\n")
         for rel, field, value in unknown:
             print(f"  {rel}\n    {field}: {value}")
         print()

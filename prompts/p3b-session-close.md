@@ -106,18 +106,19 @@ Follow these steps:
      step 3 (e.g. `topic: Liver health Q&A`). This drives the display in
      p3c-session-reopen.md.
 
-6. Run the Traditional Chinese translation pass over the files this
-   close produced, before deleting the session files.
+6. Run the Chinese translation pass over the files this close produced,
+   before deleting the session files. Under `locale: none` this whole step is
+   a no-op — skip to step 7.
 
-   Read `memory/medical-term-translations.md` (the shared glossary), then
-   apply the Traditional Chinese Medical Terms policy in CLAUDE.md (single
-   source of truth) to all three output files:
+   Read the glossary configured in `wiki-config.yml`, then apply the
+   Chinese Medical Terms policy in CLAUDE.md (single source of truth) to all
+   three output files:
    - the consolidated query file from step 3 — apply the query-file
      exception (re-translate in Key Points, tables, and follow-up bullets;
      repeat skim-critical abbreviations per `###` subsection);
    - both archived session files from step 5 (`{slug}.md` and
      `{slug}-log.md`) — apply the default per-section two-per-term rule.
-   Reuse glossary wording, and use the `generic (Brand, Taiwan name)`
+   Reuse glossary wording, and use the `generic (Brand, local name)`
    medication first-mention format. Because p3-qa.md already translated the
    answer prose as it was written, this is mostly verification and
    patching gaps, not a full rewrite.
@@ -134,10 +135,10 @@ Follow these steps:
      patch the missing occurrence.
    - `python3 scripts/check-medication-first-mentions.py --git-diff PATH [PATH ...]`
      — patch any flagged first mention missing the
-     `generic (Brand, Taiwan name)` format, rerun until clean.
+     `generic (Brand, local name)` format, rerun until clean.
    - `python3 scripts/check-glossary-delta.py --git-diff PATH [PATH ...]`
      — review each inline `English (中文)` pair, add reusable standalone
-     clinical terms to `memory/medical-term-translations.md` in
+     clinical terms to the glossary configured in `wiki-config.yml` in
      alphabetical order, leave one-off phrases inline only, rerun until no
      unreviewed reusable candidates remain.
 

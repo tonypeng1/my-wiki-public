@@ -1,6 +1,6 @@
 ---
 name: translation-backfill
-description: Repair missing Traditional Chinese medical-term translations in existing wiki files. Use when the user asks for translation backfill, bilingual cleanup, missing Chinese terms, or paragraph-level medical-term QA on an existing batch of wiki content. If the user does not specify a scope, select the next reasonable backfill domain yourself.
+description: Repair missing Chinese medical-term translations in existing wiki files. Use when the user asks for translation backfill, bilingual cleanup, missing Chinese terms, or paragraph-level medical-term QA on an existing batch of wiki content. If the user does not specify a scope, select the next reasonable backfill domain yourself.
 ---
 
 # Translation Backfill
@@ -15,4 +15,4 @@ provided, choose the next reasonable backfill batch yourself.
 
 Then execute the prompt instructions exactly. Preserve Obsidian-style
 `[[backlinks]]`, English filenames and titles, canonical tags, and the
-repo's Taiwan Traditional Chinese glossary conventions.
+glossary conventions of the locale configured in `wiki-config.yml`.

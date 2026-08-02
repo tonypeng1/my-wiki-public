@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Heuristic checker for the repo-wide medication first-mention format:
-`generic (Brand, Taiwan name)`.
+`generic (Brand, local name)` — or `generic (Brand)` under `locale: none`.
 
 Usage:
   python3 scripts/check-medication-first-mentions.py PATH [PATH ...]
@@ -11,9 +11,15 @@ recursively for .md files. If no path is given, the script scans the main wiki
 content locations.
 
 The checker derives medication mappings from `wiki/concepts/*.md` files tagged
-`medication`. It enforces only medications whose concept frontmatter provides
-explicit `brand` and `taiwan-brand-name` fields alongside the concept `title`
-(the generic name). It resets medication first-mention scope at `###` headings,
+`medication`. In a bilingual vault it enforces only medications whose concept
+frontmatter provides explicit `brand` and `local-brand-name` fields alongside the
+concept `title` (the generic name). Under `locale: none` there is no local-market
+Chinese name to carry, so `local-brand-name` is not required and the enforced
+format drops to `generic (Brand)`; `brand` alone is enough.
+
+`local-brand-name` is relative to `region` in wiki-config.yml, not to `locale`:
+it records the product name as dispensed, in the market where it was dispensed.
+A vault can read one locale while filling prescriptions in another. It resets medication first-mention scope at `###` headings,
 falling back to the enclosing `##` section when no deeper heading is present.
 Output is intended as a suspect list for human or LLM review. Exit code is
 always 0.
@@ -24,7 +30,11 @@ from __future__ import annotations
 import argparse
 import re
 import subprocess
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+import _vault_config  # noqa: E402
 
 ROOT = Path(__file__).parent.parent
 DEFAULT_PATHS = [
@@ -107,6 +117,7 @@ def iter_markdown_files(paths: list[Path]) -> list[Path]:
 
 def load_medication_entries() -> list[dict[str, str | re.Pattern[str]]]:
     entries: list[dict[str, str | re.Pattern[str]]] = []
+    bilingual = _vault_config.is_bilingual()
 
     for concept_file in sorted(CONCEPTS_DIR.glob("*.md")):
         raw_text = concept_file.read_text(encoding="utf-8")
@@ -117,25 +128,39 @@ def load_medication_entries() -> list[dict[str, str | re.Pattern[str]]]:
             continue
 
         brand = frontmatter.get("brand", "").strip().strip("'\"")
-        taiwan_name = frontmatter.get("taiwan-brand-name", "").strip().strip("'\"")
-        if not brand or not taiwan_name:
+        # Under `locale: none` the field is ignored rather than merely optional.
+        # A vault that switched away from a Chinese locale still has the values
+        # sitting in frontmatter, and honouring them would demand a Chinese
+        # product name inside English-only prose.
+        local_name = (
+            frontmatter.get("local-brand-name", "").strip().strip("'\"")
+            if bilingual
+            else ""
+        )
+        if not brand:
+            continue
+        if bilingual and not local_name:
             continue
         brand = normalize_spaces(brand)
-        taiwan_name = normalize_spaces(taiwan_name)
+        local_name = normalize_spaces(local_name)
 
         generic_re = re.compile(
             rf"(?<![A-Za-z0-9]){re.escape(title)}(?![A-Za-z0-9])",
             re.IGNORECASE,
         )
+        if bilingual:
+            tail = rf"\s*,\s*{re.escape(local_name)}"
+        else:
+            tail = ""
         expected_re = re.compile(
-            rf"(?<![A-Za-z0-9]){re.escape(title)}\s*\(\s*{re.escape(brand)}\s*,\s*{re.escape(taiwan_name)}\s*\)(?![A-Za-z0-9])",
+            rf"(?<![A-Za-z0-9]){re.escape(title)}\s*\(\s*{re.escape(brand)}{tail}\s*\)(?![A-Za-z0-9])",
             re.IGNORECASE,
         )
         entries.append(
             {
                 "generic": title,
                 "brand": brand,
-                "taiwan_name": taiwan_name,
+                "local_name": local_name,
                 "generic_re": generic_re,
                 "expected_re": expected_re,
             }
@@ -243,7 +268,7 @@ def scan_file(
     for entry in entries:
         generic = str(entry["generic"])
         brand = str(entry["brand"])
-        taiwan_name = str(entry["taiwan_name"])
+        local_name = str(entry["local_name"])
         generic_re = entry["generic_re"]
         expected_re = entry["expected_re"]
 
@@ -256,7 +281,9 @@ def scan_file(
             group = (int(block["scope"]), kind)
             first_by_group.setdefault(group, block)
 
-        expected_text = f"{generic} ({brand}, {taiwan_name})"
+        expected_text = (
+            f"{generic} ({brand}, {local_name})" if local_name else f"{generic} ({brand})"
+        )
         for block in first_by_group.values():
             clean = str(block["clean"])
             if expected_re.search(clean):  # type: ignore[union-attr]
@@ -356,7 +383,7 @@ def main() -> None:
         return
 
     if not entries:
-        print("No medication entries with enforceable Brand/Taiwan-name mappings found.")
+        print("No medication entries with enforceable brand mappings found.")
         return
 
     changed_lines_by_file = git_changed_lines(markdown_files) if args.git_diff else {}

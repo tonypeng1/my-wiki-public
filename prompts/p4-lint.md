@@ -1,6 +1,26 @@
 Perform a full health check on the wiki. Work through these 
 checks in order:
 
+0. LOCALE GATE
+   Run: python3 scripts/check-locale-consistency.py
+
+   This workflow writes clinical prose — step 2 creates and expands concept
+   articles, step 4 fills frontmatter, step 6 rewrites MOCs — so it needs the
+   same settled locale ingest does.
+
+   - Exit 0 → proceed.
+   - `LOCALE CONFIG INVALID` → report it as a finding and STOP. `wiki-config.yml`
+     is missing or malformed; every gloss this run would write is unanchored
+     until it is fixed.
+   - `MISMATCH` → the configured locale disagrees with the prose already in the
+     vault, which usually means `locale` was changed on a populated vault.
+     Report it as the health check's top finding and STOP. Whether to revert the
+     config or re-gloss the vault is the maintainer's call. Without this check
+     the same condition surfaces as step 13 flagging nearly every article at
+     once, which reads like a broken checker rather than a changed config.
+
+   Record the outcome in the health check report either way.
+
 1. Read wiki/index.md, all files in wiki/mocs/, and wiki/home.md.
    (Concept and summary files are loaded on-demand in later steps.)
 
@@ -41,7 +61,7 @@ checks in order:
    For each file under LIST-FORMAT RECORDS, read it and convert the series to a
    table — one row per draw (date, lab, value, flag, source backlink) — per the
    Key Details rule in CLAUDE.md, preserving every value, flag, backlink, and
-   Traditional Chinese gloss; do NOT change any data. For PARTIALLY TABULAR,
+   Chinese gloss; do NOT change any data. For PARTIALLY TABULAR,
    fold the stray bullets into the existing table. For SINGLE VALUE AS BULLET,
    convert the one value to a one-row table; read that tier as a candidate list
    rather than a finding, and skip an entry whose number turns out not to be a
@@ -67,17 +87,24 @@ checks in order:
    Run: grep -rL 'aliases:' wiki/concepts/ wiki/mocs/
    Run: grep -rL 'cn-title:' wiki/concepts/ wiki/mocs/
    Run: grep -l '^tags:.*medication' wiki/concepts/*.md | xargs -I{} grep -L '^brand:' {}
-   Run: grep -l '^tags:.*medication' wiki/concepts/*.md | xargs -I{} grep -L '^taiwan-brand-name:' {}
+   Run: grep -l '^tags:.*medication' wiki/concepts/*.md | xargs -I{} grep -L '^local-brand-name:' {}
    The first two list concept and MOC files with no aliases / no cn-title;
    the last two list medication concepts missing a brand field.
+   Under `locale: none` the Chinese layer does not exist: skip the `cn-title:`
+   grep, and drop the Chinese-name requirement from `aliases`. Still run the
+   `aliases:` grep — English abbreviations, alternate spellings, and lay terms
+   are what make a note findable in any locale. `local-brand-name` is likewise
+   not required. See the Chinese Medical Terms section in CLAUDE.md.
+
    Read only the files returned, then fill what is missing:
    - concept `aliases` — 3-5 common abbreviations, alternate spellings, and lay
-     terms, including at least one Traditional Chinese name. On a medication the
-     Chinese brand name must be among them, since it is not in `cn-title`.
+     terms, including at least one Chinese name in the vault's locale. On a
+     medication the Chinese brand name must be among them, since it is not in
+     `cn-title`.
    - MOC `aliases` — the Chinese domain name (e.g. `aliases: [血脂]`).
    - `cn-title` — `English (中文)` on a concept, `MOC — {Domain} ({中文})` on a MOC.
-   - `brand` / `taiwan-brand-name` — take them from the article body or the source
-     summary; never guess a Taiwan product name. If neither records it, report the
+   - `brand` / `local-brand-name` — take them from the article body or the source
+     summary; never guess a local product name. If neither records it, report the
      gap instead of inventing a value. This matters because
      check-medication-first-mentions.py silently SKIPS any medication concept
      missing either field: the gap disables first-mention enforcement for that
@@ -104,15 +131,16 @@ checks in order:
 
    b) Run: python3 scripts/check-provenance-fields.py
    Validates `facility`, `physician`, and `result-status` on summaries
-   against the closed vocabularies in CLAUDE.md ("Provenance fields").
+   against the closed vocabularies in `memory/provenance-roster.md`, per the
+   rules under "Provenance fields" in CLAUDE.md.
    Three failures, all reported and none auto-fixed, all needing the
    maintainer for the same reason unknown tags do:
-   - UNKNOWN VALUE — a new site or clinician never added to CLAUDE.md, or a
+   - UNKNOWN VALUE — a new site or clinician never added to the roster, or a
      typo'd slug that will silently never match. Read the summary and the
      raw/ source to tell which before touching anything: a real new
-     facility gets a row in the CLAUDE.md table, which is the only edit
-     needed (the script reads that table at run time and holds no copy of
-     it); a typo gets corrected in the file.
+     facility gets a row in `memory/provenance-roster.md`, which is the only
+     edit needed (the script reads that roster at run time and holds no copy
+     of it); a typo gets corrected in the file.
    - WRONG FILE TYPE — a provenance field on a concept. Concepts span many
      draws and carry provenance per-row in their canonical table instead.
    - PROVENANCE AS TAG — the regression these fields exist to prevent.
@@ -247,7 +275,12 @@ checks in order:
     Every run of this workflow edits MOC files, wiki/home.md, and
     wiki/index.md, and step 2 may create or expand concept articles. That is
     new clinical prose, so it carries the same three risks ingest does, and
-    p1-ingest.md step 8 runs the same three checkers on it. Run
+    p1-ingest.md step 8 runs the same three checkers on it.
+
+    Under `locale: none` the first two checkers skip themselves and say so;
+    run them anyway rather than special-casing this step, and record the skip
+    notice in the report. The medication checker still runs — it enforces
+    `generic (Brand)` instead of the three-part form. Run
     these LAST, after every edit above is written — including the link
     repairs in step 11 — so the diff they inspect is complete. All three take
     `--git-diff` with no path arguments: that covers the main content
@@ -263,9 +296,9 @@ checks in order:
     the check is not done.
 
     a) Run: python3 scripts/check-bilingual-terms.py --git-diff
-       English clinical terms written without their Traditional Chinese
-       translation, per the Traditional Chinese Medical Terms policy in
-       CLAUDE.md. Treat the output as a heuristic suspect list — some
+       English clinical terms written without their Chinese translation, per
+       the Chinese Medical Terms policy in CLAUDE.md. Under `locale: none`
+       the checker skips itself and reports that instead. Treat the output as a heuristic suspect list — some
        suspects are known false positives (see
        memory/reference-bilingual-checker-behavior.md for the recurring
        patterns). Patch real misses in the files this workflow touched,
@@ -274,17 +307,17 @@ checks in order:
 
     b) Run: python3 scripts/check-glossary-delta.py --git-diff
        Inline `English (中文)` pairs this pass wrote that are not yet in
-       memory/medical-term-translations.md. Review each and follow the "What
+       the glossary configured in wiki-config.yml. Review each and follow the "What
        belongs in the glossary" rule in CLAUDE.md: add standalone, reusable
        clinical vocabulary; leave one-off phrases inline only; add a term you
        are unsure of for later review rather than guessing. Rerun until no
        unreviewed reusable candidates remain.
 
     c) Run: python3 scripts/check-medication-first-mentions.py --git-diff
-       The repo-wide `generic (Brand, Taiwan name)` format (Medication naming
+       The repo-wide `generic (Brand, local name)` format (Medication naming
        in CLAUDE.md) on first mention in each `###` section. Note the checker
        silently SKIPS any medication concept missing `brand` or
-       `taiwan-brand-name`, so a clean result here does not prove those
+       `local-brand-name`, so a clean result here does not prove those
        fields exist — step 4 is what guarantees that. Patch any flagged first
        mention and rerun until no unreviewed suspects remain.
 

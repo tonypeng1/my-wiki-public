@@ -121,9 +121,9 @@ the reason these steps live together rather than firing on every ingest.
    new/untracked file — such as an article created in step 1 — in full.
 
    a) Run: python3 scripts/check-bilingual-terms.py --git-diff
-      English clinical terms written without their Traditional Chinese
-      translation, per the Traditional Chinese Medical Terms policy in
-      CLAUDE.md. Treat the output as a heuristic suspect list — some suspects
+      English clinical terms written without their Chinese translation, per
+      the Chinese Medical Terms policy in CLAUDE.md. Under `locale: none`
+      the checker skips itself and reports that instead. Treat the output as a heuristic suspect list — some suspects
       are known false positives (see
       memory/reference-bilingual-checker-behavior.md for the recurring
       patterns). Patch real misses in the files this workflow touched, editing
@@ -132,7 +132,7 @@ the reason these steps live together rather than firing on every ingest.
 
    b) Run: python3 scripts/check-glossary-delta.py --git-diff
       Inline `English (中文)` pairs this pass wrote that are not yet in
-      memory/medical-term-translations.md. Review each one and follow the
+      the glossary configured in wiki-config.yml. Review each one and follow the
       "What belongs in the glossary" rule in CLAUDE.md: add standalone,
       reusable clinical vocabulary; leave one-off phrases inline only; add a
       term you are unsure of for later review rather than guessing. Without
@@ -141,11 +141,11 @@ the reason these steps live together rather than firing on every ingest.
       unreviewed reusable candidates remain.
 
    c) Run: python3 scripts/check-medication-first-mentions.py --git-diff
-      The repo-wide `generic (Brand, Taiwan name)` format (Medication naming
+      The repo-wide `generic (Brand, local name)` format (Medication naming
       in CLAUDE.md) on first mention in each `###` section. This matters most
       for an article step 1 created from the summaries, whose medication
       mentions have never been checked. Note the checker silently SKIPS any
-      medication concept missing `brand` or `taiwan-brand-name` — a clean
+      medication concept missing `brand` or `local-brand-name` — a clean
       result here does not prove those fields exist; p4a-post-ingest.md step 3
       is what guarantees that. Patch any flagged first mention and rerun until
       no unreviewed suspects remain.

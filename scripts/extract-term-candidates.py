@@ -28,11 +28,14 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+import _vault_config  # noqa: E402
 
 ROOT = Path(__file__).parent.parent
 CHECKER = ROOT / "scripts" / "check-bilingual-terms.py"
-DEFAULT_GLOSSARY = ROOT / "memory" / "medical-term-translations.md"
 
 CJK = r"[㐀-鿿]"
 # All-caps/digit runs bounded by non-letters, so an uppercase stretch inside a
@@ -143,14 +146,26 @@ def main() -> None:
         description="List candidate clinical terms (acronyms/definitions) as a Pass A worklist."
     )
     parser.add_argument("paths", nargs="+", help="Markdown files or directories.")
-    parser.add_argument("--glossary", default=str(DEFAULT_GLOSSARY))
+    parser.add_argument(
+        "--glossary",
+        default=None,
+        help="Path to the shared glossary. Defaults to the glossary in "
+             "wiki-config.yml; passing it explicitly overrides the config.",
+    )
     parser.add_argument(
         "--all", action="store_true", help="Also list already-handled terms."
     )
     args = parser.parse_args()
 
+    if args.glossary:
+        glossary_path = Path(args.glossary)
+    elif _vault_config.skip_if_monolingual("extract-term-candidates"):
+        return
+    else:
+        glossary_path = _vault_config.require_glossary()
+
     checker = load_checker_module()
-    entries = checker.load_glossary(Path(args.glossary))
+    entries = checker.load_glossary(glossary_path)
 
     for md_file in iter_markdown_files([Path(p) for p in args.paths]):
         raw = md_file.read_text(encoding="utf-8")

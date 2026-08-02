@@ -5,6 +5,8 @@
       "Bash(python3 scripts/check-bilingual-terms.py *)",
       "Bash(python3 scripts/check-dangling-links.py *)",
       "Bash(python3 scripts/check-glossary-delta.py *)",
+      "Bash(python3 scripts/check-locale-consistency.py)",
+      "Bash(python3 scripts/check-locale-consistency.py *)",
       "Bash(python3 scripts/check-medication-first-mentions.py *)",
       "Bash(python3 scripts/connections-index.py *)",
       "Bash(python3 scripts/detect-list-records.py *)",
@@ -13,6 +15,7 @@
       "Bash(python3 scripts/extract-status-claims.py *)",
       "Bash(python3 scripts/extract-term-candidates.py *)",
       "Bash(python3 scripts/tag-index.py *)",
+      "Bash(bash scripts/new-vault.sh:*)",
       "Bash(bash scripts/search-index.sh:*)",
       "Bash(npx --yes @marp-team/marp-cli@latest:*)"
     ]

@@ -1,5 +1,5 @@
 ---
-name: medical-term-translations
+name: medical-term-translations-zh-tw
 description: Taiwan Traditional Chinese translations for recurring medical terms in the wiki
 type: glossary
 ---
@@ -7,8 +7,10 @@ type: glossary
 # Traditional Chinese Medical Term Glossary
 
 Use these Taiwan Traditional Chinese terms when adding parenthetical translations
-to wiki prose. For what to translate and what to leave in English, follow the
-Traditional Chinese Medical Terms policy in `CLAUDE.md` (single source of truth).
+to wiki prose. A vault selects this glossary by setting `locale: zh-TW` in
+`wiki-config.yml`; for Simplified Chinese see `medical-term-translations-zh-cn.md`.
+For what to translate and what to leave in English, follow the Chinese Medical
+Terms policy in `CLAUDE.md` (single source of truth).
 
 **Format and how `scripts/check-bilingual-terms.py` reads this file.** Each entry
 is `- English term: 中文`. List alternate English forms and abbreviations,

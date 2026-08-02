@@ -66,13 +66,16 @@ SYNC_FILES=(
   "AGENTS.md"
   # Permission allowlist for the synced scripts (settings.local.json stays private).
   ".claude/settings.json"
-  # Shared glossary: check-bilingual-terms.py, check-glossary-delta.py and
-  # extract-term-candidates.py all default to this path. It is the ONLY
-  # memory/ file that ships: the public repo's memory/MEMORY.md is a
-  # hand-written stub, and the private index's entry titles alone name the
-  # patient and their diagnoses. Never add memory/MEMORY.md — or a sync_dir
-  # over memory/ — here.
-  "memory/medical-term-translations.md"
+  # Locale config TEMPLATE, not this vault's live wiki-config.yml. Shipping the
+  # real one would hand every new clone locale: zh-TW pre-set, which silently
+  # defeats the p1-ingest step 0 gate: a maintainer who wants Simplified and
+  # skips the README would get a Traditional vault with nothing asking them.
+  # A clone with no wiki-config.yml trips the gate instead, which is the point.
+  "wiki-config.example.yml"
+  # Provenance roster TEMPLATE — both table headers, zero rows. The filled-in
+  # memory/provenance-roster.md is this patient's real clinics and clinicians
+  # and never ships; see scripts/_provenance_vocab.py.
+  "memory/provenance-roster.example.md"
   # Keeps __pycache__/*.pyc out of the public repo now that .py files ship.
   ".gitignore"
   # Normalizes line endings (LF) in the public repo too, and keeps the
@@ -82,6 +85,28 @@ SYNC_FILES=(
   # is legible).
   "docs/graph-view.png"
 )
+
+# EVERY glossary ships, not just the one this vault is configured for. A public
+# clone has to be able to become any locale the system supports, and shipping
+# only the configured one made that impossible: this vault is zh-TW, so the
+# public repo carried no Simplified glossary at all and a zh-CN user's
+# `glossary:` path resolved to a file that was never published.
+#
+# Glossaries are the ONLY memory/ files that ship. The public repo's
+# memory/MEMORY.md is a hand-written stub, and the private index's entry titles
+# alone name the patient and their diagnoses. Never add memory/MEMORY.md — or a
+# sync_dir over memory/ — to the lists above. They are appended by glob rather
+# than listed inline so a new locale's glossary ships the day it is created.
+shopt -s nullglob
+for glossary in "$SRC"/memory/medical-term-translations*.md; do
+  SYNC_FILES+=("memory/$(basename "$glossary")")
+done
+shopt -u nullglob
+
+if [[ ${#SYNC_FILES[@]} -eq 0 ]]; then
+  echo "ERROR: no files to sync — the allowlist came out empty." >&2
+  exit 1
+fi
 
 # CLAUDE.md is deliberately NOT in either list. The private copy documents
 # conventions with the patient's real medications and conditions as examples,
@@ -182,9 +207,9 @@ check_orphan_root_docs() {
 # ── privacy gate (fail-closed) ─────────────────────────────────────────────
 # Derives patient-identifying terms from the vault at run time — medication
 # generic names (basenames of medication-tagged concepts), their brand /
-# taiwan-brand-name field values, the patient's Chinese name(s) from
-# memory/patient-name.md, and the facility / physician rosters out of the
-# CLAUDE.md provenance tables — then refuses to sync if any allowlisted file, or
+# local-brand-name field values, the patient's Chinese name(s) from
+# memory/patient-name.md, and the facility / physician rosters out of
+# memory/provenance-roster.md — then refuses to sync if any allowlisted file, or
 # either hand-maintained public file (CLAUDE.md, memory/MEMORY.md), contains
 # one. The list is derived rather than hardcoded for two reasons: a literal
 # list here would itself leak (this script ships to the public repo), and a
@@ -225,7 +250,7 @@ run_privacy_gate() {
           fi
         done
       fi
-    done < <(grep -h '^brand:\|^taiwan-brand-name:' "$f")
+    done < <(grep -h '^brand:\|^local-brand-name:' "$f")
   done
 
   if [[ -f "$SRC/memory/patient-name.md" ]]; then
@@ -235,9 +260,9 @@ run_privacy_gate() {
                "$SRC/memory/patient-name.md" | sort -u)
   fi
 
-  # Facility and physician rosters. They live only in CLAUDE.md, which never
-  # syncs, so that the two provenance checkers can ship without them — see
-  # scripts/_provenance_vocab.py. Deriving them here closes the loop: the
+  # Facility and physician rosters. They live only in memory/provenance-roster.md,
+  # which never syncs, so that the two provenance checkers can ship without them
+  # — see scripts/_provenance_vocab.py. Deriving them here closes the loop: the
   # loader stops a roster being written into a file that ships, and this stops
   # one being pasted back.
   #
@@ -255,13 +280,13 @@ for t in a: print("ascii\t" + t)
 for t in c: print("cjk\t" + t)
 ' "$SRC" 2>&1)"; then
     echo "=== PRIVACY GATE: SYNC BLOCKED ==="
-    echo "Could not derive the facility/physician denylist from CLAUDE.md:"
+    echo "Could not derive the facility/physician denylist from the roster:"
     echo
     printf '  %s\n' "$vocab_terms"
     echo
     echo "That list is what keeps the patient's clinics and clinicians out of the"
     echo "public repo, so the sync stops rather than running without it. Repair the"
-    echo "provenance tables in CLAUDE.md — or scripts/_provenance_vocab.py — and"
+    echo "tables in memory/provenance-roster.md — or _provenance_vocab.py — and"
     echo "rerun. Do not work around this by skipping the derivation."
     exit 1
   fi
@@ -276,6 +301,23 @@ for t in c: print("cjk\t" + t)
       ascii_terms+=("$term")
     fi
   done <<< "$vocab_terms"
+
+  # An EMPTY roster is valid for a vault that has ingested nothing — that is
+  # the state scripts/new-vault.sh leaves behind, and _provenance_vocab.py
+  # accepts it. It is NOT valid for a vault that already holds summaries: a
+  # vault with source documents has facilities, so a roster naming none means
+  # the file was emptied or clobbered, and proceeding would ship those
+  # documents with no facility/physician denylist at all. Fail closed.
+  local summary_count
+  summary_count="$(find "$SRC/wiki/summaries" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  if [[ "$vocab_terms" == "" && "${summary_count:-0}" -gt 0 ]]; then
+    echo "=== PRIVACY GATE: SYNC BLOCKED ==="
+    echo "memory/provenance-roster.md yielded no facilities or physicians, but this"
+    echo "vault has $summary_count summaries. A vault with source documents has clinics;"
+    echo "an empty roster means the file was emptied or clobbered, and syncing now"
+    echo "would ship with no facility/physician denylist. Restore the roster and rerun."
+    exit 1
+  fi
 
   if [[ ${#ascii_terms[@]} -eq 0 && ${#cjk_terms[@]} -eq 0 ]]; then
     echo "Privacy gate: no denylist derivable (no medication concepts found) — skipped."
@@ -382,6 +424,19 @@ for f in "${SYNC_FILES[@]}"; do
 done
 
 check_orphan_root_docs
+
+# Glossaries ship by glob from SYNC_FILES, which only ever copies — so a
+# glossary renamed or retired in this repo would linger in the public one
+# forever. sync_dir does this for the directories it mirrors; memory/ is not
+# one, deliberately, because only the glossaries there may ship.
+check_orphan_glossaries() {
+  [[ -d "$DST/.git" ]] || return 0
+  local rel
+  while IFS= read -r rel; do
+    [[ -f "$SRC/$rel" ]] || to_delete+=("$rel")
+  done < <(git -C "$DST" ls-files -- 'memory/medical-term-translations*.md' 2>/dev/null)
+}
+check_orphan_glossaries
 
 # ── report ─────────────────────────────────────────────────────────────────
 

@@ -1,0 +1,1286 @@
+---
+name: medical-term-translations-zh-cn
+description: Mainland Chinese (Simplified) translations for recurring medical terms in the wiki
+type: glossary
+---
+
+# Simplified Chinese Medical Term Glossary
+
+Use these Mainland Chinese (Simplified Chinese) terms for zh-CN translations.
+They were transferred from the Taiwan glossary, converted to Simplified Chinese,
+and reviewed for common Mainland clinical terminology. A vault selects this
+glossary by setting `locale: zh-CN` in `wiki-config.yml`; for Traditional Chinese
+see `medical-term-translations-zh-tw.md`. Every workflow and checker resolves the
+glossary from the config rather than from a hardcoded path.
+
+**Format and how `scripts/check-bilingual-terms.py` reads this file.** Each entry
+is `- English term: 中文`. List alternate English forms and abbreviations,
+separated by ` / `, on the left of the colon — they are treated as one term, so a
+translation of any form satisfies the checker (e.g.
+`- Aspartate aminotransferase / AST: 天冬氨酸氨基转移酶`). Abbreviations are matched
+case-sensitively. To keep an ambiguous abbreviation documented but stop the
+checker from matching it, suffix that variant with `(no-match)` — for example
+`- Posteroanterior / PA (no-match): 后前位` documents PA without flagging every
+`PA` in prose.
+
+## Cardiology and Vascular
+
+- Atherosclerosis: 动脉粥样硬化
+- Atherosclerotic plaque: 动脉粥样硬化斑块
+- Atheroma: 粥样斑块
+- Anterograde flow / forward flow: 顺向血流
+- Antiplatelet agent: 抗血小板药物
+- B-mode ultrasound: B型超声
+- Blood pressure / BP: 血压
+- Calcium deposits: 钙化沉积
+- Calcification: 钙化
+- Calcium focus: 钙化灶
+- Carotid artery: 颈动脉
+- Carotid atheroma: 颈动脉粥样斑块
+- Carotid bifurcation: 颈动脉分叉处
+- Carotid bulb: 颈动脉球部
+- Carotid duplex ultrasound: 颈动脉彩色多普勒超声
+- Carotid intima-media thickness / IMT / CIMT: 颈动脉内膜中层厚度
+- Carotid wall thickness: 颈动脉管壁厚度
+- Catecholamine: 儿茶酚胺
+- Common carotid artery / CCA: 总颈动脉
+- Coronary artery calcium / CAC: 冠状动脉钙化
+- Coronary artery calcium scoring / CAC scoring: 冠状动脉钙化积分
+- Coronary artery calcium score / CAC score: 冠状动脉钙化积分
+- Coronary artery calcium score CT / CAC score CT: 冠状动脉钙化积分计算机断层扫描
+- Coronary arterial wall: 冠状动脉壁
+- Duplex ultrasound: 彩色多普勒超声
+- Dyspnea: 呼吸困难
+- Ambulatory ECG: 动态心电图
+- Angina: 心绞痛
+- Arrhythmia: 心律失常
+- Arrhythmia burden: 心律失常负荷
+- Acute myocardial infarction / acute MI: 急性心肌梗死
+- Atrial fibrillation / AF: 心房颤动
+- Atrial ectopy: 房性早搏
+- All-cause mortality: 全因死亡率
+- Atrial premature contraction / APC / PAC: 房性早搏
+- Atrial run / atrial runs: 房性短阵心动过速
+- Atrial tachycardia: 房性心动过速
+- Atria: 心房
+- Atrioventricular conduction / AV conduction: 房室传导
+- Atrioventricular node / AV node: 房室结
+- Atrioventricular refractoriness / AV refractoriness: 房室不反应期
+- Atrioventricular block / AV block: 房室传导阻滞
+- Beta-blocker / β-blocker: β受体阻滞剂
+- B-type natriuretic peptide / BNP: B型利钠肽
+- Bradycardia: 心动过缓
+- Cardiac arrhythmia: 心律失常
+- Cardiac biomarker: 心脏生物标志物
+- Cardiac remodeling: 心脏重塑
+- Cardiac troponin I / cTnI: 心肌肌钙蛋白I
+- Cardiologist: 心内科医师
+- Chest pain: 胸痛
+- Chest pressure: 胸闷
+- Chest X-ray: 胸部X线
+- Chlamydia: 衣原体
+- Chlamydial infection: 衣原体感染
+- Cardioselective beta blocker: 心脏选择性β受体阻滞剂
+- Chronic heart failure: 慢性心力衰竭
+- Conduction block: 传导阻滞
+- Conduction defect: 传导异常
+- Continuous ECG monitoring: 连续心电图监测
+- Contrast-enhanced ultrasound / CEUS: 超声造影
+- Coronary artery disease / CAD: 冠状动脉疾病
+- Doppler: 多普勒
+- Echocardiogram / echocardiography: 心脏超声
+- Echolucent plaque: 低回声斑块
+- Ectopic atrial beat: 房性期前收缩
+- Ectopic atrial automaticity: 房性异位自律性
+- Ectopic automaticity: 异位自律性
+- Electrocardiogram / ECG / EKG: 心电图
+- Electrode: 电极
+- Emergency department / ER: 急诊
+- Exercise tolerance: 运动耐受度
+- External carotid artery / ECA: 外颈动脉
+- Heart failure: 心力衰竭
+- Heart electrical activity: 心脏电活动
+- Heart rate / HR: 心率
+- Heart-rate variability: 心率变异性
+- Hemodynamically significant heart failure: 血流动力学上显著心力衰竭
+- Hemodynamically significant stenosis: 血流动力学上显著狭窄
+- Hemodynamic obstruction: 血流动力学阻塞
+- Homogeneous atheroma: 均质粥样斑块
+- Heart: 心脏
+- High-sensitivity troponin: 高敏肌钙蛋白
+- Holter monitor: 动态心电图
+- Holter monitor report: 动态心电图报告
+- Hypertension: 高血压
+- Infiltrate / infiltrates: 浸润
+- Internal carotid artery / ICA: 内颈动脉
+- Ischemia: 缺血
+- Left anterior descending coronary artery / LAD: 左前降支冠状动脉
+- Long-duration monitor: 长时间监测器
+- Long QT syndrome / LQTS: 长QT综合征
+- Loop monitor: 循环式监测器
+- Mass / masses: 肿块
+- Myocardial injury: 心肌损伤
+- Myocardial oxygen demand: 心肌耗氧量
+- Myocardial infarction / MI: 心肌梗死
+- Mediastinum: 纵膈
+- Negative predictive value: 阴性预测值
+- Natriuretic peptide: 利钠肽
+- Non-sustained atrial tachycardia: 非持续性房性心动过速
+- Non-sustained ventricular tachycardia / NSVT: 非持续性室性心动过速
+- Nocturnal bradycardia: 夜间心动过缓
+- Palpitations: 心悸
+- Pleural space / pleural spaces: 胸膜腔
+- Plaque / plaques: 斑块
+- Pressure overload: 压力负荷过重
+- Premature ventricular contraction / PVC: 室性早搏
+- Pulmonary vasculature: 肺血管
+- P wave: P波
+- Pacemaker: 起搏器
+- Point-of-care assay: 即时检测
+- Presyncope: 先兆晕厥
+- QRS complex: QRS波群
+- QT interval: QT间期
+- QTc / corrected QT interval: 校正QT间期
+- QT prolongation: QT延长
+- Rate/rhythm control: 心率／心律控制
+- Rate-slowing action: 降心率作用
+- Rhythm-symptom control: 心律症状控制
+- Rate-slowing agent: 降心率药物
+- Representative rhythm strip / representative rhythm strips: 代表性心律条带
+- Resting 12-lead ECG / EKG: 静息12导联心电图
+- Sinoatrial node / SA node: 窦房结
+- Torsades de pointes / TdP: 尖端扭转型室性心动过速
+- Sinus bradycardia: 窦性心动过缓
+- Sinus pause: 窦性暂停
+- Sinus rhythm: 窦性心律
+- Sinus rate: 窦性心率
+- Stenosis: 狭窄
+- Structural heart disease: 结构性心脏病
+- Structural marker: 结构性标志物
+- Stroke: 脑卒中
+- ST-T wave change: ST-T波变化
+- Subclinical atherosclerosis: 亚临床动脉粥样硬化
+- Supraventricular ectopy / SVE: 室上性早搏
+- Syncope: 晕厥
+- Systolic / systolic blood pressure: 收缩压
+- Left ventricular hypertrophy: 左心室肥厚
+- Tuberculosis / TB: 结核病
+- Tuberculosis screening / TB screening: 结核病筛查
+- Ventricular ectopy: 室性早搏
+- Ventricular myocardium: 心室心肌
+- Ventricular repolarization: 心室再极化
+- Ventricular response: 心室反应
+- Vagal surge: 迷走神经活化
+- Vagal tone: 迷走神经张力
+- Vagally mediated: 迷走神经介导
+- Sympathetic nervous system / sympathetic (no-match): 交感神经系统
+- Volume overload: 容积负荷过重
+- Vertebral artery / vertebral arteries: 椎动脉
+- Wall stress: 壁张力
+- 12-lead ECG / 12-lead EKG: 12导联心电图
+- β1-adrenergic receptor: β1肾上腺素受体
+- β1-adrenergic receptor blocker / β1-blocker: β1肾上腺素受体阻断剂
+
+## Lipids and Metabolic Risk
+
+- Cytochrome P450 1A2 / CYP1A2: 细胞色素 P450 1A2
+- Cytochrome P450 3A4 / CYP3A4: 细胞色素 P450 3A4
+- Abdominal cramping: 腹部绞痛
+- Abdominal ultrasound: 腹部超声
+- Abdominal X-ray: 腹部X线
+- Abdomen/pelvis CT: 腹部和盆腔CT
+- Acetaminophen: 对乙酰氨基酚
+- Albumin: 白蛋白
+- Albumin-to-globulin ratio / A/G ratio: 白蛋白/球蛋白比值
+- Alcohol: 酒精
+- Alcohol-related liver disease: 酒精相关肝病
+- Alkaline phosphatase / ALP: 碱性磷酸酶
+- Alpha-fetoprotein / AFP: 甲胎蛋白
+- ALT / alanine aminotransferase: 丙氨酸氨基转移酶
+- Anemia: 贫血
+- Anemia cutoff: 贫血判定界值
+- Antibiotics: 抗生素
+- Anticholinergic side effect: 抗胆碱能不良反应
+- Antihyperglycemic agent: 降血糖药物
+- Antipsychotics: 抗精神病药
+- Ascites: 腹水
+- AST / aspartate aminotransferase: 天冬氨酸氨基转移酶
+- Asymptomatic: 无症状
+- Atherogenic: 致动脉粥样硬化
+- Atherogenic burden: 致动脉粥样硬化负荷
+- Atherogenic cholesterol: 致动脉粥样硬化胆固醇
+- Autoimmune: 自身免疫性
+- Benign liver disease: 良性肝病
+- Biguanide: 双胍类
+- Biguanide antihyperglycemic agent: 双胍类降血糖药物
+- Biliary obstruction: 胆道阻塞
+- Biliary system: 胆道系统
+- Biliary tree: 胆道
+- Bilirubin / T.Bili: 胆红素
+- Biopsy: 活组织检查
+- Blood draw / blood draws: 采血
+- Blood level: 血中浓度
+- Body mass index / BMI: 体重指数
+- Bone mineral density / BMD: 骨密度
+- Calcium / Ca: 钙
+- Calcium intake: 钙摄入量
+- Calcium-channel blocker: 钙通道阻滞剂
+- Calculated LDL cholesterol / calculated LDL / Calc LDL Chol: 计算得出的低密度脂蛋白胆固醇
+- Calculated globulin / calc globulin: 计算球蛋白
+- Calculus / calculi: 结石
+- Cardioprotective: 具有心脏保护作用
+- Cardiovascular: 心血管
+- Cardiovascular risk: 心血管风险
+- Cardiovascular system: 心血管系统
+- Central adiposity: 中心性肥胖
+- Chloride / Cl: 氯
+- Cholestasis: 胆汁郁积
+- Cholesterol: 胆固醇
+- Cholesterol biosynthesis: 胆固醇生物合成
+- Cholesterol fraction / cholesterol fractions: 胆固醇分率
+- Cirrhosis: 肝硬化
+- Common bile duct / CBD: 总胆管
+- Comprehensive metabolic panel / CMP: 综合代谢检查组合
+- Computed tomography / CT: 计算机断层扫描
+- Corrected calcium: 校正钙
+- Creatine kinase / CK: 肌酸激酶
+- Diabetes mellitus / diabetes: 糖尿病
+- Diabetes management: 糖尿病管理
+- Diagnostic: 诊断性的
+- Diagnostic accuracy: 诊断准确度
+- Diagnostic criteria: 诊断标准
+- Diagnostic procedure / diagnostic procedures: 诊断程序
+- Diagnostic study / diagnostic studies: 诊断检查
+- Diagnostic threshold: 诊断阈值
+- Diagnostic weight: 诊断权重
+- Diarrhea: 腹泻
+- Differential diagnosis: 鉴别诊断
+- Drug interaction: 药物相互作用
+- Dynamic imaging: 动态影像学
+- Dyslipidemia: 血脂异常
+- E-antigen: e 抗原
+- Energy drink: 能量饮料
+- Enhancement: 增强
+- Estimated average glucose: 估计平均血糖
+- Exposure: 暴露
+- Extended-release / ER (no-match): 缓释型
+- Fall prevention: 预防跌倒
+- Fasting blood test: 空腹血液检查
+- Fasting comprehensive metabolic panel / fasting CMP: 空腹综合代谢检查组合
+- Fasting glucose: 空腹血糖
+- Fasting hyperglycemia: 空腹高血糖
+- Fasting plasma glucose: 空腹血浆葡萄糖
+- Fatty liver: 脂肪肝
+- Fatty pancreas: 胰腺脂肪变性
+- Fetal liver: 胎儿肝脏
+- Fibrosis: 纤维化
+- Focal fat: 局部脂肪
+- Focal nodular hyperplasia / FNH: 局灶性结节性增生
+- Fracture risk: 骨折风险
+- Friedewald calculation / Friedewald estimate: Friedewald 公式估算
+- Gallbladder: 胆囊
+- Gamma-glutamyl transferase / GGT: γ-谷氨酰转移酶
+- Germ-cell tumor: 生殖细胞肿瘤
+- Gestational diabetes: 妊娠糖尿病
+- GI tolerability: 胃肠道耐受性
+- GI tract: 胃肠道
+- GI upset: 胃肠道不适
+- Globulin: 球蛋白
+- Glucagon-like peptide-1 / GLP-1: 胰高血糖素样肽-1
+- Gluconeogenesis: 糖异生
+- Glucose / blood glucose: 血糖
+- Glucose metabolism: 葡萄糖代谢
+- Glucose uptake: 葡萄糖摄取
+- Glycated / glycation: 糖化
+- Glycemic control: 血糖控制
+- Glycemic marker: 血糖指标
+- Glycemic regulation: 血糖调节
+- Glycemic status: 血糖状态
+- Glycoprotein: 糖蛋白
+- Gold standard: 金标准
+- Gonorrhea: 淋病
+- Gut microbiome: 肠道微生物群
+- HDL cholesterol / HDL-C / HDL: 高密度脂蛋白胆固醇
+- HDL particle / HDL particles: 高密度脂蛋白颗粒
+- Hemangioma: 血管瘤
+- Hepatic hemangioma: 肝血管瘤
+- Hemoglobin: 血红蛋白
+- Hemoglobin A1C / HbA1c / A1C: 糖化血红蛋白
+- Hemoglobinopathy: 血红蛋白病
+- Hemolysis: 溶血
+- Hemorrhage: 出血
+- Hepatic cyst / liver cyst: 肝囊肿
+- Hepatic glucose output: 肝脏葡萄糖输出
+- Hepatic insult: 肝脏损伤
+- Hepatic lesion: 肝脏病变
+- Hepatic lobe: 肝叶
+- Hepatic nodule / liver nodule: 肝结节
+- Hepatic release: 肝脏释放
+- Hepatic segment (S1–S8): 肝段
+- Hepatic steatosis: 肝脂肪变性
+- Steatosis: 脂肪变性
+- Hepatic vein / hepatic veins: 肝静脉
+- Hepatobiliary ultrasound: 肝胆超声
+- Hepatocellular adenoma: 肝细胞腺瘤
+- Hepatocellular carcinoma / HCC: 肝细胞癌
+- Hepatocellular injury: 肝细胞损伤
+- Hepatocellular stress: 肝细胞压力
+- Hepatocyte: 肝细胞
+- Hepatogastroenterology: 肝胆胃肠科
+- High-density lipoprotein: 高密度脂蛋白
+- High-risk prediabetes: 高风险糖尿病前期
+- HMG-CoA reductase inhibitor: HMG-CoA 还原酶抑制剂
+- Hydronephrosis: 肾积水
+- Hyperechoic: 高回声
+- Hyperechoic nodule: 高回声结节
+- Hyperglycemia: 高血糖
+- Hyperlipidemia: 高血脂
+- Hyperthyroidism: 甲状腺功能亢进
+- Hypodense lesion: 低密度病灶
+- Hypodensity: 低密度
+- Hypoglycemia: 低血糖
+- Immunoglobulin / immunoglobulins: 免疫球蛋白
+- Impaired fasting glucose / IFG: 空腹血糖受损
+- Impaired glucose tolerance: 糖耐量受损
+- Imaging modality / imaging modalities: 影像学检查方法
+- Imaging study / imaging studies: 影像检查
+- Incidental finding: 偶发发现
+- Insulin: 胰岛素
+- Insulin resistance: 胰岛素抵抗
+- Insulin secretion: 胰岛素分泌
+- Insulin sensitivity: 胰岛素敏感性
+- Insulin sensitization / insulin-sensitizing: 胰岛素增敏
+- Lactic acidosis: 乳酸中毒
+- LDL cholesterol / LDL-C: 低密度脂蛋白胆固醇
+- LDL particle: 低密度脂蛋白颗粒
+- LDL receptor: 低密度脂蛋白受体
+- LDL/HDL ratio: 低密度/高密度脂蛋白胆固醇比值
+- Lifestyle intervention: 生活方式干预
+- Lipase: 脂肪酶
+- Lipid panel: 血脂检查
+- Lipid profile: 血脂谱
+- Lipoprotein: 脂蛋白
+- Lipoprotein sub-fraction: 脂蛋白亚组分
+- Left hepatic lobe: 肝左叶
+- Liver: 肝脏
+- Liver and biliary enzyme: 肝胆酶
+- Liver enzyme: 肝酶
+- Liver function: 肝功能
+- Liver function test: 肝功能检查
+- Liver histology: 肝组织学
+- Liver lesion: 肝脏病变
+- Liver panel: 肝功能检查组合
+- Liver parenchyma: 肝实质
+- Liver regeneration: 肝再生
+- Liver-kidney contrast: 肝肾对比
+- Low-density lipoprotein: 低密度脂蛋白
+- Low dose: 低剂量
+- Macrovascular complication: 大血管并发症
+- Magnetic resonance imaging / MRI: 磁共振成像
+- Metabolic dysfunction-associated steatotic liver disease / MASLD: 代谢功能障碍相关脂肪性肝病
+- Metabolic dysfunction-associated steatohepatitis / MASH: 代谢功能障碍相关脂肪性肝炎
+- Metabolic improvement: 代谢改善
+- Metabolic nadir: 代谢低点
+- Metabolic panel: 代谢检查组合
+- Metabolic sympathetic tone: 代谢相关交感神经张力
+- Metabolic syndrome: 代谢综合征
+- Metabolism: 代谢
+- Metastasis / metastases: 转移 / 转移灶
+- Microvascular complication: 微血管并发症
+- Mitochondrial complex I: 线粒体复合物 I
+- Nausea: 恶心
+- Nephropathy: 肾病
+- Neurologist: 神经内科医师
+- Neuropathy: 神经病变
+- Non-alcoholic fatty liver disease / NAFLD: 非酒精性脂肪肝病
+- Non-alcoholic steatohepatitis / NASH: 非酒精性脂肪性肝炎
+- Non-diabetic: 非糖尿病
+- Non-HDL cholesterol / non-HDL-C: 非高密度脂蛋白胆固醇
+- Non-invasive: 无创
+- Non-selective beta blocker: 非选择性β受体阻滞剂
+- Non-small cell lung cancer / NSCLC: 非小细胞肺癌
+- Non-specific: 非特异性
+- Noncirrhotic: 非肝硬化
+- Nutritional status: 营养状态
+- Obesity: 肥胖
+- Oral glucose tolerance test / OGTT: 口服葡萄糖耐受试验
+- Orthostatic side effect: 体位性不良反应
+- Osteoporosis: 骨质疏松症
+- Pancreas: 胰腺
+- Pancreatic cancer: 胰腺癌
+- Pancreatic steatosis: 胰腺脂肪变性
+- Pancreatitis: 胰腺炎
+- Patent: 通畅
+- Peripheral tissue / peripheral tissues: 外周组织
+- Peripheral insulin sensitivity: 外周胰岛素敏感性
+- Pharmacological intervention: 药物介入
+- Pleural effusion: 胸腔积液
+- Polycystic ovary syndrome / PCOS: 多囊卵巢综合征
+- Portal vein: 门静脉
+- Post-prandial: 餐后
+- Post-prandial excursion: 餐后波动
+- Potassium / K: 钾
+- Prediabetes: 糖尿病前期
+- Pregnancy: 妊娠
+- Primary biliary cholangitis: 原发性胆汁性胆管炎
+- Protective cholesterol fraction: 保护性胆固醇分率
+- Protective: 具保护性
+- Protective range / protective band: 保护性范围 / 保护区间
+- Pulmonary nodule: 肺结节
+- Random glucose: 随机血糖
+- Rate-limiting enzyme: 限速酶
+- Reactive airway disease: 反应性气道疾病
+- Rebound effect: 反弹效应
+- Rebound tachycardia: 反跳性心动过速
+- Red blood cell: 红细胞
+- Red-cell survival: 红细胞存活时间
+- Reference range: 参考范围
+- Regression: 消退
+- Remnant lipoprotein: 残余脂蛋白
+- Renal: 肾脏
+- Renal impairment: 肾功能不全
+- Retinopathy: 视网膜病变
+- Rhabdomyolysis: 横纹肌溶解
+- Right hepatic lobe: 右肝叶
+- Risk stratification: 风险分层
+- Risk factor / risk factors: 危险因素
+- Sedation: 镇静
+- Simple steatosis: 单纯性脂肪肝
+- Sinus node dysfunction: 窦房结功能异常
+- Sleep architecture: 睡眠结构
+- Sodium / Na: 钠
+- Spleen: 脾脏
+- Stabilization: 稳定化
+- Statin: 他汀类药物
+- Steatohepatitis: 脂肪性肝炎
+- Sulfonylurea: 磺酰脲类
+- Surveillance marker: 监测指标
+- Synthetic function: 合成功能
+- Syphilis: 梅毒
+- Syphilis screen: 梅毒筛查
+- Thrombosis: 血栓形成
+- Total cholesterol: 总胆固醇
+- Total protein / TP: 总蛋白
+- Transaminase: 氨基转移酶
+- Triglycerides / TG: 甘油三酯
+- Tumor marker: 肿瘤标志物
+- Type 1 diabetes: 1型糖尿病
+- Type 2 diabetes: 2型糖尿病
+- Ultrasound / US / sonography: 超声
+- Vaccine-induced immunity: 疫苗诱导免疫
+- Vascular lesion: 血管病灶
+- Very-low-density lipoprotein / VLDL: 极低密度脂蛋白
+- Viral hepatitis: 病毒性肝炎
+- Viral hepatitis serology: 乙/丙型肝炎血清学
+- Viral replication: 病毒复制
+- Vitamin D: 维生素D
+- VLDL cholesterol / VLDL-C: 极低密度脂蛋白胆固醇
+- VLDL particle / VLDL particles: 极低密度脂蛋白颗粒
+- Weight gain: 体重增加
+- Weight-bearing exercise: 负重运动
+- Without contrast: 无对比剂
+- Yolk sac: 卵黄囊
+
+## Renal, Urinary, and General Laboratory
+
+- Abnormal result / abnormal results: 异常结果
+- Absolute lymphocyte count: 绝对淋巴细胞计数
+- Absolute lymphopenia: 绝对淋巴细胞低下
+- Acid-base disturbance: 酸碱失衡
+- Acid-base status: 酸碱状态
+- Acute inflammation: 急性炎症
+- Adaptive immunity: 适应性免疫
+- Adrenal gland / adrenal glands / adrenals: 肾上腺
+- Albuminuria: 白蛋白尿
+- Allergy: 过敏
+- Antibody / antibodies: 抗体
+- Antibody response: 抗体反应
+- Antigen: 抗原
+- Antigen-antibody assay / antigen-antibody combo: 抗原／抗体检测 / 抗原／抗体组合
+- Autoimmune disease / autoimmune disorder: 自身免疫疾病
+- B cell / B-cell / B cells / B-cells: B 细胞
+- Bacteria: 细菌
+- Bacteriuria: 菌尿
+- Basophil: 嗜碱性粒细胞
+- Benign prostatic hyperplasia / BPH: 良性前列腺增生
+- Bicarbonate / HCO3-: 碳酸氢根
+- Bladder: 膀胱
+- Bleeding risk: 出血风险
+- Blood cell count / blood cell counts: 血细胞计数
+- Blood urea nitrogen / BUN: 血尿素氮
+- Bone densitometry: 骨密度检查
+- Bone marrow: 骨髓
+- BUN/Creatinine ratio / BUN/creat ratio: 血尿素氮／肌酐比值
+- Cancer screening: 癌症筛查
+- Carbon dioxide / CO2 / total CO2: 二氧化碳 / 总二氧化碳
+- Carcinoembryonic antigen / CEA: 癌胚抗原
+- Cell lineage / cell lineages: 细胞系谱
+- Casts: 管型
+- Chemical dipstick: 化学试纸检验
+- Chemotherapy: 化疗
+- Central hypothyroidism: 中枢性甲状腺功能低下
+- Chronic kidney disease / CKD: 慢性肾脏病
+- Chronic lymphopenia: 慢性淋巴细胞减少
+- Chronic Kidney Disease Epidemiology Collaboration equation / CKD-EPI / CKD-EPI equation: 慢性肾脏病流行病学合作研究公式
+- Clinical interview: 临床访谈
+- Clinical screening: 临床筛查
+- Clotting disorder: 凝血异常
+- Coagulation cascade: 凝血级联
+- Complete blood count / CBC: 全血细胞计数
+- Constitutional baseline: 体质性基线
+- Corticosteroid / corticosteroids: 皮质类固醇
+- Creatinine / serum creatinine / Cr: 肌酐 / 血清肌酐
+- Crystal / crystals: 结晶
+- Cytokeratin fragment 21-1 / CYFRA21-1: 细胞角蛋白片段 21-1
+- Dehydration: 脱水
+- Diagnostic workup / workup: 诊断评估
+- Diagnosis: 诊断
+- Diabetic nephropathy: 糖尿病肾病
+- Dipstick / urine dipstick: 试纸检验 / 尿液试纸检验
+- DNA synthesis: DNA 合成
+- Electrochemiluminescence immunoassay / ECLIA: 电化学发光免疫分析
+- Electrolyte: 电解质
+- Eosinophil: 嗜酸性粒细胞
+- Eosinophilia: 嗜酸性粒细胞增多
+- Epithelial cell / epithelial cells / epithelium: 上皮细胞
+- Epithelial tumor / epithelial tumors: 上皮性肿瘤
+- Equivocal: 结果不明确
+- Erythrocyte: 红细胞
+- Enzyme / enzymes: 酶
+- Estimated glomerular filtration rate / eGFR: 估算肾小球滤过率
+- Ferrous bisglycinate: 甘氨酸亚铁
+- Ferrous sulfate: 硫酸亚铁
+- Fibrin: 纤维蛋白
+- Flow cytometry: 流式细胞术
+- Fluid balance: 体液平衡
+- Folate deficiency: 叶酸缺乏
+- Fourth-generation assay / 4th-generation assay: 第四代检测
+- Fourth-generation panel / 4th-generation panel: 第四代检测组合
+- Free T3: 游离三碘甲状腺素
+- Free T4: 游离甲状腺素
+- Genitourinary: 泌尿生殖
+- Glomerular disease: 肾小球疾病
+- Glomerular filtration barrier: 肾小球过滤屏障
+- Glycemic: 血糖
+- Glycosuria: 糖尿
+- Health checkup: 健康检查
+- Hematology: 血液学
+- Hematocrit / Hct: 血细胞比容
+- Hematuria: 血尿
+- Hemostasis: 止血
+- Hepatitis B / hepatitis C: 乙型/丙型肝炎
+- Hepatitis B core antibody / anti-HBc: 乙型肝炎核心抗体
+- Hepatitis B surface antibody / anti-HBs: 乙型肝炎表面抗体
+- Hepatitis B surface antigen / HBsAg: 乙型肝炎表面抗原
+- Hepatitis B virus / HBV: 乙型肝炎病毒
+- Hepatitis C antibody / Anti-HCV: 丙型肝炎抗体
+- Hepatitis C antibody / anti-HCV: 丙型肝炎抗体
+- Hepatitis C virus / HCV: 丙型肝炎病毒
+- Hepatitis screening: 肝炎筛查
+- Herd immunity: 群体免疫
+- Holotranscobalamin: 全转钴胺素
+- Human immunodeficiency virus / HIV: 人类免疫缺陷病毒
+- Hyaline cast / hyaline casts: 透明管型
+- Hypersensitivity: 过敏反应
+- Hypoalbuminemia: 低白蛋白血症
+- Hypothyroidism: 甲状腺功能低下
+- IgG antibody titer / IgG antibody titers: IgG 抗体效价
+- Immature granulocyte: 未成熟粒细胞
+- Immune: 具免疫力
+- Immune protection: 免疫保护
+- Immunity status: 免疫状态
+- Immunologic marker / immunologic markers: 免疫学标志物
+- Immunological panel: 免疫检测组合
+- Immunology: 免疫学
+- Infectious disease / infectious diseases: 感染性疾病
+- Intrinsic factor: 内在因子
+- Iron studies: 铁代谢检查
+- Iron status: 铁状态
+- Kidney / kidneys: 肾脏
+- Kidney function / renal function: 肾功能
+- Kidney failure: 肾衰竭
+- Ketone / ketones: 酮体
+- Leukocyte / white blood cell / WBC: 白细胞
+- Leukocyte esterase: 白细胞酯酶
+- Leukocytosis: 白细胞增多
+- Leukopenia: 白细胞减少
+- Lewis antigen: Lewis 抗原
+- Low-level antibody / low-level antibodies: 低浓度抗体
+- Lipid / lipids: 血脂
+- Lymphocyte: 淋巴细胞
+- Lymphocyte subset flow cytometry: 淋巴细胞亚群流式细胞术
+- Lymphoma: 淋巴瘤
+- Lymphopenia / lymphocytopenia: 淋巴细胞低下
+- Medication list: 药物清单
+- Medication review: 药物审查
+- Macroalbuminuria: 大量白蛋白尿
+- Macrocytic: 大球性
+- Macrocytosis: 红细胞体积偏大
+- Magnesium: 镁
+- Malnutrition: 营养不良
+- Mean corpuscular hemoglobin / MCH: 平均红细胞血红蛋白量
+- Mean corpuscular hemoglobin concentration / MCHC: 平均红细胞血红蛋白浓度
+- Mean corpuscular volume / MCV: 平均红细胞体积
+- Mean platelet volume / MPV: 平均血小板体积
+- Measles / rubeola: 麻疹
+- Measles, mumps, and rubella / MMR: 麻疹、腮腺炎与风疹
+- Megaloblastic anemia: 巨母细胞性贫血
+- Methylmalonic acid / MMA: 甲基丙二酸
+- Microalbumin / urine microalbumin: 微量白蛋白 / 尿微量白蛋白
+- Microalbuminuria: 微量白蛋白尿
+- Micronutrient: 微量营养素
+- Microscopic hematuria: 显微血尿
+- Monocyte: 单核细胞
+- Monitoring: 监测
+- Mumps: 腮腺炎
+- Myeloproliferative neoplasm: 骨髓增生性肿瘤
+- Natural killer cell / NK cell / NK cells: 自然杀伤细胞
+- Nasopharyngeal carcinoma / NPC: 鼻咽癌
+- Neutropenia: 中性粒细胞低下
+- Neutrophil: 中性粒细胞
+- Nitrite: 亚硝酸盐
+- Non-Reactive / non-reactive: 非反应性
+- Nucleated red blood cell / nucleated RBC / NRBC: 有核红细胞
+- Nucleic acid amplification test / NAAT: 核酸扩增检测
+- Occult blood: 潜血
+- Overt proteinuria: 显性蛋白尿
+- Organ system / organ systems: 器官系统
+- Pharmacodynamic: 药效学
+- Pharmacokinetic: 药物动力学
+- Pathogen / pathogens: 病原体
+- Physician: 医师
+- Pituitary hormone / pituitary hormones: 垂体激素
+- Platelet: 血小板
+- Platelet count: 血小板计数
+- Pre-renal: 肾前性
+- Primary hypothyroidism: 原发性甲状腺功能低下
+- Primary immunodeficiency / primary immunodeficiencies: 原发性免疫缺陷
+- Positive: 阳性
+- Protein / proteins: 蛋白质
+- Prostate: 前列腺
+- Prostate cancer: 前列腺癌
+- Prostate epithelium: 前列腺上皮
+- Prostate-specific antigen / PSA: 前列腺特异抗原
+- Prostatitis: 前列腺炎
+- Proteinuria: 蛋白尿
+- PSA velocity: PSA变化速率
+- Pyuria: 脓尿
+- Qualitative: 定性
+- Quantitative: 定量
+- Reactive / reactive: 反应性
+- Red cell distribution width / RDW: 红细胞体积分布宽度
+- Red-cell maturation: 红细胞成熟
+- Reflex culture: 反射性尿培养
+- Reflex quantitative: 反射性定量
+- Analyte / analytes: 分析项目
+- Reflex RPR: 反射性 RPR
+- Relative neutrophilia: 相对性中性粒细胞偏高
+- Routine blood draw: 常规采血
+- Rubella: 风疹
+- Sample contamination: 标本污染
+- Screening: 筛查
+- Serologic evidence: 血清学证据
+- Serology: 血清学检测
+- Seminal fluid: 精液
+- Serine protease: 丝氨酸蛋白酶
+- Serum iron: 血清铁
+- Serum proteins: 血清蛋白
+- Sexually transmitted infection / STI: 性传播感染
+- Sexually transmitted infection panel / STI panel: 性传播感染组合
+- Solid tumor / solid tumors: 实体肿瘤
+- Specific gravity: 比重
+- Spot urine albumin: 随机尿白蛋白
+- Spun sediment: 离心沉渣
+- Squamous cell carcinoma / SCC: 鳞状细胞癌
+- Structural protein: 结构蛋白
+- Structural finding / structural findings: 结构性发现
+- Subclinical: 亚临床
+- Subclinical state / subclinical states: 亚临床状态
+- T cell / T-cell / T cells / T-cells: T 细胞
+- Terminal ileum: 回肠末端
+- Thrombocytopenia: 血小板减少
+- Thrombocytosis: 血小板增多
+- Thyroid: 甲状腺
+- Thyroid screening: 甲状腺筛查
+- Thyroid-stimulating hormone / TSH: 甲状腺刺激素
+- Tissue macrophage precursor / tissue macrophage precursors: 组织巨噬细胞前体细胞
+- Total bilirubin: 总胆红素
+- Total iron-binding capacity / TIBC: 总铁结合能力
+- Total PSA: 总PSA
+- Transfusion: 输血
+- Treatment response: 治疗反应
+- Treatment threshold: 治疗阈值
+- Treponemal screen: 梅毒螺旋体筛查
+- Trichomonas vaginalis: 阴道滴虫
+- Tumor marker panel: 肿瘤标志物组合
+- Undetectable: 无法检出
+- Uric acid: 尿酸
+- Urinalysis: 尿液分析
+- Urinary tract: 泌尿道
+- Urinary tract infection / UTI: 泌尿道感染
+- Urine albumin-to-creatinine ratio / UACR: 尿白蛋白／肌酐比值
+- Urine glucose: 尿糖
+- Urine microscopy / urine microscopic examination: 尿液显微镜检查
+- Urine specimen: 尿液标本
+- Urogenital: 泌尿生殖道
+- Vaccination: 疫苗接种
+- Vascular injury / vascular injuries: 血管损伤
+- Viral load: 病毒量
+- Vitamin B12: 维生素 B12
+- Water-soluble vitamin: 水溶性维生素
+- White blood cell differential / WBC differential: 白细胞分类
+
+## Gastrointestinal Pathology and Endoscopy
+
+- Digestive tract: 消化道
+- Lower gastrointestinal / lower GI: 下消化道
+- Gastrointestinal tract / GI tract: 胃肠道
+- Endoscopic procedure: 内镜检查
+- Colonoscopy: 结肠镜检查
+- Surveillance colonoscopy: 随访结肠镜检查
+- Surveillance history: 随访史
+- Surveillance interval: 随访间隔
+- Polypectomy: 息肉切除术
+- Polyp: 息肉
+- Adenoma: 腺瘤
+- Tubular adenoma: 管状腺瘤
+- Adenomatous polyp: 腺瘤性息肉
+- Colorectal cancer / CRC: 结直肠癌
+- Colon: 结肠
+- Ileum: 回肠
+- Cecum: 盲肠
+- Transverse colon: 横结肠
+- Sigmoid colon: 乙状结肠
+- Descending colon: 降结肠
+- Rectum: 直肠
+- Mucosa: 黏膜
+- Colonic mucosa: 结肠黏膜
+- Glandular epithelium: 腺体上皮
+- Surgical pathology: 外科病理
+- Pathology: 病理
+- Pathologist: 病理科医师
+- Pathology report: 病理报告
+- Specimen / specimens: 标本
+- Histology: 组织学
+- Gastroenterology: 消化内科
+- Gastroenterologist: 消化内科医师
+- Tubular architecture: 管状结构
+- Tubular feature / tubular features: 管状特征
+- Dysplasia: 异型增生
+- Low-grade dysplasia: 低级别异型增生
+- High-grade dysplasia: 高级别异型增生
+- Invasive carcinoma: 浸润性癌
+- Malignancy: 恶性肿瘤
+- Inflammatory polyp: 炎症性息肉
+- Inflammatory bowel disease / IBD: 炎症性肠道疾病
+- Crohn's disease: 克罗恩病
+- Ulcerative colitis / UC: 溃疡性结肠炎
+- Transmural: 穿壁性
+- Benign lymphoid aggregate / benign lymphoid aggregates: 良性淋巴组织聚集
+- Neutrophilic infiltrate: 中性粒细胞浸润
+- Crypt abscess: 隐窝脓肿
+- Crypt architecture: 腺窝结构
+- Lamina propria: 固有层
+- Submucosa: 黏膜下层
+- Hyperplasia: 增生
+- Atypia: 异型性
+- Hematochezia: 鲜血便
+- Hemorrhoids: 痔
+
+## Sleep and Cross-domain
+
+- Actigraphy: 体动记录法
+- Additive sedation: 加成镇静
+- Adenosine: 腺苷
+- APAP / auto-adjusting positive airway pressure: 自动调压气道正压通气
+- Airway tone: 气道张力
+- Apnea-Hypopnea Index / AHI: 呼吸暂停低通气指数
+- Apnea: 呼吸暂停
+- Arousal / arousals: 觉醒
+- Arousal index: 觉醒指数
+- Arousal threshold: 觉醒阈值
+- Autonomic arousal: 自主神经性觉醒
+- Autonomic correlate / autonomic cardiovascular correlate: 自主神经相关指标
+- Autonomic cardiovascular signal / autonomic cardiovascular signals: 自主神经心血管信号
+- Autonomic nervous system: 自主神经系统
+- Autonomic pattern analysis: 自主神经模式分析
+- Autonomic proxy / autonomic proxies: 自主神经替代指标
+- Autonomic variability: 自主神经变异性
+- Bed-sleep association: 床与睡眠的联系
+- Bed-wake association: 床与清醒的联系
+- Behavioral sleep medicine therapist: 行为睡眠医学治疗师
+- Benzodiazepine / BZD: 苯二氮䓬类
+- Bidirectional loop / bidirectional feedback loop: 双向反馈回路
+- BiPAP / bilevel positive airway pressure: 双水平气道正压通气
+- Body temperature: 体温
+- Bright light: 明亮光照
+- Bruxism: 磨牙
+- Caffeine: 咖啡因
+- Caffeine clearance: 咖啡因清除
+- Caffeine cutoff: 咖啡因截止时间
+- Central Apnea Index / CAI: 中枢型呼吸暂停指数
+- Central apnea: 中枢型呼吸暂停
+- Central nervous system / CNS: 中枢神经系统
+- Central nervous system depressant / CNS depressant: 中枢神经系统抑制剂
+- Chronic insomnia: 慢性失眠
+- Collapsed airway: 塌陷气道
+- Circadian anchor: 昼夜节律锚点
+- Circadian clock: 生理时钟
+- Circadian rhythm: 昼夜节律
+- Cognitive behavioral therapy for insomnia / CBT-I: 失眠认知行为治疗
+- Cognitive arousal: 认知觉醒
+- Consensus Sleep Diary / CSD: 共识睡眠日志
+- Consumer electronic device: 消费级电子设备
+- Consumer wearable: 消费级穿戴设备
+- Consolidated sleep: 连续性睡眠
+- Core body temperature: 核心体温
+- Core sleep: 核心睡眠
+- Cortical arousal / cortical arousals: 皮质觉醒
+- CPAP / continuous positive airway pressure: 持续气道正压通气
+- Deep NREM sleep: 深层非快速动眼睡眠
+- Deep sleep: 深层睡眠
+- Dim light melatonin onset / DLMO: 暗光褪黑素起始时间
+- Electroencephalography / EEG: 脑电图
+- Electromyography / EMG: 肌电图
+- Electrooculography / EOG: 眼电图
+- Diving reflex: 潜水反射
+- Drug accumulation: 药物蓄积
+- Emotionally restorative: 情绪恢复性
+- Epworth Sleepiness Scale / ESS: 艾普沃斯嗜睡量表
+- First-line treatment: 一线治疗
+- First-night effect: 首夜效应
+- Fixed daily wake time: 固定每日起床时间
+- Follow-up sleep study: 随访睡眠监测
+- Fragmentation: 睡眠片段化
+- GABA-A receptor: GABA-A 受体
+- Growth hormone: 生长激素
+- H1 receptor: H1受体
+- Healthcare provider: 医疗人员
+- High-frequency arousal / high-frequency arousals: 高频觉醒
+- Home sleep apnea test / HSAT: 家庭睡眠呼吸暂停检测
+- Homeostatic sleep pressure: 恒定性睡眠压力
+- Hypnotic: 催眠药
+- Hypopnea: 低通气
+- Hypoxic burden: 低氧负荷
+- Inspiratory effort: 吸气努力
+- Immune function: 免疫功能
+- Intermittent hypoxia: 间歇性低氧
+- Intervention: 介入措施
+- Limb movement / limb movements: 肢体运动
+- Light NREM sleep: 浅层非快速动眼睡眠
+- Low sympathetic tone: 低交感神经张力
+- Mallampati score: 马兰帕蒂分级
+- Mandibular advancement device / MAD: 下颌前移装置
+- Mechanism: 机制
+- Melatonin: 褪黑激素
+- Melanopsin: 黑视蛋白
+- Memory consolidation: 记忆巩固
+- Metabolic autonomic dysregulation: 代谢性自主神经功能失调
+- Metabolic management: 代谢管理
+- Metabolic state: 代谢状态
+- Micro-arousal / micro-arousals: 微觉醒
+- Morning bright light: 晨间明亮光照
+- Movement count: 动作次数
+- N3 sleep: N3期睡眠
+- Narcolepsy: 发作性睡病
+- Next-day grogginess: 隔日昏沉
+- Nightly dosing: 每晚用药
+- Night-to-night variability: 夜间变异性
+- Nocturnal hypoxemia: 夜间低氧血症
+- Non-pharmacological: 非药物性
+- Non-rapid eye movement sleep / NREM sleep: 非快速动眼睡眠
+- Obstructive event: 阻塞性呼吸事件
+- Obstructive sleep apnea / OSA: 阻塞性睡眠呼吸暂停
+- Orthosomnia: 睡眠数据焦虑
+- Oral appliance therapy: 口腔矫治器治疗
+- Oral-maxillofacial surgeon / OMFS surgeon: 口腔颌面外科医师
+- Oxygen desaturation index / ODI: 血氧下降指数
+- Oxygen nadir: 最低血氧
+- Oxygen saturation / SpO2: 血氧饱和度
+- Oxygenation: 氧合
+- Parasomnia: 异态睡眠
+- Peripheral arterial tone: 外周动脉张力
+- Periodicity: 周期性指标
+- Periodic limb movement disorder / PLMD: 周期性肢体运动障碍
+- Periodic limb movement index / PLMI: 周期性肢体运动指数
+- Periodic limb movements of sleep / PLMS: 睡眠中周期性肢体运动
+- Periodic limb movements with arousal / PLMA: 伴觉醒的周期性肢体运动
+- Physically restorative: 身体恢复性
+- Physiological arousal: 生理性觉醒
+- Physiological cause / physiological causes: 生理性原因
+- Polysomnography / PSG: 多导睡眠监测
+- Positional therapy: 姿位治疗
+- Positive airway pressure / PAP: 气道正压通气
+- Pre-sleep arousal: 睡前觉醒
+- Procedural learning: 程序性学习
+- Proxy signal: 替代信号
+- Pulse oximetry: 脉搏血氧测定
+- Rapid eye movement sleep / REM sleep: 快速动眼睡眠
+- Refractory: 难治性
+- REM latency: REM 潜伏期
+- REM pressure: REM压力
+- Renal disease: 肾病
+- Respiratory disturbance index / RDI: 呼吸紊乱指数
+- Respiratory event / respiratory events: 呼吸事件
+- Restless legs syndrome / RLS: 不宁腿综合征
+- Sedating: 具镇静作用
+- Sedative: 镇静剂
+- Severity: 严重程度
+- Signal quality: 信号质量
+- Sleep apnea: 睡眠呼吸暂停
+- Sleep Arousal Index: 睡眠觉醒指数
+- Sleep architecture abnormality / sleep architecture abnormalities: 睡眠结构异常
+- Sleep compression: 睡眠压缩法
+- Sleep continuity: 睡眠连续性
+- Sleep curtailment: 睡眠缩减
+- Sleep disorder: 睡眠障碍
+- Sleep diary: 睡眠日志
+- Sleep duration shortfall: 睡眠时间不足
+- Sleep efficiency: 睡眠效率
+- Sleep fragmentation: 睡眠片段化
+- Sleep hygiene: 睡眠卫生
+- Sleep inertia: 睡眠惰性
+- Sleep latency: 入睡潜伏期
+- Sleep medication / sleep medications: 睡眠药物
+- Sleep onset: 入睡
+- Sleep opportunity: 睡眠机会
+- Sleep pressure: 睡眠压力
+- Sleep quality: 睡眠质量
+- Sleep quality index / SQI: 睡眠质量指数
+- Sleep quality score: 睡眠质量分数
+- Sleep restriction therapy / SRT: 睡眠限制疗法
+- Sleep stage / sleep stages: 睡眠阶段
+- Sleep-disordered breathing: 睡眠呼吸障碍
+- Sleep staging: 睡眠分期
+- Sleep study / sleep studies: 睡眠监测
+- Sleep study device / sleep study devices: 睡眠监测设备
+- Slow-wave sleep / SWS: 慢波睡眠
+- Stable sleep: 稳定睡眠
+- Stimulus control: 刺激控制
+- STOP-BANG questionnaire: STOP-BANG 问卷
+- Surgical options: 手术治疗选项
+- Sympathetic surge: 交感神经活化
+- Sympathetic tone: 交感神经张力
+- Symptom / symptoms: 症状
+- Symptom profile: 症状模式
+- Symptomatic: 有症状
+- Temporomandibular disorder / TMD: 颞下颌关节紊乱病
+- Therapist: 治疗师
+- Time in bed / TIB: 卧床时间
+- Total recording time: 总记录时间
+- Total sleep time / TST: 总睡眠时间
+- Transferrin saturation / TSAT: 转铁蛋白饱和度
+- Tricyclic antidepressant / TCA: 三环类抗抑郁药
+- Unstable sleep: 不稳定睡眠
+- Upper airway: 上呼吸道
+- Upper-airway tone: 上呼吸道张力
+- Uvulopalatopharyngoplasty / UPPP: 悬雍垂腭咽成形术
+- Wake after sleep onset / WASO: 入睡后清醒时间
+- Wake time: 起床时间
+- Weight management: 体重管理
+
+## Neurology and Musculoskeletal
+
+- 5-HT2A receptor: 5-HT2A 受体
+- 5-HT2C receptor: 5-HT2C 受体
+- Acute infarction / acute infarct: 急性梗死
+- Agranulocytosis: 粒细胞缺乏症
+- Alpha-2-delta ligand / alpha-2-delta ligands: α2δ 配体
+- Anatomic variant: 解剖变异
+- Aneurysm: 动脉瘤
+- Anterior cerebral artery: 前大脑动脉
+- Anterior disc displacement without reduction: 关节盘前移位无复位
+- Anterior disc displacement: 关节盘前移位
+- Anterolisthesis: 椎体前滑脱
+- Antiemetic / antiemetics: 止吐药
+- Antidepressant dose / antidepressant dosing: 抗抑郁药量
+- Antihistamine / antihistamines: 抗组胺药
+- Anticonvulsant: 抗癫痫药物
+- Anticonvulsant effect / anticonvulsant effects: 抗癫痫作用
+- Anxiolytic: 抗焦虑剂
+- Anxiolytic effect / anxiolytic effects: 抗焦虑作用
+- Arousal response: 觉醒反应
+- Arteriole / arterioles: 小动脉
+- Arthralgia: 关节痛
+- Arthrocentesis: 关节腔穿刺灌洗
+- Arthroplasty: 关节成形术
+- Arthroscopy: 关节镜
+- Articular disc: 关节盘
+- Aspergillus: 曲霉
+- Auriculotemporal nerve: 耳颞神经
+- Augmentation: 症状增强现象
+- Baseline scan: 基线检查
+- Balloon microcompression: 球囊微压迫术
+- Benzodiazepine site: 苯二氮䓬结合位点
+- Bite block / mouth prop: 张口支撑器
+- Blurred vision: 视力模糊
+- Bisphosphonate: 双磷酸盐类
+- Bone-protective agent: 骨保护药物
+- Botulinum toxin: 肉毒杆菌毒素
+- Brain parenchyma: 脑实质
+- Caldwell-Luc procedure: 上颌窦根治术
+- Calvarium: 颅盖骨
+- Canal stenosis: 椎管狭窄
+- Cerebral small vessel disease: 脑小血管疾病
+- Cerebral white matter: 大脑白质
+- Chronic pain: 慢性疼痛
+- Circle of Willis: Willis环
+- Closed lock: 关节闭锁
+- Closed-mouth position: 闭口位
+- Cognitive decline: 认知功能下降
+- Constipation: 便秘
+- Coronal image: 冠状位影像
+- Cranial nerve V: 第五对脑神经
+- Day-surgery: 门诊手术
+- Daytime carryover sedation: 日间残余镇静
+- Degenerative disc disease: 退行性椎间盘疾病
+- Demyelination: 脱髓鞘
+- Denosumab: 地诺单抗
+- DEXA / dual-energy X-ray absorptiometry: 双能X线吸收测定法
+- Diabetic neuropathy: 糖尿病神经病变
+- Diffusion-weighted imaging / DWI: 弥散加权成像
+- Dialysis: 透析
+- Dopamine agonist / dopamine agonists: 多巴胺受体激动剂
+- Dopamine antagonist / dopamine antagonists: 多巴胺拮抗剂
+- Disc degeneration: 椎间盘退变
+- Disc displacement: 关节盘移位
+- Disc height: 椎间盘高度
+- Disc narrowing / disc space narrowing: 椎间隙狭窄
+- Disc repositioning surgery: 关节盘复位手术
+- Dry mouth: 口干
+- Dysesthesia: 令人不悦的异常感觉
+- Dynamic study: 动态检查
+- ENT / otolaryngology: 耳鼻喉科
+- Extracranial: 颅外
+- Extension: 伸展
+- Facet joint arthropathy: 小面关节病变
+- Facet joint: 小面关节
+- Fecal retention: 粪便滞留
+- Femoral neck / hip neck: 股骨颈
+- Ferritin: 铁蛋白
+- Flexion: 屈曲
+- Fibrocartilaginous: 纤维软骨性
+- FLAIR / fluid-attenuated inversion recovery: 液体衰减反转恢复影像
+- Focal demyelination: 局部脱髓鞘
+- Focal neurological finding / focal neurological findings: 局灶性神经学征象
+- Functional endoscopic sinus surgery / FESS: 功能性内镜鼻窦手术
+- Fungal hyphae: 真菌菌丝
+- Fungus ball: 真菌球
+- GABA-B agonist: GABA-B受体激动剂
+- Gadolinium: 钆
+- Gait disturbance: 步态障碍
+- General anesthesia: 全身麻醉
+- Gingiva: 牙龈
+- Glycerol rhizolysis: 甘油神经根溶解术
+- Half-life: 半衰期
+- Hip: 髋部
+- Hyaluronic acid injection: 透明质酸注射
+- Hyponatremia: 低钠血症
+- Hypoplasia: 发育不全
+- Interincisal distance: 切牙间距
+- Internal derangement: 内部紊乱
+- Intracranial: 颅内
+- Intracranial atherosclerosis / ICAD: 颅内动脉粥样硬化
+- Intracranial nerve / intracranial nerves: 颅内神经
+- Invasive fungal sinusitis: 侵袭性真菌性鼻窦炎
+- Idiopathic: 特发性
+- Iron deficiency: 缺铁
+- Iron supplementation: 铁剂补充
+- Joint / joints: 关节
+- Joint effusion: 关节积液
+- Lacunar infarction / lacunar infarct: 腔隙性梗死
+- Lancinating pain: 刺戳样疼痛
+- Leukoaraiosis: 脑白质疏松
+- Limited mouth opening: 张口受限
+- Lithium: 锂盐
+- Listhesis / vertebral slippage: 椎体滑脱
+- Low back pain: 下背痛
+- Lumbar spine: 腰椎
+- Lumbar spondylosis: 腰椎退化性脊柱病变
+- Lumbar-sacral spine radiography: 腰荐椎X线平片
+- Mandibular condyle: 下颌髁突
+- Mandibular division: 下颌支
+- Mandibular fossa: 下颌窝
+- Marrow edema: 骨髓水肿
+- Masseter / masseter muscle: 咬肌
+- Masticatory muscle hyperactivity: 咀嚼肌过度活化
+- Masticatory muscle: 咀嚼肌
+- Maxillary division: 上颌支
+- Maxillary sinus: 上颌窦
+- Mechanical block: 机械性阻挡
+- Mechanical restriction: 机械性受限
+- Meninges: 脑膜
+- Microvascular decompression / MVD: 微血管减压术
+- Multiple sclerosis / MS: 多发性硬化症
+- Monoamine: 单胺
+- Monoamine oxidase inhibitor / MAOI: 单胺氧化酶抑制剂
+- MR angiography / MRA: 磁共振血管成像
+- Muscle relaxant: 肌松药
+- Myalgia: 肌痛
+- Myopathy: 肌病
+- Nasal endoscopy: 鼻内镜检查
+- Nerve root compression: 神经根压迫
+- Nervous system condition / nervous system conditions: 神经系统疾病
+- Neuroactive agent / neuroactive agents: 神经作用药物
+- Neurovascular contact: 神经血管接触
+- Neurogenic claudication: 神经性跛行
+- Neurovascular compression: 神经血管压迫
+- Nocturnal clenching: 夜间咬紧
+- Non-reducing disc displacement: 无复位型关节盘移位
+- Nonobstructive bowel gas pattern: 非阻塞性肠道气体分布
+- Nonsteroidal anti-inflammatory drug / NSAID: 非甾体抗炎药
+- Norepinephrine: 去甲肾上腺素
+- Nucleus pulposus: 髓核
+- Numbness: 麻木
+- Occlusal splint: 咬合板
+- Open-mouth position: 张口位
+- Ophthalmic division: 眼支
+- Oral appliance / oral appliances: 口腔矫治器
+- Opioid / opioids: 阿片类药物
+- Orbit / orbits: 眼眶
+- Orthostasis: 直立姿势
+- Orthostatic hypotension: 体位性低血压
+- Osteopenia: 骨量减少
+- Osteophyte / osteophytes / bone spur / bone spurs: 骨刺
+- Otalgia: 耳痛
+- Pain: 疼痛
+- Pain-spasm cycle: 疼痛－痉挛循环
+- Paresthesia: 感觉异常
+- Paroxysm: 阵发性发作
+- Percutaneous procedure / percutaneous procedures: 经皮手术
+- Periauricular: 耳周
+- Perforating artery / small perforating arteries: 小穿通动脉
+- Peripheral neuropathy: 周围神经病变
+- Pharmacological treatment: 药物治疗
+- Physical dependence: 生理依赖
+- Physical therapy: 物理治疗
+- Plain radiography: X线平片
+- Plasma concentration: 血浆浓度
+- Post-synaptic receptor / postsynaptic receptor: 突触后受体
+- Posterior fossa: 后颅窝
+- Posterior fossa craniotomy: 后颅窝开颅术
+- Posterior fossa MRI: 后颅窝 MRI
+- Preauricular: 耳前
+- Presynaptic terminal: 突触前末梢
+- Priapism: 阴茎异常持续勃起
+- Proton density image / PD image: 质子密度影像
+- Psoas line / psoas lines: 腰大肌线
+- Radiculopathy: 神经根病
+- Radiofrequency thermocoagulation: 射频热凝术
+- Radiologist: 放射科医师
+- Retrolisthesis: 椎体后滑脱
+- Rhinogenic facial pain / sinogenic facial pain: 鼻源性面部疼痛
+- Rapid plasma reagin / RPR: 快速血浆反应素
+- Root entry zone: 神经根进入区
+- Sensory deficit: 感觉缺损
+- Sensory innervation: 感觉支配
+- Sensory nerve: 感觉神经
+- Sagittal oblique image: 矢状斜位影像
+- Sensory-motor symptom: 感觉－运动症状
+- Selective serotonin reuptake inhibitor / SSRI / SSRIs: 选择性5-羟色胺再摄取抑制剂
+- Selective serotonin-norepinephrine reuptake inhibitor / SNRI / SNRIs: 5-羟色胺去甲肾上腺素再吸收抑制剂
+- Serotonin: 5-羟色胺
+- Serotonin antagonist and reuptake inhibitor / SARI: 5-羟色胺拮抗和再摄取抑制剂
+- Sinus CT / non-contrast sinus CT: 鼻窦CT
+- Sinusitis / paranasal sinusitis: 鼻窦炎
+- Skull base: 颅底
+- Sleep aid: 助眠剂
+- Small vessel disease / SVD: 小血管疾病
+- Sodium channel blocker: 钠通道阻滞剂
+- Spinal dorsal horn: 脊髓背角
+- Spinal imaging: 脊柱影像学检查
+- Spine: 脊柱
+- Sub-antidepressant dose / sub-antidepressant doses: 低于抗抑郁剂量
+- Superior cerebellar artery: 上小脑动脉
+- Spondylolisthesis: 椎体滑脱
+- Spontaneous remission: 自发性缓解
+- Synapse: 突触
+- T-score: T值
+- T1-weighted image: T1加权影像
+- T2 hyperintensity: T2高信号
+- T2-weighted image: T2加权影像
+- Temporal bone: 颞骨
+- Temporalis / temporalis muscle: 颞肌
+- Temporomandibular joint / TMJ: 颞下颌关节
+- Thoracic spine: 胸椎
+- Tinnitus: 耳鸣
+- Total joint replacement: 全关节置换
+- Trigeminal nerve: 三叉神经
+- Trigeminal neuralgia / TN: 三叉神经痛
+- Unilateral facial pain: 单侧面部疼痛
+- Upper-airway muscle tone: 上呼吸道肌张力
+- Urge to move the legs: 腿部移动冲动
+- Urinary hesitancy: 排尿踌躇
+- Urinary retention: 尿潴留
+- Vascular malformation: 血管畸形
+- Vertebral end-plate: 椎体终板
+- Watchful waiting: 观察等待
+- White matter: 白质
+- White matter hyperintensity / WMH: 白质高信号
+- Withdrawal: 戒断
+- Without reduction: 无复位
+
+## Dermatology
+
+- Acanthosis: 棘层增生
+- Basal cell carcinoma: 基底细胞癌
+- Benign: 良性
+- Benign finding: 良性发现
+- Clinical appearance: 临床外观
+- Clinical history: 病史
+- Clinical significance: 临床重要性
+- Cryotherapy: 冷冻治疗
+- Cytologic atypia: 细胞学异型性
+- Electrodessication: 电干燥法
+- Epidermal keratinocyte / epidermal keratinocytes: 表皮角质形成细胞
+- Excision / excised: 切除
+- Facial lesion: 面部病变
+- Fibrotic papillary dermis: 真皮乳头层纤维化
+- General surgery: 普通外科
+- Hematologic: 血液学相关
+- Hepatic: 肝脏相关
+- Malignant potential: 恶性潜能
+- Melanoma: 黑色素瘤
+- Multifocal: 多发性
+- Palm / palms: 手掌
+- Pathologically confirmed: 经病理证实
+- Precancerous: 癌前病变
+- Prevalence: 患病率
+- Proliferation: 增生
+- Pseudohorn cyst / pseudohorn cysts: 假性角囊肿
+- Seborrheic keratosis: 脂溢性角化病
+- Skin cancer: 皮肤癌
+- Shave biopsy: 刮除活检
+- Skin: 皮肤
+- Skin growth / skin growths: 皮肤增生物
+- Sole / soles: 足底
+- Treatment: 治疗
+
+## Pharmacology and Medication Management
+
+- AMP-activated protein kinase / AMPK: AMP活化蛋白激酶
+- Dawn effect: 黎明现象
+- Dose / dosage: 剂量
+- Dose escalation: 剂量增加
+- Dose reduction: 减量
+- Fixed daily dose: 固定每日剂量
+- Fish oil: 鱼油
+- Gastric emptying: 胃排空
+- Hybrid regimen: 混合治疗方案
+- Immediate-release: 速放型
+- Maintenance dose: 维持剂量
+- Medication adherence: 用药依从性
+- Medication discontinuation: 停药
+- Post-prandial hyperglycemia: 餐后高血糖
+- Sick-day rules: 病日规则
+- Therapeutic dose range: 治疗剂量范围
+- Variable dosing: 变动剂量
+
+## Review Queue
+
+Add uncertain or source-specific Mainland Chinese translation questions here instead of guessing.
+
+- EBV-IgA (Epstein–Barr virus IgA, nasopharyngeal-carcinoma screening marker): proposed EB病毒IgA抗体 — confirm Mainland Chinese clinical wording before promoting to a glossary entry. Left in English inline in `moc-screening.md` for now.
+- CA19-9 (cancer antigen 19-9, pancreatic/GI tumor marker): commonly kept as the English code in Mainland China reports; proposed 糖类抗原19-9 — confirm before promoting. Left in English inline in `moc-screening.md` for now.
+- General health panel (broad adult screening bundle ordered under a single lab panel code): proposed 健康体检组合 — confirm preferred Mainland Chinese wording before promoting. Added only as a search `aliases` entry on `general-health-panel.md` for now, not used in inline prose.
+- Hepatogastroenterology (hospital department name): the glossary currently carries the Taiwan-style 肝胆胃肠科. Mainland hospitals normally file this under 消化内科, which already translates `Gastroenterology` in this file, so a straight swap would give two English keys the same value. Confirm whether a zh-CN vault wants 消化内科 for both, or a distinct 肝病消化科 / 肝胆胰外科 depending on the department. Left as-is pending review.
