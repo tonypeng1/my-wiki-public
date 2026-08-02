@@ -8,6 +8,8 @@
       "Bash(python3 scripts/check-locale-consistency.py)",
       "Bash(python3 scripts/check-locale-consistency.py *)",
       "Bash(python3 scripts/check-medication-first-mentions.py *)",
+      "Bash(python3 scripts/check-unglossed-chinese.py)",
+      "Bash(python3 scripts/check-unglossed-chinese.py *)",
       "Bash(python3 scripts/connections-index.py *)",
       "Bash(python3 scripts/detect-list-records.py *)",
       "Bash(python3 scripts/detect-thin.py *)",

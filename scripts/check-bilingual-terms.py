@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Heuristic checker for English medical terms that appear without their
-Traditional Chinese glossary translations in the same paragraph.
+Heuristic checker for English medical terms that appear without their Chinese
+glossary translations in the same paragraph. Which Chinese is a per-vault
+setting: the glossary comes from `glossary:` in wiki-config.yml, so this reads
+Traditional under `locale: zh-TW` and Simplified under `zh-CN`, and skips itself
+under `none`.
 
 Usage:
   python3 scripts/check-bilingual-terms.py PATH [PATH ...]
@@ -15,8 +18,7 @@ knows terms already present in the glossary configured in wiki-config.yml.
 Exit code is
 always 0.
 
-Enforcement model (mirrors the Traditional Chinese Medical Terms policy in
-CLAUDE.md):
+Enforcement model (mirrors the Chinese Medical Terms policy in CLAUDE.md):
   - A term and its abbreviations are one term (all variants on a glossary line).
   - The term's FIRST meaningful mention in an article must carry a Chinese
     translation. A missing first-mention translation is flagged.

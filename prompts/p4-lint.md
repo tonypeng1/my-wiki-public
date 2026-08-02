@@ -321,6 +321,20 @@ checks in order:
        fields exist — step 4 is what guarantees that. Patch any flagged first
        mention and rerun until no unreviewed suspects remain.
 
-    Append a one-line result for each of a, b, and c (terms patched, glossary
-    entries added, first mentions fixed — or "clean") to the health check
-    report from step 9.
+    d) Run: python3 scripts/check-unglossed-chinese.py --git-diff
+       Chinese left in prose with no English — the mirror image of (a). The
+       vault is English-canonical, so a clinical term written only in Chinese
+       breaks its `[[backlinks]]` and cannot merge with an article drawn from
+       an English-language facility. Checkers (a) and (b) are both keyed on
+       the English half and are structurally blind to this, which is why it
+       has its own step. Expect findings mainly where a source document was
+       itself Chinese and the article had to be translated INTO English.
+       Physician and facility names are suppressed from
+       memory/provenance-roster.md, so a flagged institution usually means the
+       roster is missing a row — add the row rather than rewording the prose.
+       A gloss written with a comma or slash instead of parentheses is
+       reported on purpose. Patch real misses and rerun.
+
+    Append a one-line result for each of a, b, c, and d (terms patched,
+    glossary entries added, first mentions fixed, unglossed Chinese resolved —
+    or "clean") to the health check report from step 9.

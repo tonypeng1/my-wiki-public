@@ -204,3 +204,13 @@ is never processed again.
    format `generic (Brand, local name)` (see the Medication naming rule in
    CLAUDE.md), patch any flagged first mention, and rerun until no unreviewed
    suspects remain.
+   Last, run
+   `python3 scripts/check-unglossed-chinese.py --git-diff PATH [PATH ...]`
+   on the same touched files. This is the mirror of the first check: Chinese
+   left in prose with no English at all. It matters most when the source
+   document in `raw/` was itself Chinese, because then the article had to be
+   translated INTO English and any term that did not make the crossing is
+   invisible to every other checker — they all key on the English half.
+   Rewrite each real finding as `English (中文)`; if the finding is an
+   institution, add its row to `memory/provenance-roster.md` instead, since
+   roster names are suppressed by design.

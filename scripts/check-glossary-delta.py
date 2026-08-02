@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 Heuristic checker for bilingual inline terms that are missing from the shared
-Traditional Chinese medical glossary.
+Chinese medical glossary. Which Chinese is a per-vault setting: the glossary
+comes from `glossary:` in wiki-config.yml, so this reads Traditional under
+`locale: zh-TW` and Simplified under `zh-CN`, and skips itself under `none`.
 
 Usage:
   python3 scripts/check-glossary-delta.py PATH [PATH ...]

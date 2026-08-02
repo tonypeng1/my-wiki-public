@@ -214,6 +214,18 @@ one-document addition.
       guarantees that, which is why it runs first. Patch any flagged first
       mention and rerun until no unreviewed suspects remain.
 
+   d) Run: python3 scripts/check-unglossed-chinese.py --git-diff
+      Chinese left in prose with no English — the mirror image of (a). The
+      vault is English-canonical, so a clinical term written only in Chinese
+      breaks its `[[backlinks]]` and cannot merge with an article drawn from an
+      English-language facility. Checkers (a) and (b) are both keyed on the
+      English half and are structurally blind to this. Expect findings mainly
+      where the ingested document was itself Chinese. Physician and facility
+      names are suppressed from memory/provenance-roster.md, so a flagged
+      institution usually means the roster is missing a row — add the row
+      rather than rewording the prose. A gloss written with a comma or slash
+      instead of parentheses is reported on purpose. Patch and rerun.
+
 8. REPORT
    Give one line per step 1-6 with its result, then one line each for 7a, 7b,
    and 7c — including "clean" or "none" when a check found nothing. A step that

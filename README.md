@@ -567,6 +567,7 @@ agent to read the full corpus.
 | `detect-list-records.py` | reading every concept to check its record is a table, not bullets |
 | `check-compilation-summary.py` | walking the git history by hand to find ingests missing their `index.md` paragraph |
 | `check-locale-consistency.py` | noticing by eye that `wiki-config.yml` no longer matches the script the vault is written in |
+| `check-unglossed-chinese.py` | rereading Chinese-sourced articles to find terms that never made the crossing into English |
 
 Scripts handle extraction because it requires no judgement: the results are
 deterministic, reviewable in git, and cannot invent a lab value. The agent makes
@@ -600,6 +601,16 @@ The checkers remain a floor, not a ceiling. `check-bilingual-terms.py` verifies
 only terms already in the glossary, while `extract-term-candidates.py` catches
 only pattern-shaped terms such as `CBT-I` or `Phrase (ACRONYM)`. A first-use term
 in ordinary prose can evade both checks and must be found by the agent.
+
+Both of those, and `check-glossary-delta.py`, are keyed on the **English** half
+of a bilingual pair, which leaves them blind to the opposite defect: a term left
+in Chinese with no English at all. That is rare when the source document is
+English and the writer is adding glosses, and expected when the source is itself
+Chinese and the writer had to translate *into* English first.
+`check-unglossed-chinese.py` covers that direction. It masks parenthesised
+glosses (nesting included) and suppresses names read from
+`memory/provenance-roster.md` and `memory/patient-name.md`, so what remains is
+Chinese standing where English should be.
 
 The scope may be explicit paths, a description, or a request such as "worst
 offenders first." The resolved file list is always shown for approval before any
