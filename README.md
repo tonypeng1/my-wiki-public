@@ -64,52 +64,44 @@ empty output is the success case.
 
 ## 3. 🚀 Getting Started
 
-Using **Claude Code** (see [Running in Codex](#63-running-in-codex) for Codex):
+Choose either supported agent. The workflow is the same; only the command
+syntax differs.
 
-1. Open a terminal in this directory and start Claude Code:
+| Agent | Start or invoke workflows |
+|---|---|
+| **Claude Code** | In this directory, run `claude`, then use slash commands such as `/ingest`. |
+| **Codex** | Open this repository in Codex, then invoke the matching skills, such as `$ingest`. See [Running in Codex](#63-running-in-codex) for the complete command map. |
+
+1. **Configure the vault before its first ingest.** Choose the language for
+   newly generated clinical prose, then run one of these commands:
+
+   ```sh
+   bash scripts/new-vault.sh zh-TW  # Traditional Chinese, Taiwan wording
+   # bash scripts/new-vault.sh zh-CN  # Simplified Chinese, Mainland wording
+   # bash scripts/new-vault.sh none   # English only
    ```
-   claude
-   ```
-2. Set the vault locale **before the first `/ingest`**:
 
-   ```
-   bash scripts/new-vault.sh zh-TW
-   ```
+   The script creates `wiki-config.yml`, selects the appropriate glossary,
+   creates an empty provenance roster when needed, and verifies the setup. Then
+   replace `region: TODO` in `wiki-config.yml` with your default care market.
 
-   | `locale` | Result |
-   |---|---|
-   | `zh-TW` | Prose carries Traditional Chinese glosses (Taiwan wording). |
-   | `zh-CN` | Prose carries Simplified Chinese glosses (Mainland wording). |
-   | `none` | English-only. No glosses; the glossary checkers skip themselves. |
-
-   The script writes `wiki-config.yml`, points it at the matching glossary, and
-   verifies the result. Both glossaries ship with the repo, carrying the same
-   ~1230 terms in their own locale's wording — the two locales differ in
-   vocabulary, not just characters, which is why each has its own file. Set
-   `region:` afterwards to your default care market.
-
-   To do it by hand instead, copy `wiki-config.example.yml` to
-   `wiki-config.yml` and edit it.
-
-   Set this first: `/ingest` writes summaries, concepts, MOCs and the index in
-   one pass, and switching locale later does **not** convert prose that is
-   already written. `/ingest` and `/lint` both stop rather than guess if the
-   config is missing or disagrees with the vault's existing prose.
-3. Drop source documents into `raw/`.
-4. Run `/ingest`. It processes every file in `raw/` absent from
-   `wiki/processed.log`; the same command handles the first run and every later
-   run.
-5. When new files are added, `/ingest` automatically runs `/post-ingest` to
-   update tags, record format, frontmatter, backlinks, and MOCs. Run
-   `/post-ingest` alone only after manual edits.
-6. Ask questions with `/qa your question`. The first question starts a session;
-   follow up with `/qa your next question`. Each turn saves the full answer in
-   `wiki/sessions/current.md` and a compact, next-turn context summary in
-   `wiki/sessions/log.md`.
-7. Finish with `/session-close`. It consolidates the session into `wiki/queries/`
-   (or `wiki/deliverables/` for a clean handoff document), archives the session
-   files, and removes the working copies. **Nothing is published until you run
-   `/session-close`.**
+   Choose carefully: changing locale later does **not** convert prose already
+   in the vault. If you prefer manual setup, copy `wiki-config.example.yml` to
+   `wiki-config.yml` and edit it before continuing.
+2. **Add source documents** to `raw/`. Keep the originals there; the workflows
+   never modify them.
+3. **Build the wiki** with `/ingest` in Claude Code or `$ingest` in Codex. It
+   processes every file not already recorded in `wiki/processed.log`, so use the
+   same workflow for the first import and later additions. When it adds files,
+   it automatically runs the post-ingest checks for tags, frontmatter,
+   backlinks, MOCs, and record consistency.
+4. **Ask questions** with `/qa your question` or `$qa your question`.
+   The first question opens a session; follow up in the same way to retain its
+   context. Working answers stay in `wiki/sessions/` until you close the
+   session.
+5. **Publish the useful result** with `/session-close` or `$session-close`.
+   It turns the session into a saved Q&A in `wiki/queries/` (or a handoff in
+   `wiki/deliverables/`), archives the session, and clears the working copies.
 
 ## 4. 🔄 Ongoing Maintenance & Extras
 
