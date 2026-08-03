@@ -85,7 +85,7 @@ is never processed again.
       Then normalize the filename, before anything downstream is derived from
       it. If the name does not match `{descriptive-slug}-{YYYY-MM-DD}.{ext}`
       (see "Source filenames in `raw/`" in CLAUDE.md), build a conforming name
-      from the contents just read and rename the file with `git mv`. This is
+      from the contents just read and rename the file with `mv`. This is
       the one change to raw/ the conventions allow, and it is safe here only
       because step 3 already restricted this loop to files absent from
       wiki/processed.log — renaming a logged file orphans its log entry and its
