@@ -57,14 +57,16 @@ When saving a new memory or updating an existing one, write to `memory/` — not
                       across the whole vault, which makes every link to that name
                       ambiguous.
 - wiki/index.md     → master index of all wiki content
-- wiki/processed.log → list of already-processed raw/ files
+- wiki/processed.log → list of already-processed raw/ files, one per line; a
+                       renamed file also carries `(was: {arriving name})`
 
 ## Backlink Format
 Always use Obsidian-style backlinks: [[article name]]
 Article name should match the filename without the .md extension.
 
 ## General Rules
-1. Never modify anything in raw/
+1. Never modify the contents of anything in raw/ (renaming an unprocessed file
+   to the convention below is the one permitted change)
 2. Always check wiki/processed.log before processing raw/ files
 3. Always update wiki/index.md after creating or modifying any wiki file
 4. Always add backlinks using [[name]] syntax
@@ -72,6 +74,61 @@ Article name should match the filename without the .md extension.
 6. Filenames should be lowercase-hyphenated, e.g. surface-code-basics.md
    (exception: query files under wiki/queries/ are prefixed with their date,
    e.g. 2026-05-21-slug.md — see the Query File Format section)
+
+### Source filenames in `raw/`
+
+Source documents are named `{descriptive-slug}-{YYYY-MM-DD}.{ext}` —
+`carotid-ultrasound-2020-03-14.txt`, `lab-lipid-panel-2020-06-02.txt`.
+Lowercase ASCII, hyphen-separated, with no spaces, underscores, or punctuation
+such as `&`. The extension is whatever the document is (`.txt`, `.png`,
+`.jpg`); the convention governs the stem.
+
+The **slug** names what the document *is* — the study, panel, or visit type —
+never what it found: `lab-cbc-with-differential`, not `lab-low-hemoglobin`.
+Prefixes are descriptive rather than structural: a `lab-` prefix carries
+nothing the rest of the slug does not, and no script reads it. Make the slug
+long enough to tell the document apart from its siblings and no longer.
+
+The **date** is the document's own clinical date — specimen collection, study,
+or visit — as printed in the document. It is not the day the file was added to
+the vault, and not a date lifted from elsewhere in the body. A document that
+prints no date of its own **stays undated** (`{slug}.txt`); a hand-written
+medication list is the usual case. Manufacturing a date instead is the failure
+described under Provenance fields below — one lifted from a prescription date
+in the body propagates to every file that cites it.
+
+Two documents of the same type on the same date are told apart by a qualifier
+taken from the documents themselves — the performing lab, the body site, the
+printed panel name — and only as a last resort by a trailing `-2`. Reach for
+that only once the two are confirmed to be different documents: a derived name
+that collides with a name already in `raw/` or `wiki/processed.log` usually
+means the same export was added twice, and a `-2` would turn one document into
+two summaries.
+
+When a file is renamed, `wiki/processed.log` records the name it arrived under
+on the same line —
+`carotid-ultrasound-2020-03-14.txt  (was: Results_20200314_1152.pdf)`. That
+note is the vault's only durable record of the original name: `/ingest` does
+not commit, so the arriving name is usually never in git at all and
+`git log --follow` cannot recover it. Keeping the note in the log rather than
+in the summary puts it in the file that already answers "has this document been
+ingested", so one lookup answers both. Consumers read the first
+whitespace-delimited field as the filename and ignore the rest of the line;
+`scripts/check-raw-filenames.py` reads the note to recognize a re-added export.
+
+The stem matters downstream because it seeds the summary basename
+(`wiki/summaries/{name}.md`) and *is* the key recorded in `wiki/processed.log`.
+So **never rename a file already listed in `wiki/processed.log`**: both the log
+key and the summary basename are bound to the old name, and a rename orphans
+the entry and re-ingests the document as new. Files ingested before this
+convention keep their names — a vault that predates it may carry capitalized or
+underscored legacy stems, and renaming them now would cost more than it fixes.
+
+Renaming an **unprocessed** file is not a breach of General Rule 1, which
+protects the contents; those stay untouched. Nor does it make the filename
+evidence. Provenance is still read from the document body alone: `/lint` and
+the backfill procedure both refuse to infer a `facility`, `physician`, or date
+from a filename, and a name the vault generated itself is exactly why.
 
 ### Markdown source layout
 

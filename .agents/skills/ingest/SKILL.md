@@ -20,7 +20,10 @@ Before acting:
 
 Then execute the prompt instructions exactly, preserving the repository rules:
 
-- Never modify `raw/`.
+- Never modify the contents of `raw/`. The one change permitted there is
+  renaming a not-yet-ingested source file to the convention in `CLAUDE.md`
+  ("Source filenames in `raw/`"), which step 6a does from the document's own
+  contents and step 6e records in `wiki/processed.log` as `(was: …)`.
 - Check `wiki/processed.log` before processing source files.
 - Create or update summaries, concepts, backlinks, MOCs, `wiki/index.md`, and
   `wiki/home.md` as the prompt requires.

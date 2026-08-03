@@ -88,14 +88,25 @@ syntax differs.
    Choose carefully: changing locale later does **not** convert prose already
    in the vault. If you prefer manual setup, copy `wiki-config.example.yml` to
    `wiki-config.yml` and edit it before continuing.
-2. **Add source documents** to `raw/`. Keep the originals there; the workflows
-   never modify them. Because `raw/` is tracked, configure a private remote you
-   control before adding personal records; see [Git Setup](#61-git-setup).
-3. **Build the wiki** with `/ingest` in Claude Code or `$ingest` in Codex. It
-   processes every file not already recorded in `wiki/processed.log`, so use the
-   same workflow for the first import and later additions. When it adds files,
-   it automatically runs the post-ingest checks for tags, frontmatter,
-   backlinks, MOCs, and record consistency.
+2. **Add source documents** to `raw/`. The workflows never modify their
+   contents. Source files follow the format
+   `{descriptive-slug}-{YYYY-MM-DD}.{ext}` — for example,
+   `chest-x-ray-2020-01-01.txt` — where the slug describes the study, panel, or
+   visit and the date is the clinical date printed in the document, or no date
+   at all when the document prints none. If a newly added filename does not fit
+   that format, the ingestion workflow renames it by determining a suitable
+   name from the document. Because `raw/` is tracked, use only a private remote
+   you control for personal records; see [Git Setup](#61-git-setup).
+3. **Build or update the wiki** with `/ingest` in Claude Code or `$ingest` in
+   Codex. The same workflow handles both the first import and later additions,
+   processing only files not already recorded in `wiki/processed.log`. If it
+   renames a source file, it records the arriving name in `wiki/processed.log`
+   as `(was: …)` and uses that name to recognize the same file if it is added
+   again later. When it finds such a duplicate, it stops and identifies the
+   file already ingested so you can remove the re-added copy instead of
+   creating a second summary. After processing new files, it automatically runs
+   post-ingest checks for tags, frontmatter, backlinks, MOCs, and record
+   consistency.
 4. **Ask questions** with `/qa your question` or `$qa your question`.
    The first question opens a session; follow up in the same way to retain its
    context. Working answers stay in `wiki/sessions/` until you close the

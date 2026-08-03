@@ -214,7 +214,7 @@ checks in order:
 
 9. Write a health check report to wiki/maintenance/health-check-{today's date}.md
    with sections: wiki state summary · missing concepts created · thin articles expanded
-   · list-format records converted · backlinks added · dangling links fixed · compilation summary gaps backfilled · missing frontmatter fields added (aliases, cn-title, medication brand fields) · closed-vocabulary findings (unknown tags, provenance field violations, provenance gaps) · misplaced queries moved · recommended new articles.
+   · list-format records converted · backlinks added · dangling links fixed · compilation summary gaps backfilled · missing frontmatter fields added (aliases, cn-title, medication brand fields) · closed-vocabulary findings (unknown tags, provenance field violations, provenance gaps) · misplaced queries moved · source ledger (raw/ filenames, pending ingest backlog) · recommended new articles.
 
 10. Using the in-memory wiki/index.md (already updated with any new MOC
     entries in step 6), append the health check report entry and write
@@ -349,3 +349,37 @@ checks in order:
     Append a one-line result for each of a-f (terms patched, glossary entries
     added, first mentions fixed, unglossed Chinese resolved, MOC relationships,
     Markdown layout — or "clean") to the health check report from step 9.
+
+14. SOURCE LEDGER — raw/ filenames and processed.log
+    Run: `python3 scripts/check-raw-filenames.py`
+
+    raw/ and wiki/processed.log are two halves of one ledger, and every other
+    workflow trusts the pairing: /ingest selects work by subtracting the log
+    from raw/, and each summary's basename is seeded from the source stem. This
+    is the only check that reads the pairing itself, and none of the findings
+    are cosmetic:
+    - NON-CONFORMING FILENAMES — an unprocessed file whose name does not match
+      `{descriptive-slug}-{YYYY-MM-DD}.{ext}` (see "Source filenames in `raw/`"
+      in CLAUDE.md). Leave it: /ingest renames it from the document's own
+      contents, which is the only place the correct slug and date exist. Do not
+      rename it here from the filename alone — that is the inference this repo
+      forbids everywhere else.
+    - POSSIBLE RE-ADDED DUPLICATE — a file whose name matches a `(was: …)`
+      note in the log, meaning this export was already ingested under a
+      different name. Confirm against the summary before letting /ingest touch
+      it; ingesting it again creates a second summary for one document.
+    - ORPHANED LOG ENTRIES — a logged name with no file in raw/. Either the
+      source was deleted, or a file was renamed AFTER it was logged, which
+      breaks the pairing in both directions: the log key and the summary
+      basename still point at a name that no longer exists, and the file now
+      reads as never ingested. Repair by restoring the old name, not by
+      appending the new one to the log.
+    - MALFORMED processed.log LINES — a line that is neither `filename.ext` nor
+      `filename.ext  (was: original.ext)`. The log is machine-read; fix the line.
+    - PENDING INGEST is informational — it is simply the backlog /ingest would
+      pick up, and is the answer to "which source documents are not in the wiki
+      yet". A trailing legacy count is also informational: those names are
+      frozen by design and must not be normalized.
+
+    Add a one-line result (findings repaired, pending count, or "clean") to the
+    health check report from step 9.

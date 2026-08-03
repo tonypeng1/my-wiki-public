@@ -26,5 +26,7 @@ prompt — `$ingest` chains `prompts/p4a-post-ingest.md` after
 `prompts/*.md` file directly may silently skip a required pass. Read a prompt
 directly only when the user names that file, or when no skill covers it.
 
-Never modify files in `raw/`. Keep generated wiki content under `wiki/`, keep
+Never modify the contents of files in `raw/`; the only change permitted there is
+renaming a not-yet-ingested source file to the convention in CLAUDE.md ("Source
+filenames in `raw/`"). Keep generated wiki content under `wiki/`, keep
 automation under `scripts/`, and preserve Obsidian-style `[[backlinks]]`.

@@ -38,10 +38,28 @@ is never processed again.
 1. Read wiki/processed.log to get the list of already processed files.
    If the file does not exist, treat the list as empty.
 
+   Each line is `filename.ext`, optionally followed by
+   `(was: {name it had when added to raw/})` when step 6a renamed the file.
+   The processed filename is the FIRST whitespace-delimited field; read the
+   `(was: …)` value as a separate list of names already-ingested documents
+   arrived under. Never treat one as a processed filename in its own right.
+
 2. List all files currently in raw/.
 
 3. Identify which files in raw/ do not appear in
-   wiki/processed.log. These are the new files to process.
+   wiki/processed.log. These are the new files to process. Compare against the
+   first field only.
+
+   Then check the candidates against the `(was: …)` names from step 1. An exact
+   match means this file arrived under a name an earlier ingest already renamed
+   away from: the document is in the wiki under that later name, and what you
+   are holding is the same export added a second time, not a new document.
+   **Stop and ask** before processing it; say which processed file it was
+   ingested as, so the answer can be to delete the re-added copy rather than to
+   ingest it twice. This catch is deliberately at selection time rather than at
+   the rename in step 6a: the collision check there only fires if the slug you
+   derive reproduces the earlier one exactly, while an arriving name either
+   matches or it does not.
 
 4. If there are no new files, report that the wiki is
    up to date and stop.
@@ -63,6 +81,34 @@ is never processed again.
       chart titles, axes, time ranges, key data series, notable trends,
       anomalies, and specific values. Treat this extracted information as the
       "contents" for the rest of the pipeline.
+
+      Then normalize the filename, before anything downstream is derived from
+      it. If the name does not match `{descriptive-slug}-{YYYY-MM-DD}.{ext}`
+      (see "Source filenames in `raw/`" in CLAUDE.md), build a conforming name
+      from the contents just read and rename the file with `git mv`. This is
+      the one change to raw/ the conventions allow, and it is safe here only
+      because step 3 already restricted this loop to files absent from
+      wiki/processed.log — renaming a logged file orphans its log entry and its
+      summary. Three constraints:
+      - The date must be the clinical date the document itself prints. If it
+        prints none, keep the file undated rather than deriving one from a
+        prescription date, a signature line, or the file's mtime. That
+        fabrication has happened before and reached five wiki files.
+      - The slug names what the document is, not what it found, and must not
+        smuggle in provenance the document does not state.
+      - When the conforming name would be a guess — an undated document, or a
+        slug you are not confident identifies the study — leave the file alone
+        and report it instead. A wrong name is worse than an ugly one.
+      If the name you derive already exists in raw/ or in wiki/processed.log,
+      **stop and ask** rather than disambiguating with a suffix. The likeliest
+      explanation is that the same export was added twice under two different
+      arriving names, and quietly renaming it to `…-2` would ingest one
+      document as two. Read both and disambiguate only once they are confirmed
+      to be different documents.
+      Use the new name for everything after this point: the summary in 6b, its
+      `source:` frontmatter field, and the wiki/processed.log entry in 6e.
+      List each rename as `old → new` in the step-8 report, along with any file
+      you deliberately left non-conforming.
    b. Create wiki/summaries/{filename}.md following the 
       summary format in CLAUDE.md.
       Set the three provenance fields — `facility`, `physician`,
@@ -126,7 +172,14 @@ is never processed again.
       follow the "Adding a new canonical tag" procedure in CLAUDE.md
       before using it in any file.
 
-   e. Append the filename to wiki/processed.log.
+   e. Append the filename to wiki/processed.log. If the file was renamed in
+      step 6a, record the name it arrived under on the same line:
+      `chest-x-ray-2020-01-01.txt  (was: Results_20200101_1152.pdf)`
+      This is the only durable record of the original name — a rename is
+      normally invisible to git here, because this workflow does not commit
+      and the arriving name was usually never committed in the first place.
+      Write the note only for a real rename; a conforming file gets a bare
+      filename as before.
    f. Add or update the relevant entries in wiki/index.md.
       Place each entry under the domain section matching the
       article's primary domain tag (first clinical-domain tag

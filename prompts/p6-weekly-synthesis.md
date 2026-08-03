@@ -2,7 +2,9 @@ Your task is to write a weekly synthesis of what was added
 to the knowledge base this week.
 
 1. Read wiki/processed.log and identify all files processed 
-   in the last 7 days.
+   in the last 7 days. A line may carry a trailing
+   `(was: {arriving name})` note recording a rename at ingest; the filename is
+   the first whitespace-delimited field, and the note is not a second file.
 
 2. Read the corresponding summary files in wiki/summaries/.
 
