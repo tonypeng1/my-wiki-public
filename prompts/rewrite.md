@@ -25,7 +25,7 @@ Read each resolved document in full and rewrite it while preserving every fact, 
 
 If multiple documents are selected, rewrite each one separately in the resolved order. Preserve document boundaries and identify each rewritten result by its source path. Do not merge facts from different documents or make one document appear to support another.
 
-Do not overwrite or otherwise modify the source files unless the user explicitly asks for the rewritten content to be saved. If the user asks for files to be updated, preserve each original path and apply the same final quality check before writing.
+For each resolved target, print the rewritten document first, then automatically save that exact rewritten content back to its original path. Treat selecting a target as authorization to replace it in place; do not wait for a separate save request or confirmation. Preserve each original path and apply the final quality check before writing. If a write fails, report the source path and error without silently substituting another path.
 
 ## Writing rules
 
@@ -72,14 +72,13 @@ Before responding, silently compare every rewrite with its source:
 3. Confirm that no diagnosis, advice, cause, consequence, interpretation, or outside fact was added.
 4. Replace any remaining unnecessarily difficult wording with a clear, natural sentence.
 
-Return only the rewritten document or documents, with source-path labels only when needed to distinguish multiple outputs, unless the user asks for an explanation.
+Return the rewritten document or documents, with source-path labels when needed to distinguish multiple outputs, and report the path or paths saved. Do not add an explanation unless the user asks for one.
 
 ## Translation audit after saved wiki rewrites
 
-After the rewrite is saved, run the translation-backfill workflow on exactly the saved wiki files when all of these conditions are true:
+After the rewrite is automatically saved, run the translation-backfill workflow on exactly the saved wiki files when all of these conditions are true:
 
-- the user explicitly asked for the rewritten files to be saved;
 - at least one saved target is under `wiki/`; and
 - `locale` in `wiki-config.yml` is `zh-TW` or `zh-CN`.
 
-Read and execute `prompts/translation-backfill.md` with the saved files as its explicit scope. Let that workflow perform its normal glossary, translation, medication-format, mirror-file, and structural QA. Do not run this follow-up for output-only rewrites, files outside `wiki/`, or a vault with `locale: none`.
+Read and execute `prompts/translation-backfill.md` with the saved files as its explicit scope. Let that workflow perform its normal glossary, translation, medication-format, mirror-file, and structural QA. Do not run this follow-up for files outside `wiki/` or a vault with `locale: none`.

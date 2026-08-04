@@ -28,14 +28,15 @@ Execute the prompt exactly:
 - Preserve Markdown frontmatter, headings, tables, lists, links, filenames,
   values, document boundaries, and source paths unless the user explicitly
   asks for a structural change.
-- Do not modify source files unless the user explicitly requests saved changes.
-- Return only the rewritten document or documents unless the user asks for an
-  explanation.
+- Print each rewritten document, then automatically save that exact content to
+  its original target path. Treat target selection as authorization to replace
+  the source in place; do not wait for a separate save request or confirmation.
+- Report the path or paths saved, and report any write failure with its source
+  path and error.
 
-After saving rewritten files, if the saved targets include files under `wiki/`
+After automatically saving rewritten files, if the saved targets include files under `wiki/`
 and `wiki-config.yml` uses `locale: zh-TW` or `locale: zh-CN`, run the
 translation-backfill workflow on exactly those saved files as its explicit
-scope. Skip that follow-up for output-only rewrites, non-wiki files, and
-`locale: none`. Follow `prompts/translation-backfill.md` exactly; it performs
-the Chinese translation, glossary, medication-format, mirror-file, and
-structural QA passes.
+scope. Skip that follow-up for non-wiki files and `locale: none`. Follow
+`prompts/translation-backfill.md` exactly; it performs the Chinese translation,
+glossary, medication-format, mirror-file, and structural QA passes.

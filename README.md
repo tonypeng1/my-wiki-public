@@ -152,7 +152,7 @@ them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 | `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, plus a report in `wiki/maintenance/`. |
 | `p5-slides.md` | `/slides` | Create a Marp slide deck and rendered PDF in `wiki/deliverables/`. |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize the wiki additions from the current week. |
-| `rewrite.md` | `/rewrite` | Rewrite existing medical documents in clear, patient-friendly language while preserving their meaning; saved wiki files in Chinese locales receive a translation-backfill audit. |
+| `rewrite.md` | `/rewrite` | Rewrite existing medical documents in clear, patient-friendly language, automatically save them in place, and audit saved Chinese-locale wiki files with translation-backfill. |
 | `.claude/commands/commit-push.md` | `/commit-push` | Propose a commit message for approval, then commit and push to `origin main`. |
 | `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public prompts, commands, Codex skills, scripts, glossary, and templates to the companion repository through a fail-closed privacy gate. It never copies `raw/`, wiki content, or private memory. |
 
