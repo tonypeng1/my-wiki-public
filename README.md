@@ -42,6 +42,8 @@ The two central file types have distinct jobs:
 
 The Deep Dive explains how the workflows maintain that split.
 
+Patient-facing medical prose follows the shared style policy in `CLAUDE.md`: preserve every fact and qualification, use clear natural language, and never strengthen conclusions. Use `/rewrite` or `$rewrite` to apply the same rules to existing files, directories, or glob-selected documents.
+
 ## 2. 📦 Prerequisites
 
 | Requirement | Needed for | Notes |
@@ -133,7 +135,7 @@ After the first ingest, use these commands as needed:
 
 ## 5. 🧭 Workflows
 
-These 14 workflows run in **Claude Code** or **Codex**; you can switch between
+These 15 workflows run in **Claude Code** or **Codex**; you can switch between
 them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 
 | Prompt | Slash Command | Purpose |
@@ -150,6 +152,7 @@ them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 | `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, plus a report in `wiki/maintenance/`. |
 | `p5-slides.md` | `/slides` | Create a Marp slide deck and rendered PDF in `wiki/deliverables/`. |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize the wiki additions from the current week. |
+| `rewrite.md` | `/rewrite` | Rewrite existing medical documents in clear, patient-friendly language while preserving their meaning; saved wiki files in Chinese locales receive a translation-backfill audit. |
 | `.claude/commands/commit-push.md` | `/commit-push` | Propose a commit message for approval, then commit and push to `origin main`. |
 | `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public prompts, commands, Codex skills, scripts, glossary, and templates to the companion repository through a fail-closed privacy gate. It never copies `raw/`, wiki content, or private memory. |
 
@@ -255,6 +258,7 @@ Instead, the same workflows are packaged as repository-scoped skills under
 | `/lint` | `$lint` |
 | `/slides` | `$slides` |
 | `/synthesis` | `$synthesis` |
+| `/rewrite` | `$rewrite` |
 | `/sync-to-public` | `$sync-to-public` |
 | `/commit-push` | `$commit-push-codex` |
 

@@ -1,6 +1,8 @@
 Your task is to write a weekly synthesis of what was added 
 to the knowledge base this week.
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 1. Read wiki/processed.log and identify all files processed 
    in the last 7 days. A line may carry a trailing
    `(was: {arriving name})` note recording a rename at ingest; the filename is

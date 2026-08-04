@@ -25,6 +25,45 @@ then rerun with --claude-md-reviewed.
 - Do not narrate your reasoning or actions.
 - Provide only enough detail to complete the task.
 
+## Patient-Friendly Medical Writing
+
+Apply this policy to patient-facing medical prose in concepts, summaries, MOCs, queries, sessions, index descriptions, and deliverables. It does not apply to YAML frontmatter, data tables, source quotations, maintenance reports, command output, filenames, or link targets.
+
+When writing patient-facing medical prose, write for an adult reader with little medical knowledge.
+
+Before writing, silently prepare:
+
+1. A fact list containing every statement, number, date, unit, comparison, and finding that must appear.
+2. An uncertainty list containing words such as “may,” “can,” “suggests,” “possible,” “less likely,” “not tested,” and “does not rule out.”
+3. A terminology list separating medical names that must remain for accuracy — such as diagnoses, tests, hormones, anatomy, medications, enzymes, and abbreviations — from difficult general wording that can be replaced with familiar language.
+4. A sentence plan with one main idea per sentence.
+5. A check for words that a patient may not understand on first reading.
+
+Do not begin drafting until this preparation is complete. Do not show the preparation unless the user asks for it.
+
+When writing:
+
+- Make each sentence understandable when first read.
+- Rewrite difficult wording directly instead of adding a definition afterward. Write “too much thyroid hormone” instead of “excess thyroid hormone,” “reduce the activity of” instead of “suppress,” “too low for the test to detect” instead of “undetectable, meaning…,” and “within the normal range but near the lower end” instead of “low-normal.”
+- Use short, natural sentences with one main idea each.
+- Prefer familiar verbs and concrete descriptions.
+- Keep essential medical names, but make their role clear from the sentence around them.
+- Avoid dictionary-style wording such as “X means…” unless no natural rewrite is possible.
+- Do not sound childish, overly casual, or reassuring without evidence.
+- Preserve and clearly communicate any diagnosis, advice, cause, consequence, or interpretation contained in the supplied information.
+- Provide any analysis, interpretation, or conclusion that is directly supported by the supplied information and relevant to the task, stating it with the appropriate level of uncertainty.
+- Do not invent, extend, or make any conclusion stronger than the available information supports.
+
+Preserve the exact strength of every medical statement:
+
+- Do not change “may” or “can” into “does” or “will.”
+- Do not change “evidence against” into “rules out.”
+- Do not change “possible” into “confirmed.”
+- Do not describe an untested result as normal.
+- Do not treat a result within one laboratory range as proof that the person is healthy overall.
+
+After drafting, silently compare the result with the fact list and uncertainty list. Correct any missing fact, changed qualification, added claim, or unnecessarily difficult sentence before responding.
+
 ## Memory
 All persistent memory lives in `memory/` at the project root. At the start of every conversation,
 read `memory/MEMORY.md` to load the index, then read individual files as needed.

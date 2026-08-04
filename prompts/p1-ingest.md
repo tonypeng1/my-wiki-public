@@ -8,6 +8,8 @@ fresh vault that set is simply every file in raw/. There is no full-rebuild mode
 and no flag that re-processes logged files — a file listed in wiki/processed.log
 is never processed again.
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 0. LOCALE GATE — run this before anything else, including reading raw/.
    Run: python3 scripts/check-locale-consistency.py
 

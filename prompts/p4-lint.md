@@ -1,6 +1,8 @@
 Perform a full health check on the wiki. Work through these 
 checks in order:
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 0. LOCALE GATE
    Run: python3 scripts/check-locale-consistency.py
 

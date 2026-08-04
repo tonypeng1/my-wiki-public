@@ -17,8 +17,8 @@ Every workflow is packaged as a repo skill under `.agents/skills/`, named to
 match its Claude slash command: `$ingest`, `$post-ingest`, `$qa`,
 `$session-close`, `$session-reopen`, `$contradiction-check`, `$coverage-check`,
 `$triage-queries`, `$translation-backfill`, `$lint`, `$slides`, `$synthesis`,
-`$sync-to-public`, and `$commit-push-codex` (Codex's `/commit-push`, with a
-Codex co-author trailer).
+`$sync-to-public`, `$rewrite`, and `$commit-push-codex`
+(Codex's `/commit-push`, with a Codex co-author trailer).
 
 Prefer the skill over the prompt file. A skill can do more than read one
 prompt — `$ingest` chains `prompts/p4a-post-ingest.md` after

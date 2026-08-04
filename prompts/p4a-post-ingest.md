@@ -9,6 +9,8 @@ them across several steps. Do not do that work here: its cost does not shrink
 when the ingest is small, so running it per-ingest pays full price for a
 one-document addition.
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 1. CLOSED VOCABULARIES — tags and provenance fields
    a) Run: python3 scripts/canonicalize-tags.py
    The script does two separate things across wiki/concepts/ and

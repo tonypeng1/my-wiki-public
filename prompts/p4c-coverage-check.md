@@ -7,6 +7,8 @@ shrink with a small ingest. Steps 2, 3, and 4 all read the same two indexes
 (connections-index.py, tag-index.py), so load each once and reuse it: that is
 the reason these steps live together rather than firing on every ingest.
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 1. MISSING AND THIN CONCEPT PAGES
    Two scripts, one list each:
    Run: python3 scripts/detect-thin.py

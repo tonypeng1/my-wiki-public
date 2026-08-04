@@ -7,6 +7,8 @@ special-cases the turn count: at one turn, "compile all turns" in step 3 is
 simply that turn's answer, and the file produced is the standalone answer to
 that question, carrying the same translation checker gate as any other close.
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 Follow these steps:
 
 1. Check whether wiki/sessions/current.md exists.

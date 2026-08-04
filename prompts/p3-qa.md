@@ -8,6 +8,8 @@ wiki/queries/ from here — p3b-session-close.md is the only publisher, and
 closing a one-turn session produces exactly the file a standalone one-off
 answer would, plus the translation checker gate that path never had.
 
+Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-facing prose created or revised by this workflow.
+
 Follow these steps to answer it:
 
 1. Check whether wiki/sessions/log.md exists.

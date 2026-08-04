@@ -1,6 +1,8 @@
 Your task is to generate a Marp slide deck on the topic of: 
 "{YOUR TOPIC HERE}"
 
+Identify the deck's audience and purpose before drafting. For patient-facing decks, apply the Patient-Friendly Medical Writing policy in `CLAUDE.md`. For clinician-facing decks, use precise clinical language; for physician handoffs, follow the handoff rule of presenting results only, without interpretation, recommendations, or clinical commentary.
+
 1. Run the following command to find all wiki articles relevant to this topic
    (replace KEYWORD with the topic name; add more keywords as needed):
 
