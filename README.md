@@ -514,7 +514,6 @@ those candidates against `raw/` before backfilling the provenance.
 | Dangling backlink check | ◐ | — | ✅ | ✅ |
 | Missing backlinks | ◐ | — | ✅ | ✅ |
 | MOC freshness + `home.md` sync | ◐ | — | ✅ | ✅ |
-| Article-description mirrors (`concept` ↔ `index` / MOC) | — | — | — | ✅ |
 | MOC Key Relationships structure | ◐ | — | ◐ | ◐ |
 | Markdown source layout (no manual hard wraps) | ◐ | — | ◐ | ◐ |
 | Bilingual + glossary + medication-format QA | ◐ | — | ◐ | ◐ |
@@ -523,9 +522,10 @@ those candidates against `raw/` before backfilling the provenance.
 | Misplaced query files | — | — | — | ✅ |
 | Compilation Summary audit | — | — | — | ✅ |
 | Written maintenance report | — | — | — | ✅ |
+| Missing stop markers for stopped medications | — | — | — | ✅ |
+| Article-description mirrors (`concept` ↔ `index` / MOC) | — | — | — | ✅ |
 | Numeric contradictions | — | ✅ | — | — |
 | Status contradictions (medication · condition) | — | ✅ | — | — |
-| Missing stop markers for stopped medications | — | — | — | ✅ |
 | Provenance contradictions (concept row vs. cited summary) | — | ✅ | — | — |
 
 ✅ = the full check · ◐ = bounded to what that run itself changed
