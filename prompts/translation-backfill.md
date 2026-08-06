@@ -126,10 +126,22 @@ is `none`, the vault carries no glosses to repair — report that and stop.
      onto one physical source line and let Obsidian soft-wrap it. This must run
      after gloss insertion so translations cannot lengthen only selected source
      lines. Patch and rerun until clean.
+   - `python3 scripts/check-mirror-drift.py --git-diff PATH [PATH ...]`
+     is the failure signal for step 6, which otherwise has none. It flags an
+     article whose prose this batch changed while its `## {file}.md` block in
+     `wiki/index.md` or its MOC bullet did not. Fix by editing the named lines
+     only — never by rewriting a mirror file, whose Compilation Summary is
+     append-only and whose Key Relationships prose has its own contract. Rerun
+     until clean, or state which flagged mirror legitimately needed no change
+     and why. The check is satisfied by any edit to the mirror, so it proves
+     the mirror was touched, not that it was synchronized correctly.
 
 11. Report:
    - scope reviewed
    - files changed
    - glossary entries added
    - any deliberately deferred or ambiguous translation choices
-   - MOC relationship and Markdown layout check results
+   - MOC relationship, Markdown layout, and mirror-drift check results
+   - the mirror files updated in step 6, named individually — a step with no
+     artifact of its own is the one that goes missing, so report it explicitly
+     even when the answer is "none needed"

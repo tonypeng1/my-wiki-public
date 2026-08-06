@@ -348,9 +348,47 @@ Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-fa
        bilingual checks so Chinese glosses cannot leave irregular manual
        wrapping. Patch and rerun until clean.
 
-    Append a one-line result for each of a-f (terms patched, glossary entries
+    g) Run: python3 scripts/check-mirror-drift.py --audit
+       Articles whose prose moved more recently than the `## {file}.md` block
+       in wiki/index.md or the MOC bullet describing them. Unlike a-f this
+       takes `--audit`, not `--git-diff`: the drift it looks for was left by
+       earlier commits, so a diff-scoped run would report almost nothing.
+
+       This is a RATCHET, not a gate. Any vault that has run bulk terminology
+       or restructuring passes carries a standing backlog from before the
+       check existed, so "clean" is not the pass condition and clearing it is
+       not this step's job. Record the TOTAL in the health check report and
+       compare it with the previous report: it must not increase. If it did,
+       this run or a recent one changed article prose without carrying the
+       wording into the mirrors — fix those by editing the named lines only,
+       never by rewriting a mirror file. The first run establishes the
+       baseline; note it as such.
+
+    h) Run: python3 scripts/check-medication-status.py
+       Concepts, wiki/index.md entries, and MOC bullets that mention a
+       medication whose concept frontmatter says `status: stopped` while
+       carrying no stop marker. Like (g) this takes no `--git-diff`: the text
+       goes stale when the medication stops, not when this run edits it.
+
+       Read every MISSING STOP row before acting — it is a review list, not a
+       defect list. A statement of the drug's pharmacology ("amlodipine is
+       QTc-neutral") is timeless, and one explicitly scoped to the past ("may
+       have worsened PLMS during that period") is already dated; neither needs
+       a marker. Patch the rest by adding the stop, with the qualification the
+       concept records — never upgrade a patient-reported stop into a
+       documented one.
+
+       CLASS MENTION is a lower tier: the text matched only a class alias
+       ("the new β-blocker") with no drug named, which is right more often
+       than not but goes ambiguous as soon as two drugs share a class.
+       STATUS MISMATCH means frontmatter and the concept's own status line
+       disagree, or the value is outside `active | occasional | stopped`;
+       fix those first, since they undermine everything else the check says.
+
+    Append a one-line result for each of a-h (terms patched, glossary entries
     added, first mentions fixed, unglossed Chinese resolved, MOC relationships,
-    Markdown layout — or "clean") to the health check report from step 9.
+    Markdown layout, mirror-drift total vs previous, medication-status findings
+    — or "clean") to the health check report from step 9.
 
 14. SOURCE LEDGER — raw/ filenames and processed.log
     Run: `python3 scripts/check-raw-filenames.py`

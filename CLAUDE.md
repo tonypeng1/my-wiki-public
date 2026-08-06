@@ -64,6 +64,20 @@ Preserve the exact strength of every medical statement:
 
 After drafting, silently compare the result with the fact list and uncertainty list. Correct any missing fact, changed qualification, added claim, or unnecessarily difficult sentence before responding.
 
+### Keeping the medical name vs. rewriting hard wording
+
+Two rules above pull in opposite directions — “rewrite difficult wording directly instead of adding a definition afterward” and “keep essential medical names.” This decides which one applies.
+
+The test is whether the term is a **name the reader will meet again on their own paperwork**. Keep it when it is: diagnoses, tests and panels, medications, anatomy, analytes, enzymes, and the abbreviations for any of them — anything printed on a report, lab slip, or prescription. Write the plain explanation *around* the name rather than in place of it. “Hepatic steatosis” is printed on the MRI report, so a reader who only ever sees “fat build-up in the liver” cannot match this wiki to the paper in their hand.
+
+Rewrite the term when it is merely difficult general wording — mostly verbs, adjectives, and adverbs, as in the “suppress” / “undetectable” / “low-normal” examples above. Nothing is printed on a report for the reader to match, so the hard word carries no navigational value and costs only comprehension.
+
+Prefer apposition to stacked parentheses. Write `Fatty liver (脂肪肝), also called hepatic steatosis (肝脂肪變性), means…`, not `…the cells of the liver (肝臟) (肝細胞)`. Two Chinese parentheticals in a row read badly, and the second one self-flags in `scripts/check-bilingual-terms.py`.
+
+Unstack by rewriting, never by deleting one of the two glosses. `check-bilingual-terms.py` matches a term's glossary Chinese by **substring containment**: a wider compound credits the term when it contains those characters contiguously (腎臟疾病 credits `Kidney: 腎臟`, 心率變異性 credits `Heart rate: 心率`), and fails when it does not — 肝細胞 does not satisfy `Liver: 肝臟`, and 胃腸道惡性腫瘤 does not satisfy `Digestive tract: 消化道`. Sharing one character is not enough; the whole glossary string has to be in there. Deleting the plain-word gloss therefore breaks that term's first/second-occurrence quota for the section, silently and several lines away from the edit. Two safe forms: apposition, `the cells of the liver (肝臟) — the hepatocytes (肝細胞)`, which also restores the medical name this section asks you to keep; or a single parenthetical carrying both, `the kidney (腎臟; 腎病變)`. Dropping the plain gloss outright is correct only when that term's quota is already met elsewhere in the same section, which is worth confirming with the checker rather than assuming.
+
+Expect the gloss count to **rise** during a rewrite pass rather than fall. Plain words such as “liver” and “heart” are themselves glossary entries, and they recur far more often than the jargon they replace, so a pass that removes a handful of `hepatic` and `hepatocyte` mentions can add several times as many `liver` and `heart` ones. Nothing leaves the glossary; one rare entry is traded for one common entry, which then multiplies. That is the expected cost of this policy, not a signal to keep the jargon.
+
 ## Memory
 All persistent memory lives in `memory/` at the project root. At the start of every conversation,
 read `memory/MEMORY.md` to load the index, then read individual files as needed.
@@ -455,12 +469,50 @@ figures in prose, labelled as derived.
 Questions worth exploring further.
 
 ### Medication concepts
-A concept tagged `medication` carries two extra frontmatter fields, after `updated`:
+A concept tagged `medication` carries these extra frontmatter fields, after `updated`:
 
 ```
 brand: {brand name as prescribed}          # e.g. Norvasc
 local-brand-name: {full local product name, incl. dosage-form suffix}  # e.g. 脈優錠
+status: active | occasional | stopped      # optional — see below
+status-date: {YYYY-MM-DD}                  # optional — the date the concept's own
+                                           # status statement carries
 ```
+
+#### `status` — is the patient taking this now?
+A closed vocabulary, like the tags and the provenance slugs. `occasional` is not a
+synonym for `active`: a bedtime sedative may be genuinely "active but used only
+occasionally", and a field that cannot say so gets written wrong.
+
+**Optional, and omitted rather than guessed** — the same rule the provenance fields
+follow. Set it only from a status the concept itself states. A statin concept that
+records a prescription and no status statement carries no `status`; inferring
+`active` from the absence of a recorded stop is exactly the inference the provenance
+rule forbids. A medication with no `status` is simply not checked.
+
+`status-date` is **copied** from the concept's own dated status statement, never
+computed. When a concept's body says `**Stopped (patient-reported, 2026-03-14)**`,
+the field reads `2026-03-14`. When the prose gives an approximate date ("stopped
+about 2026-03-12"), do not sharpen it into the field — leave `status-date` off and
+let the prose carry the approximation. Manufacturing a precise date from an
+imprecise one is the failure `raw/README.md` records.
+
+This field exists to be **executable**: `scripts/check-medication-status.py` reads
+it as authority and reports every concept, `wiki/index.md` entry, or MOC bullet
+that mentions a `stopped` medication while carrying no stop marker
+(`discontinued`, `stopped`, `stopping`, `ceased`, `no longer`). That catches an
+**omission**, which nothing else does — when a drug is stopped the stale text
+rarely claims the patient is still taking it, it just never says the patient
+stopped, and silence reads as current. `check-mirror-drift.py` is satisfied once the
+mirror is edited for any reason, and `extract-status-claims.py` compares state words
+against state words, so an absent word disagrees with nothing.
+
+The cost of putting status in frontmatter is two sources of truth inside one file,
+so the same checker guards it: a `status` that disagrees with the concept's own
+`**Current status:**` / `**Discontinued:**` line is reported as STATUS MISMATCH.
+Keep the prose too — the qualification ("patient-reported", "not yet in an NHI or
+pharmacy document") needs a sentence, and compressing it into a slug is how a hedge
+quietly becomes a fact.
 
 They are the **source for the `generic (Brand, local name)` format** in body prose
 (see Medication naming above) — copy them verbatim rather than rewording, so the

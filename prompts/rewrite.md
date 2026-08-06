@@ -82,3 +82,17 @@ After the rewrite is automatically saved, run the translation-backfill workflow 
 - `locale` in `wiki-config.yml` is `zh-TW` or `zh-CN`.
 
 Read and execute `prompts/translation-backfill.md` with the saved files as its explicit scope. Let that workflow perform its normal glossary, translation, medication-format, mirror-file, and structural QA. Do not run this follow-up for files outside `wiki/` or a vault with `locale: none`.
+
+## Mirror synchronization after saved wiki rewrites
+
+An article's one-line description is repeated in its `## {file}.md` block in `wiki/index.md` and in the MOC bullet for each of its domains. A rewrite changes the article's wording and nothing carries that across on its own, so the mirrors are left describing the article in wording it no longer uses.
+
+Run this for every saved target under `wiki/`, **whatever the locale**. Mirror wording is language-independent, so this must not be conditional on the translation audit above: that audit does not run under `locale: none`, and routing the mirror work through it would leave an English-only vault with no mirror step at all.
+
+Run it after the translation audit when that audit applies. In a Chinese-locale vault the backfill's step 6 has already synchronized the mirrors, so this returns clean and costs one command; under `locale: none` it is the only step that does the work.
+
+- `python3 scripts/check-mirror-drift.py --git-diff PATH [PATH ...]`
+
+For each flagged article, edit the named `wiki/index.md` entry block and the named MOC bullet so they describe the article in its new wording. Edit those lines only — never rewrite a whole mirror file: `wiki/index.md` carries an append-only, ingest-owned `## Compilation Summary` block, and MOC `## Key Relationships` prose has its own one-paragraph contract. Preserve every value, unit, flag, and link target already in the mirror line; plain-English rewording never touches the digits. Rerun until clean, or state which flagged mirror legitimately needed no change and why.
+
+Name the mirror files you updated when reporting the saved paths, even when the answer is "none needed". The check is satisfied by any edit to the mirror, so it proves the mirror was touched, not that it was synchronized correctly.
