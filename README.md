@@ -42,7 +42,7 @@ The two central file types have distinct jobs:
 
 The Deep Dive explains how the workflows maintain that split.
 
-Patient-facing medical prose follows the shared style policy in `CLAUDE.md`: preserve every fact and qualification, use clear natural language, and never strengthen conclusions. Use `/rewrite` or `$rewrite` to apply the same rules to existing files, directories, or glob-selected documents.
+Patient-facing medical prose follows the shared style policy in `CLAUDE.md`: preserve every fact and qualification, use clear natural language, and never strengthen conclusions. Use `/rewrite` or `$rewrite` to make existing medical documents easier to understand for readers with little medical background while preserving their medical meaning, Markdown structure, and links.
 
 ## 2. 📦 Prerequisites
 
@@ -148,11 +148,11 @@ them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 | `p4b-contradiction-check.md` | `/contradiction-check` | Compare numeric claims and medication or condition status across `wiki/concepts/`. **Edits files:** automatically corrects only unambiguous numeric drift and presents choices for everything else. |
 | `p4c-coverage-check.md` | `/coverage-check` | Monthly repository-wide pass for thin or missing articles, missing backlinks, MOC and `home.md` reconciliation, new article candidates, and translation QA on its changes. |
 | `p4d-triage-queries.md` | `/triage-queries` | Interactively relocate misplaced files from the `wiki/queries/` root. |
-| `translation-backfill.md` | `/translation-backfill` | Repair missing Chinese translations in existing content (Chinese locales only). |
-| `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, plus a report in `wiki/maintenance/`. |
+| `translation-backfill.md` | `/translation-backfill` | Repair missing Chinese translations in existing content and synchronize affected index and MOC descriptions (Chinese locales only). |
+| `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, including mirror-drift and stopped-medication audits, plus a report in `wiki/maintenance/`. |
 | `p5-slides.md` | `/slides` | Create a Marp slide deck and rendered PDF in `wiki/deliverables/`. |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize the wiki additions from the current week. |
-| `rewrite.md` | `/rewrite` | Rewrite existing medical documents in clear, patient-friendly language, automatically save them in place, and audit saved Chinese-locale wiki files with translation-backfill. |
+| `rewrite.md` | `/rewrite` | Make existing medical documents easier to understand for readers with little medical background, save them in place, keep their index and MOC descriptions in sync, and audit saved Chinese-locale wiki files with translation-backfill. |
 | `.claude/commands/commit-push.md` | `/commit-push` | Propose a commit message for approval, then commit and push to `origin main`. |
 | `sync-to-public.md` | `/sync-to-public` | **Maintainer only.** Copy public prompts, commands, Codex skills, scripts, glossary, and templates to the companion repository through a fail-closed privacy gate. It never copies `raw/`, wiki content, or private memory. |
 
@@ -514,6 +514,7 @@ those candidates against `raw/` before backfilling the provenance.
 | Dangling backlink check | ◐ | — | ✅ | ✅ |
 | Missing backlinks | ◐ | — | ✅ | ✅ |
 | MOC freshness + `home.md` sync | ◐ | — | ✅ | ✅ |
+| Article-description mirrors (`concept` ↔ `index` / MOC) | — | — | — | ✅ |
 | MOC Key Relationships structure | ◐ | — | ◐ | ◐ |
 | Markdown source layout (no manual hard wraps) | ◐ | — | ◐ | ◐ |
 | Bilingual + glossary + medication-format QA | ◐ | — | ◐ | ◐ |
@@ -524,6 +525,7 @@ those candidates against `raw/` before backfilling the provenance.
 | Written maintenance report | — | — | — | ✅ |
 | Numeric contradictions | — | ✅ | — | — |
 | Status contradictions (medication · condition) | — | ✅ | — | — |
+| Missing stop markers for stopped medications | — | — | — | ✅ |
 | Provenance contradictions (concept row vs. cited summary) | — | ✅ | — | — |
 
 ✅ = the full check · ◐ = bounded to what that run itself changed
@@ -602,6 +604,8 @@ agent to read the full corpus.
 | `check-unglossed-chinese.py` | rereading Chinese-sourced articles to find terms that never made the crossing into English |
 | `check-moc-key-relationships.py` | manually counting paragraphs and sentences or spotting action items in edited MOC relationship prose |
 | `check-markdown-layout.py` | visually finding irregular manual line wraps introduced before translation was complete |
+| `check-mirror-drift.py` | manually comparing a changed article with its `index.md` entry and MOC bullets |
+| `check-medication-status.py` | finding mentions of stopped medications that omit the stop |
 
 Scripts handle extraction because it requires no judgement: the results are
 deterministic, reviewable in git, and cannot invent a lab value. The agent makes
