@@ -365,10 +365,12 @@ Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-fa
        baseline; note it as such.
 
     h) Run: python3 scripts/check-medication-status.py
-       Concepts, wiki/index.md entries, and MOC bullets that mention a
-       medication whose concept frontmatter says `status: stopped` while
-       carrying no stop marker. Like (g) this takes no `--git-diff`: the text
-       goes stale when the medication stops, not when this run edits it.
+       Medication-status context in concepts, wiki/index.md entries, and MOC
+       bullets. For `status: stopped`, it finds mentions with no stop marker.
+       For `status: occasional`, it verifies the concept's explicit status line
+       says the use is occasional and reports index/MOC wording that positively
+       implies regular use. Like (g) this takes no `--git-diff`: status context
+       goes stale when the usage changes, not when this run edits it.
 
        Read every MISSING STOP row before acting — it is a review list, not a
        defect list. A statement of the drug's pharmacology ("amlodipine is
@@ -378,12 +380,21 @@ Apply the Patient-Friendly Medical Writing policy in CLAUDE.md to all patient-fa
        concept records — never upgrade a patient-reported stop into a
        documented one.
 
+       Read every FREQUENCY MISMATCH row too. Fix a current index or MOC claim
+       that says an occasional medication is used daily, nightly, every/most
+       day or night, regularly, or routinely. Leave neutral pharmacology and
+       clearly historical schedules alone. `occasionally`, `intermittently`,
+       `as needed`, `PRN`, `some nights`, and equivalent wording are valid
+       occasional-use markers; preserve the exact wording and qualification
+       supported by the concept rather than standardizing it mechanically.
+
        CLASS MENTION is a lower tier: the text matched only a class alias
        ("the new β-blocker") with no drug named, which is right more often
        than not but goes ambiguous as soon as two drugs share a class.
        STATUS MISMATCH means frontmatter and the concept's own status line
-       disagree, or the value is outside `active | occasional | stopped`;
-       fix those first, since they undermine everything else the check says.
+       disagree, an occasional medication has no explicit status line, or the
+       value is outside `active | occasional | stopped`; fix those first, since
+       they undermine everything else the check says.
 
     Append a one-line result for each of a-h (terms patched, glossary entries
     added, first mentions fixed, unglossed Chinese resolved, MOC relationships,

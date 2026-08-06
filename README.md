@@ -149,7 +149,7 @@ them. In Claude Code, type `/` followed by the command name, such as `/ingest`.
 | `p4c-coverage-check.md` | `/coverage-check` | Monthly repository-wide pass for thin or missing articles, missing backlinks, MOC and `home.md` reconciliation, new article candidates, and translation QA on its changes. |
 | `p4d-triage-queries.md` | `/triage-queries` | Interactively relocate misplaced files from the `wiki/queries/` root. |
 | `translation-backfill.md` | `/translation-backfill` | Repair missing Chinese translations in existing content and synchronize affected index and MOC descriptions (Chinese locales only). |
-| `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, including mirror-drift and stopped-medication audits, plus a report in `wiki/maintenance/`. |
+| `p4-lint.md` | `/lint` | Quarterly health check: every maintenance-matrix check except contradiction checking, including mirror-drift and medication-status audits, plus a report in `wiki/maintenance/`. |
 | `p5-slides.md` | `/slides` | Create a Marp slide deck and rendered PDF in `wiki/deliverables/`. |
 | `p6-weekly-synthesis.md` | `/synthesis` | Summarize the wiki additions from the current week. |
 | `rewrite.md` | `/rewrite` | Make existing medical documents easier to understand for readers with little medical background, save them in place, keep their index and MOC descriptions in sync, and audit saved Chinese-locale wiki files with translation-backfill. |
@@ -522,7 +522,7 @@ those candidates against `raw/` before backfilling the provenance.
 | Misplaced query files | — | — | — | ✅ |
 | Compilation Summary audit | — | — | — | ✅ |
 | Written maintenance report | — | — | — | ✅ |
-| Missing stop markers for stopped medications | — | — | — | ✅ |
+| Medication-status context (`stopped` · `occasional`) | — | — | — | ✅ |
 | Article-description mirrors (`concept` ↔ `index` / MOC) | — | — | — | ✅ |
 | Numeric contradictions | — | ✅ | — | — |
 | Status contradictions (medication · condition) | — | ✅ | — | — |
@@ -605,7 +605,7 @@ agent to read the full corpus.
 | `check-moc-key-relationships.py` | manually counting paragraphs and sentences or spotting action items in edited MOC relationship prose |
 | `check-markdown-layout.py` | visually finding irregular manual line wraps introduced before translation was complete |
 | `check-mirror-drift.py` | manually comparing a changed article with its `index.md` entry and MOC bullets |
-| `check-medication-status.py` | finding mentions of stopped medications that omit the stop |
+| `check-medication-status.py` | finding missing stop context and regular-use wording for occasional medications |
 
 Scripts handle extraction because it requires no judgement: the results are
 deterministic, reviewable in git, and cannot invent a lab value. The agent makes

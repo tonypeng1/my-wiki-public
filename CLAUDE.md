@@ -498,21 +498,33 @@ let the prose carry the approximation. Manufacturing a precise date from an
 imprecise one is the failure `raw/README.md` records.
 
 This field exists to be **executable**: `scripts/check-medication-status.py` reads
-it as authority and reports every concept, `wiki/index.md` entry, or MOC bullet
-that mentions a `stopped` medication while carrying no stop marker
-(`discontinued`, `stopped`, `stopping`, `ceased`, `no longer`). That catches an
-**omission**, which nothing else does — when a drug is stopped the stale text
-rarely claims the patient is still taking it, it just never says the patient
-stopped, and silence reads as current. `check-mirror-drift.py` is satisfied once the
-mirror is edited for any reason, and `extract-status-claims.py` compares state words
-against state words, so an absent word disagrees with nothing.
+it as authority and runs two asymmetric checks. For `stopped`, it reports every
+concept, `wiki/index.md` entry, or MOC bullet that names the medication while
+carrying no stop marker (`discontinued`, `stopped`, `stopping`, `ceased`, `no
+longer`). That catches an **omission**, which nothing else does — when a drug is
+stopped the stale text rarely claims the patient is still taking it, it just never
+says the patient stopped, and silence reads as current. `check-mirror-drift.py` is
+satisfied once the mirror is edited for any reason, and
+`extract-status-claims.py` compares state words against state words, so an absent
+word disagrees with nothing.
+
+For `occasional`, silence makes no frequency claim, so the check is deliberately
+narrower. The medication concept must carry an explicit `**Current status:**` line
+that says the use is occasional — `occasionally`, `intermittently`, `as needed`,
+`PRN`, `some nights`, and equivalent wording all count. In `wiki/index.md` and MOC
+concept bullets, the checker reports only positive regular-use wording such as
+`daily`, `nightly`, `every day`, `most nights`, `regularly`, or `routinely`.
+Neutral mentions and clearly historical schedules are left alone, and ordinary
+concept prose is not frequency-scanned beyond its explicit status line.
 
 The cost of putting status in frontmatter is two sources of truth inside one file,
 so the same checker guards it: a `status` that disagrees with the concept's own
 `**Current status:**` / `**Discontinued:**` line is reported as STATUS MISMATCH.
-Keep the prose too — the qualification ("patient-reported", "not yet in an NHI or
-pharmacy document") needs a sentence, and compressing it into a slug is how a hedge
-quietly becomes a fact.
+An `occasional` field with no explicit status line is the same finding, because the
+field is supposed to be copied from that prose rather than inferred. Keep the prose
+too — the qualification ("patient-reported", "not yet in an NHI or pharmacy
+document") needs a sentence, and compressing it into a slug is how a hedge quietly
+becomes a fact.
 
 They are the **source for the `generic (Brand, local name)` format** in body prose
 (see Medication naming above) — copy them verbatim rather than rewording, so the

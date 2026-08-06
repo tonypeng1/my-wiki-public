@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Flag prose that describes a stopped medication without saying it stopped.
+"""Flag missing stopped-medication context and occasional-use drift.
 
 The failure this catches is an OMISSION, not a contradiction. When a medication is
 discontinued, wiki/index.md and the MOC bullets rarely claim the patient is still
@@ -10,14 +10,19 @@ compares state words against state words, so an absent word cannot disagree with
 anything. Pointed at mirrors that still carry the pre-stop wording,
 scripts/extract-status-claims.py returns zero hits.
 
-So this script does not compare claims. It takes the medication concept's own
-frontmatter `status:` as authority, and reports every block that mentions a stopped
-medication while carrying no stop marker.
+So this script takes the medication concept's own frontmatter `status:` as authority
+and runs two deliberately asymmetric checks:
+
+* ``stopped`` -- report every checked block that names the medication without a stop
+  marker, because silence makes a discontinued medicine read as current;
+* ``occasional`` -- verify the concept's explicit status line says the use is
+  occasional, and report only index/MOC wording that positively implies regular use.
+  A neutral mention makes no frequency claim and is left alone.
 
 Usage:
   python3 scripts/check-medication-status.py [PATH ...] [--git-diff]
 
-Findings come in three kinds:
+Findings come in four kinds:
 
   MISSING STOP    a block names the medication (generic, brand, or local brand) and
                   carries none of the stop markers. Read each one: a statement of
@@ -29,17 +34,25 @@ Findings come in three kinds:
                   direct name. Review tier: worth reading, but a class alias goes
                   ambiguous the moment two drugs share a class, so it is never
                   reported as a definite miss.
+  FREQUENCY MISMATCH
+                  an index entry or MOC bullet for an occasional medication says it
+                  is used daily, nightly, every/most day or night, regularly, or
+                  routinely. Neutral mentions and clearly historical schedules are
+                  not findings.
   STATUS MISMATCH frontmatter `status:` disagrees with the concept's own body status
-                  line, or uses a value outside the closed vocabulary. This is the
-                  cost of putting status in frontmatter — two sources of truth
-                  inside one file — so it is guarded rather than assumed.
+                  line, an occasional medication has no explicit status line, or the
+                  field uses a value outside the closed vocabulary. This is the cost
+                  of putting status in frontmatter — two sources of truth inside one
+                  file — so it is guarded rather than assumed.
 
-Scanned: wiki/index.md entries whose Type is `concept`, MOC bullets under
-`## Concepts`, and wiki/concepts/ bodies. NOT scanned, deliberately — summary
-entries and `## Source Summaries` bullets describe what a source document says on
-its own date, and a prescription record legitimately records no stop; and
-wiki/queries/, which are dated snapshots correct as of their date. Getting those
-exemptions wrong is what turns this into a pass that gets ignored.
+Scanned for stopped medications: wiki/index.md entries whose Type is `concept`, MOC
+bullets under `## Concepts`, and wiki/concepts/ bodies. Occasional-use frequency is
+checked only in the medication's explicit concept status line and in index/MOC
+mirrors. NOT scanned, deliberately — summary entries and `## Source Summaries`
+bullets describe what a source document says on its own date, and a prescription
+record legitimately records no stop; and wiki/queries/, which are dated snapshots
+correct as of their date. Getting those exemptions wrong is what turns this into a
+pass that gets ignored.
 
 A medication with no `status:` is not checked. The field is omitted rather than
 guessed when a concept states no status, following the same rule as the provenance
@@ -60,14 +73,36 @@ CONCEPTS = WIKI / "concepts"
 MOCS = WIKI / "mocs"
 INDEX = WIKI / "index.md"
 
-# Closed vocabulary. `occasional` behaves as active here but exists so the field can
-# state the truth -- alprazolam is genuinely "active but used only occasionally", and
-# a field that cannot say so gets written wrong.
+# Closed vocabulary. `occasional` is active but not regular use; it needs a narrower
+# check than `stopped`, because a neutral mention does not imply any frequency.
 STATUSES = {"active", "occasional", "stopped"}
-CHECKED_STATUSES = {"stopped"}
 
 STOP_MARKER_RE = re.compile(
     r"\b(?:discontinu\w*|stopped|stopping|ceased|no longer)\b", re.IGNORECASE
+)
+OCCASIONAL_MARKER_RE = re.compile(
+    r"\b(?:(?:take(?:s|n|ing)?|use(?:s|d|ing)?|dose(?:s|d|ing)?|"
+    r"administer(?:s|ed|ing)?)\s+(?:only\s+)?(?:occasional(?:ly)?|"
+    r"intermittent(?:ly)?|infrequent(?:ly)?|sporadic(?:ally)?|PRN|"
+    r"as[- ]needed|when needed|some\s+"
+    r"(?:days?|nights?|mornings?|evenings?))|"
+    r"(?:occasional|intermittent|infrequent|sporadic)\s+"
+    r"(?:use|dosing|dose|regimen)|PRN|as[- ]needed|when needed|some\s+"
+    r"(?:days?|nights?|mornings?|evenings?)|not\s+(?:daily|nightly)|"
+    r"not\s+(?:taken|used)\s+(?:daily|nightly)|"
+    r"not\s+(?:every|each)\s+(?:day|night|morning|evening))\b",
+    re.IGNORECASE,
+)
+REGULAR_FREQUENCY_RE = re.compile(
+    r"\b(?:daily|nightly|regularly|routinely|"
+    r"(?:every|each|most)\s+(?:day|night|morning|evening)s?)\b",
+    re.IGNORECASE,
+)
+HISTORICAL_SCOPE_RE = re.compile(
+    r"\b(?:previously|formerly|historically|used to|at the time|"
+    r"during (?:that|the) period|prior to|until|"
+    r"(?:on|in)\s+(?:19|20)\d{2}(?:-\d{2}-\d{2})?)\b",
+    re.IGNORECASE,
 )
 BODY_STATUS_RE = re.compile(
     r"\*\*(?:Current status|Discontinued)\b[^*]*\*\*(?::)?\s*(.{0,80})", re.IGNORECASE
@@ -77,6 +112,7 @@ FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 FIELD_RE = re.compile(r"^([\w-]+):\s*(.*)$", re.MULTILINE)
 ENTRY_HEADING_RE = re.compile(r"^## (\S+\.md)\s*$")
 BULLET_RE = re.compile(r"^\s*[-*+] ")
+MOC_SUBJECT_RE = re.compile(r"^\s*[-*+]\s+\[\[([^\]|#]+)")
 
 
 WIKILINK_RE = re.compile(r"\[\[[^\]]*\]\]")
@@ -156,12 +192,18 @@ def load_medications() -> tuple[list[Med], list[Finding]]:
         # Guard the second source of truth: frontmatter vs the concept's own prose.
         if body_status:
             claim = body_status.group(0)
-            says_stop = bool(STOP_MARKER_RE.search(claim))
-            if says_stop != (status == "stopped"):
+            body_status_value = body_claim_status(claim)
+            if body_status_value != status:
                 problems.append(Finding(
                     "STATUS MISMATCH", display(path),
                     text[:body_status.start()].count("\n") + 1, path.stem,
-                    f"frontmatter says {status!r} but the body reads: {claim.strip()[:110]}"))
+                    f"frontmatter says {status!r}, body status reads "
+                    f"{body_status_value!r}: {claim.strip()[:110]}"))
+        elif status == "occasional":
+            problems.append(Finding(
+                "STATUS MISMATCH", display(path), 1, path.stem,
+                "frontmatter says 'occasional' but no explicit Current status line "
+                "was found"))
 
         generic = {path.stem.replace("-", " "), meta.get("title", "")}
         branded = {meta[f] for f in ("brand", "local-brand-name") if meta.get(f)}
@@ -200,6 +242,61 @@ def mentions(block: str, terms: tuple[tuple[str, re.Pattern[str]], ...]) -> str 
             if re.search(r"\boff\s+(?:the\s+)?" + re.escape(term), block, re.IGNORECASE):
                 continue
             return term
+    return None
+
+
+def first_term(block: str, terms: tuple[tuple[str, re.Pattern[str]], ...]) -> str | None:
+    """Return the first matching medication term without stopped-use exceptions."""
+    for term, pattern in terms:
+        if pattern.search(block):
+            return term
+    return None
+
+
+def body_claim_status(claim: str) -> str:
+    """Reduce an explicit concept status line to the frontmatter vocabulary."""
+    if STOP_MARKER_RE.search(claim):
+        return "stopped"
+    if OCCASIONAL_MARKER_RE.search(claim):
+        return "occasional"
+    return "active"
+
+
+def block_subject(block: str) -> str | None:
+    """Return the article named by an index heading or a MOC bullet's first link."""
+    heading = ENTRY_HEADING_RE.search(block)
+    if heading:
+        return Path(heading.group(1)).stem
+    bullet = MOC_SUBJECT_RE.search(block)
+    if bullet:
+        return Path(bullet.group(1)).name
+    return None
+
+
+def regular_use_excerpt(
+    text: str,
+    required_terms: tuple[tuple[str, re.Pattern[str]], ...] = (),
+) -> str | None:
+    """Return a present regular-use claim, excluding occasional and past schedules."""
+    for segment in re.split(r"(?<=[.!?])\s+|\n+", text):
+        if not REGULAR_FREQUENCY_RE.search(segment):
+            continue
+        if OCCASIONAL_MARKER_RE.search(segment) or HISTORICAL_SCOPE_RE.search(segment):
+            continue
+        if required_terms and not first_term(segment, required_terms):
+            continue
+        return " ".join(segment.split())
+    return None
+
+
+def occasional_frequency_hit(block: str, med: Med) -> tuple[str, str] | None:
+    """Return the matched identity and regular-use excerpt for one mirror block."""
+    text = prose_only(block)
+    is_subject = block_subject(block) == med.stem
+    excerpt = regular_use_excerpt(text, () if is_subject else med.names)
+    if excerpt:
+        hit = first_term(excerpt, med.names)
+        return hit or med.stem, excerpt
     return None
 
 
@@ -278,7 +375,8 @@ def main() -> None:
     args = parser.parse_args()
 
     meds, findings = load_medications()
-    watched = [m for m in meds if m.status in CHECKED_STATUSES]
+    stopped = [m for m in meds if m.status == "stopped"]
+    occasional = [m for m in meds if m.status == "occasional"]
 
     if args.paths:
         paths: list[Path] = []
@@ -296,26 +394,38 @@ def main() -> None:
             span = set(range(line_no, line_no + block.count("\n") + 1))
             if not span & changed.get(path.resolve(), set()):
                 continue
-        if STOP_MARKER_RE.search(block):
-            continue
         text = prose_only(block)
-        for med in watched:
-            hit = mentions(text, med.names)
-            kind = "MISSING STOP"
-            if not hit:
-                hit = mentions(text, med.aliases)
-                kind = "CLASS MENTION"
-            if hit:
-                excerpt = " ".join(text.split())
-                findings.append(Finding(kind, display(path), line_no, med.stem,
-                                        f"[{hit}] {excerpt[:150]}"))
+        if not STOP_MARKER_RE.search(block):
+            for med in stopped:
+                hit = mentions(text, med.names)
+                kind = "MISSING STOP"
+                if not hit:
+                    hit = mentions(text, med.aliases)
+                    kind = "CLASS MENTION"
+                if hit:
+                    excerpt = " ".join(text.split())
+                    findings.append(Finding(kind, display(path), line_no, med.stem,
+                                            f"[{hit}] {excerpt[:150]}"))
+
+        is_mirror = (path.resolve() == INDEX.resolve()
+                     or path.resolve().parent == MOCS.resolve())
+        if is_mirror:
+            for med in occasional:
+                frequency_hit = occasional_frequency_hit(block, med)
+                if frequency_hit:
+                    hit, excerpt = frequency_hit
+                    findings.append(Finding(
+                        "FREQUENCY MISMATCH", display(path), line_no, med.stem,
+                        f"[{hit}] {excerpt[:150]}"))
 
     if not findings:
         print(f"No medication-status gaps found "
-              f"({len(watched)} stopped medication(s) watched).")
+              f"({len(stopped)} stopped and {len(occasional)} occasional "
+              f"medication(s) watched).")
         return
 
-    for kind in ("STATUS MISMATCH", "MISSING STOP", "CLASS MENTION"):
+    kinds = ("STATUS MISMATCH", "FREQUENCY MISMATCH", "MISSING STOP", "CLASS MENTION")
+    for kind in kinds:
         rows = [f for f in findings if f.kind == kind]
         if not rows:
             continue
@@ -326,6 +436,9 @@ def main() -> None:
             print(" needs no marker.)")
         elif kind == "CLASS MENTION":
             print("(Class alias only, no direct name -- review, may be another drug.)")
+        elif kind == "FREQUENCY MISMATCH":
+            print("(An occasional medication is described as regular use in an index")
+            print(" entry or MOC bullet. Neutral and historical mentions are exempt.)")
         print()
         for f in rows:
             print(f"{f.path}:{f.line}  {f.med}")
@@ -333,7 +446,7 @@ def main() -> None:
         print()
 
     counts = ", ".join(f"{len([f for f in findings if f.kind == k])} {k.lower()}"
-                       for k in ("STATUS MISMATCH", "MISSING STOP", "CLASS MENTION"))
+                       for k in kinds)
     print(f"TOTAL: {len(findings)} finding(s) -- {counts}.")
 
 
