@@ -1,9 +1,22 @@
-# 🩺 my-wiki
+# 🩺 Vita Mosaic
 
-An **AI-compiled personal health wiki**: add raw lab results, imaging reports,
-and clinical notes, then use AI prompts to build and maintain a cross-linked
-medical knowledge base — optionally bilingual, with inline Chinese glosses in
-Traditional (繁體中文) or Simplified (简体中文) Chinese, or English-only.
+> Health in Context
+
+Vita Mosaic addresses these recurring pain points in personal health record keeping:
+
+- How can I bring scattered medical records into one private vault and build a coherent health history over time?
+- How can I see connections across tests, conditions, medications, and clinical domains?
+- How can I make difficult medical language easier to understand and share?
+- How can I prepare a concise handoff for a clinician?
+- How can I keep the knowledge base accurate and healthy as new records arrive?
+
+To address these pain points, Vita Mosaic uses AI prompts to compile raw lab
+results, imaging reports, and clinical notes into a cross-linked personal health
+wiki. It centralizes records, preserves history over time, reveals connections
+across domains, simplifies medical language, supports clinical handoffs, and
+maintains accuracy as new records arrive. The wiki can be English-only or
+bilingual, with inline Chinese glosses in Traditional (繁體中文) or Simplified
+(简体中文) Chinese.
 
 The maintainer's wiki currently contains 📚 **70** concept articles · 🗂️ **17**
 clinical domains · 📄 **80** source documents · 💬 **19** saved Q&As · 🎞️ **9**
