@@ -41,6 +41,8 @@ Conventions and entry points:
 - README.md
 - .gitignore, .gitattributes
 - docs/graph-view.png (README hero image)
+- docs/concept-example.png (README concept-article example — fabricated, no
+  real patient data)
 - wiki/deliverables/_marp-template.md
 
 ## What is never synced

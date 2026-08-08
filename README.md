@@ -324,7 +324,7 @@ memory/           → persistent facts and corrections used by Claude/Codex
 .agents/
   skills/         → repo-scoped Codex skills mirroring the slash commands
 prompts/          → reusable AI prompt files
-docs/             → README assets (the graph-view screenshot)
+docs/             → README assets (graph-view + concept-example screenshots)
 CLAUDE.md         → project conventions auto-loaded by Claude Code each session
 AGENTS.md         → Codex entry point that delegates to CLAUDE.md and prompts/
 ```
@@ -449,6 +449,11 @@ audited by `/post-ingest` and `/lint`:
 | `wiki/mocs/moc-{domain}.md` | domain | What is in cardiology, and how do those articles relate? Created once 3+ articles share a canonical tag |
 | `wiki/index.md` | file | One entry per file — type, tags, one-line summary, related articles — grouped into domain sections |
 | `[[backlinks]]` | sentence | Which specific article does *this claim* depend on? |
+
+A concept article as rendered in Obsidian — properties, tags, aliases, and an
+inline `[[backlink]]` (fabricated example; no real patient data):
+
+<img src="docs/concept-example.png" alt="Example concept article rendered in Obsidian, showing properties, tags, aliases, and an inline backlink (fabricated demo content)" width="720">
 
 ### 10.3 Sessions vs. queries
 

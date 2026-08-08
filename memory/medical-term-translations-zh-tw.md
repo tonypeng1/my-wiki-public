@@ -26,6 +26,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 
 - Arterial aging: 動脈老化
 - Atherosclerosis: 動脈粥狀硬化
+- Atherosclerotic cardiovascular disease / ASCVD: 動脈粥狀硬化性心血管疾病
 - Atherosclerotic plaque: 動脈粥狀硬化斑塊
 - Atheroma: 粥狀斑塊
 - Anterograde flow / forward flow: 順向血流
@@ -155,6 +156,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - QTc / corrected QT interval: 校正QT間期
 - QT prolongation: QT延長
 - QTc prolongation: QTc 延長
+- R-R interval / RR interval: R-R間期
 - Rate/rhythm control: 心率／心律控制
 - Rate-slowing action: 降心率作用
 - Rhythm-symptom control: 心律症狀控制
@@ -202,6 +204,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 
 ## Lipids and Metabolic Risk
 
+- 25-hydroxyvitamin D / 25-OH vitamin D / 25-OH / 25 HYDROXY: 25-羥基維生素D
 - Cytochrome P450 1A2 / CYP1A2: 細胞色素 P450 1A2
 - Cytochrome P450 3A4 / CYP3A4: 細胞色素 P450 3A4
 - Abdominal cramping: 腹部絞痛
@@ -213,9 +216,9 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Albumin-to-globulin ratio / A/G ratio: 白蛋白/球蛋白比值
 - Alcohol: 酒精
 - Alcohol-related liver disease: 酒精相關肝病
-- Alkaline phosphatase / ALP: 鹼性磷酸酶
+- Alkaline phosphatase / ALP / ALK-P: 鹼性磷酸酶
 - Alpha-fetoprotein / AFP: 甲胎蛋白
-- ALT / alanine aminotransferase: 丙胺酸轉胺酶
+- ALT / alanine aminotransferase / GPT: 丙胺酸轉胺酶
 - Anemia: 貧血
 - Anemia cutoff: 貧血判定界值
 - Antibiotics: 抗生素
@@ -223,7 +226,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Antihyperglycemic agent: 降血糖藥物
 - Antipsychotics: 抗精神病藥物
 - Ascites: 腹水
-- AST / aspartate aminotransferase: 天門冬胺酸轉胺酶
+- AST / aspartate aminotransferase / GOT: 天門冬胺酸轉胺酶
+- AST/ALT ratio: AST／ALT 比值
 - Asymptomatic: 無症狀
 - Atherogenic: 致動脈粥狀硬化
 - Atherogenic burden: 致動脈粥狀硬化負荷
@@ -261,6 +265,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Common bile duct / CBD: 總膽管
 - Comprehensive metabolic panel / CMP: 完整代謝功能套組
 - Computed tomography / CT: 電腦斷層
+- Coronary heart disease / CHD: 冠心病
 - Corrected calcium: 校正鈣
 - Creatine kinase / CK: 肌酸激酶
 - Diabetes mellitus / diabetes: 糖尿病
@@ -272,12 +277,14 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Diagnostic study / diagnostic studies: 診斷檢查
 - Diagnostic threshold: 診斷閾值
 - Diagnostic weight: 診斷權重
+- Direct bilirubin / D.Bili: 直接膽紅素
 - Diarrhea: 腹瀉
 - Dietary modification: 飲食調整
 - Differential diagnosis: 鑑別診斷
 - Drug interaction: 藥物交互作用
 - Dynamic imaging: 動態影像
 - Dyslipidemia: 血脂異常
+- Dysplastic nodule: 異生結節
 - E-antigen: e 抗原
 - Elevated lipids: 血脂升高
 - Energy drink: 能量飲料
@@ -294,13 +301,17 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Fatty liver: 脂肪肝
 - Fatty pancreas: 脂肪胰
 - Fetal liver: 胎兒肝臟
+- FIB-4 score / FIB-4: 肝纖維化-4 指數
+- FibroScan elastography / FibroScan: 肝臟瞬時彈性掃描
 - Fibrosis: 纖維化
 - Focal fat: 局部脂肪
+- Focal fat sparing: 脂肪保留區
 - Focal nodular hyperplasia / FNH: 局灶性結節性增生
 - Fracture risk: 骨折風險
 - Friedewald calculation / Friedewald estimate: Friedewald 公式估算
 - Gallbladder: 膽囊
-- Gamma-glutamyl transferase / GGT: γ-谷氨醯轉移酶
+- Gadoxetate disodium: 釓塞酸二鈉
+- Gamma-glutamyl transferase / GGT / gamma-GT: γ-谷氨醯轉移酶
 - Germ-cell tumor: 生殖細胞腫瘤
 - Gestational diabetes: 妊娠糖尿病
 - GI tolerability: 腸胃耐受性
@@ -322,6 +333,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Gonorrhea: 淋病
 - Gut microbiome: 腸道微生物相
 - HDL cholesterol / HDL-C / HDL: 高密度脂蛋白膽固醇
+- HDL percentage / %HDL: 高密度脂蛋白膽固醇百分比
 - HDL particle / HDL particles: 高密度脂蛋白顆粒
 - Hemangioma: 血管瘤
 - Hepatic hemangioma: 肝血管瘤
@@ -350,7 +362,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hepatocellular injury: 肝細胞損傷
 - Hepatocellular stress: 肝細胞壓力
 - Hepatocyte: 肝細胞
-- Hepatogastroenterology: 肝膽腸胃科
+- Hepatocyte-specific contrast: 肝細胞特異性對比劑
+- Hepatology / Hepatogastroenterology: 肝膽腸胃科
 - High-density lipoprotein: 高密度脂蛋白
 - High dose: 高劑量
 - High-risk prediabetes: 高風險糖尿病前期
@@ -358,6 +371,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hydronephrosis: 腎積水
 - Hyperechoic: 高回音
 - Hyperechoic nodule: 高回音結節
+- Hypoechoic: 低回音
 - Hyperglycemia: 高血糖
 - Hyperlipidemia: 高血脂
 - Hyperthyroidism: 甲狀腺機能亢進
@@ -365,8 +379,10 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hypodensity: 低密度
 - Hypoglycemia: 低血糖
 - Immunoglobulin / immunoglobulins: 免疫球蛋白
+- Immunoglobulin G / IgG: 免疫球蛋白 G
 - Impaired fasting glucose / IFG: 空腹血糖異常
 - Impaired glucose tolerance: 葡萄糖耐受不良
+- Indirect bilirubin / I.Bili: 間接膽紅素
 - Imaging modality / imaging modalities: 影像模式
 - Imaging study / imaging studies: 影像檢查
 - Incidental finding: 偶然發現
@@ -376,7 +392,8 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Insulin sensitivity: 胰島素敏感性
 - Insulin sensitization / insulin-sensitizing: 胰島素增敏
 - Lactic acidosis: 乳酸中毒
-- LDL cholesterol / LDL-C: 低密度脂蛋白膽固醇
+- Liver Imaging Reporting and Data System / LI-RADS: 肝臟影像報告與資料系統
+- LDL cholesterol / LDL-C / LDL: 低密度脂蛋白膽固醇
 - LDL particle: 低密度脂蛋白顆粒
 - LDL receptor: 低密度脂蛋白受體
 - LDL/HDL ratio: 低密度／高密度脂蛋白膽固醇比值
@@ -439,6 +456,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Peripheral tissue / peripheral tissues: 周邊組織
 - Peripheral insulin sensitivity: 周邊胰島素敏感性
 - Pharmacological intervention: 藥物介入
+- PIVKA-II / des-gamma-carboxy prothrombin / DCP: 異常凝血酶原
 - Pleural effusion: 胸腔積液
 - Polycystic ovary syndrome / PCOS: 多囊性卵巢症候群
 - Portal vein: 門脈
@@ -460,6 +478,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Red blood cell: 紅血球
 - Red-cell survival: 紅血球存活時間
 - Reference range: 參考範圍
+- Regenerative nodule: 再生結節
 - Regression: 消退
 - Remnant lipoprotein: 殘餘脂蛋白
 - Renal: 腎臟
@@ -567,6 +586,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Crystal / crystals: 結晶體
 - Cytokeratin fragment 21-1 / CYFRA21-1: 細胞角蛋白片段 21-1
 - Dehydration: 脫水
+- Detection limit: 檢出下限
 - Diagnostic workup / workup: 診斷評估
 - Diagnosis: 診斷
 - Diabetic nephropathy: 糖尿病腎病變
@@ -616,6 +636,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Hepatitis B virus / HBV: B型肝炎病毒
 - Hepatitis C antibody / Anti-HCV: C型肝炎抗體
 - Hepatitis C antibody / anti-HCV: C型肝炎抗體
+- Hepatitis C virus RNA test / HCV RNA test / HCV RNA testing: C型肝炎病毒核糖核酸檢測
 - Hepatitis C virus / HCV: C型肝炎病毒
 - Hepatitis screening: 肝炎篩檢
 - Herd immunity: 群體免疫
@@ -632,6 +653,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Immune protection: 免疫保護
 - Immunity status: 免疫狀態
 - Immunocompetent: 免疫功能正常
+- Immunocompromised: 免疫功能低下
 - Immunologic marker / immunologic markers: 免疫標記
 - Immunological panel: 免疫檢測套組
 - Immunology: 免疫學
@@ -700,15 +722,18 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Overt nephropathy: 顯性腎病變
 - Overt proteinuria: 顯性蛋白尿
 - Organ system / organ systems: 器官系統
+- Ordering physician: 開立醫師
 - Oxygen-carrying capacity: 攜氧能力
 - Parasitic infection: 寄生蟲感染
 - Pharmacodynamic: 藥效學
 - Pharmacokinetic: 藥物動力學
 - Pathogen / pathogens: 病原體
 - Physician: 醫師
+- Physician note: 醫師紀錄
 - Pituitary hormone / pituitary hormones: 腦下垂體激素
 - Platelet: 血小板
 - Platelet count: 血小板計數
+- Polymerase chain reaction / PCR: 聚合酶連鎖反應
 - Pre-renal: 腎前性
 - Primary hypothyroidism: 原發性甲狀腺功能低下
 - Primary immunodeficiency / primary immunodeficiencies: 原發性免疫缺陷
@@ -726,12 +751,14 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Quantitative: 定量
 - Reactive / reactive: 反應性
 - Red cell distribution width / RDW: 紅血球體積分布寬度
+- Red cell distribution width standard deviation / RDW-SD: 紅血球體積分布寬度標準差
 - Red-cell maturation: 紅血球成熟
 - Reflex culture: 反射性尿液培養
 - Reflex quantitative: 反射性定量
 - Analyte / analytes: 分析項目
 - Reflex RPR: 反射性 RPR
 - Relative neutrophilia: 相對性嗜中性球偏高
+- Ribonucleic acid / RNA: 核糖核酸
 - Routine blood draw: 常規抽血
 - Rubella: 德國麻疹
 - Sample contamination: 檢體污染
@@ -848,6 +875,7 @@ checker from matching it, suffix that variant with `(no-match)` — for example
 - Ulcerative colitis / UC: 潰瘍性結腸炎
 - Transmural: 穿壁性
 - Benign lymphoid aggregate / benign lymphoid aggregates: 良性淋巴組織聚集
+- Neoplastic: 腫瘤性
 - Neutrophilic infiltrate: 嗜中性球浸潤
 - Crypt abscess: 腺窩膿瘍
 - Crypt architecture: 腺窩結構

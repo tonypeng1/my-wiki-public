@@ -84,6 +84,9 @@ SYNC_FILES=(
   # README hero image (safe to publish: only the benign 'lipid-panel' node
   # is legible).
   "docs/graph-view.png"
+  # README concept-article example (safe to publish: entirely fabricated —
+  # no real patient data, see §10.2 in README.md).
+  "docs/concept-example.png"
 )
 
 # EVERY glossary ships, not just the one this vault is configured for. A public
